@@ -1,8 +1,14 @@
+---
+title: "Parsing LR"
+format: revealjs
+---
+
 % Parsing Ascendente (Bottom-Up)
 % Lic. Juan Pablo Consuegra Ayala
 % MatCom, UH
 
-```python echo=False
+``` {python}
+
 import sys
 import os
 

@@ -1,3 +1,8 @@
+---
+title: "No todos los lenguajes son regulares"
+format: revealjs
+---
+
 % Límites de los Lenguajes
 % MSc. Alejandro Piad Morffis
 % MatCom, UH (CC BY-SA-NC 4.0)

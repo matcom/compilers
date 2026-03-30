@@ -1,3 +1,8 @@
+---
+title: "Declaración de variables antes de su uso"
+format: revealjs
+---
+
 % Análisis Semántico : Introducción
 % MSc. Alejandro Piad Morffis
 % MatCom, UH (CC BY-SA-NC 4.0)

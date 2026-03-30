@@ -12,13 +12,18 @@ class Graph:
     def _image_name(self):
         Globals.images += 1
         filename = os.getenv('FILENAME')
-        filename = os.path.basename(filename).split(".")[0]
+        if filename:
+            filename = os.path.basename(filename).split(".")[0]
+        else:
+            filename = "doc"
         return f"image-{filename}-{Globals.images}"
 
     def print(self, label="", caption="", float=True, width="50%"):
+        import os
         if not label:
             label = self._image_name()
 
+        os.makedirs("build/graphics", exist_ok=True)
         fname = f"build/graphics/{label}.svg"
 
         self.graph().write_svg(fname)

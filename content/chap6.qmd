@@ -1,7 +1,17 @@
 ---
-previous-chapter: chap5
-next-chapter: chap7
 ---
+
+
+# Setup
+
+```{python}
+import sys
+import os
+sys.path.append(os.path.abspath(os.curdir))
+from source.trees import Tree
+from source.diagrams import Pipeline, Lexer
+```
+
 
 # Semántica de Tipos {#semantics}
 

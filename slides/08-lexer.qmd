@@ -1,3 +1,8 @@
+---
+title: "Analizador Léxico"
+format: revealjs
+---
+
 % Construyendo un Lexer
 % MSc. Alejandro Piad Morffis
 % MatCom, UH (CC BY-SA-NC 4.0)

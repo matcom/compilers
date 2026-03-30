@@ -1,7 +1,17 @@
 ---
-previous-chapter: chap6
-next-chapter: chap8
 ---
+
+
+# Setup
+
+```{python}
+import sys
+import os
+sys.path.append(os.path.abspath(os.curdir))
+from source.trees import Tree
+from source.diagrams import Pipeline, Lexer
+```
+
 
 # Generación de Código
 

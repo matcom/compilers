@@ -1,11 +1,22 @@
 ---
-previous-chapter: chap0
-next-chapter: chap2
 ---
+
+
+# Setup
+
+```{python}
+import sys
+import os
+sys.path.append(os.path.abspath(os.curdir))
+from source.trees import Tree
+from source.diagrams import Pipeline, Lexer
+```
+
 
 # Análisis Lexicográfico
 
-```python echo=False
+``` {python}
+
 import sys
 import os
 
@@ -131,7 +142,9 @@ Por ejemplo, si tenemos el siguiente autómata $A=<Q,q_0,V,F,f>$, donde:
 
 Podemos representar gráficamente el autómata anterior con el siguiente gráfico:
 
-```python echo=False, results="plain"
+``` {python}
+#| output: asis
+
 Automaton('q0', ['q2'], {
     ('q0', 'a'): 'q1',
     ('q0', 'b'): 'q0',
@@ -174,7 +187,9 @@ Pasemos entonces a describir algunos ejemplos de lenguajes regulares, que nos da
 
 El más simple de todos los lenguajes que podemos definir sobre un alfabeto $V$ es justamente $V^*$, el lenguaje de todas las cadenas que se pueden construir con los símbolos de $V$. A este lenguaje le llamamos *universo*. Para construir un autómata para este lenguaje, simplemente necesitamos un estado que será a la vez inicial y final, y una transición para cada símbolo del alfabeto desde este estado hacia el propio estado. Por ejemplo, si $V = \{ a, b, c \}$, tenemos el siguiente autómata:
 
-```python echo=False, results="plain"
+``` {python}
+#| output: asis
+
 Automaton('q0', ['q0'], {
     ('q0', 'a b c'): 'q0'
 }).print(width="20%", float=False)
@@ -188,7 +203,9 @@ La demostración se realiza por construcción. Sea $V = \{ a_1, \ldots, a_n \}$ 
 
 Yendo al extremo contrario, vamos a definir el lenguaje que contiene exactamente las palabras claves **if**, **then**, **else**, **fi**. Para este lenguaje también es fácil definir un autómata. Creamos dos estados, uno inicial y uno final, y por cada palabra del lenguaje creamos un camino entre el estado inicial y final con un estado intermedio para cada símbolo de la palabra correspondiente (menos el último, claro):
 
-```python echo=False, results="plain"
+``` {python}
+#| output: asis
+
 Automaton('q0', ['q02', 'q06', 'q10', 'q12'], {
     ('q0',  'i'): 'q01',
     ('q01', 'f'): 'q02',
@@ -254,7 +271,9 @@ Parece que no hemos hecho mucho, pero hemos logrado garantizar que nuestro méto
 
 En este ejemplo, tenemos entonces 5 posibles estados, desde $q_0$ hasta $q_4$. Para determinar las transiciones, veremos cómo cambian los valores en nuestro método. En todo momento, si tenemos un valor `count_a = qi`, en la siguiente iteración o bien `count_a = qi` o de lo contrario `count_a = qi + 1`, y esto solo ocurre si el símbolo recién "visto" es $a$. Esto nos dice entonces que tenemos entre los estados $q_i$ y $q_{i+1}$ siempre una transición con $a$, *excepto* en $q_4$, pues en ese caso no se cumple la condición `count_a <= 3`. Solo nos queda definir el estado final, y en este ejemplo no puede estar más claro, pues la línea `return count_a == 3` nos dice exactamente qué estado (valor de `count_a`) corresponde a un valor `True`. De modo que tenemos nuestro autómata:
 
-```python echo=False, results="plain"
+``` {python}
+#| output: asis
+
 Automaton('q0', ['q3'], {
     ('q0', 'a'): 'q1',
     ('q1', 'a'): 'q2',

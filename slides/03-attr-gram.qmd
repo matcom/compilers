@@ -1,10 +1,16 @@
+---
+title: "Evaluando expresiones"
+format: revealjs
+---
+
 % Gramáticas Atributadas
 % MSc. Alejandro Piad Morffis
 % MatCom, UH (CC BY-SA-NC 4.0)
 
 # Evaluando expresiones
 
-```python echo=False
+``` {python}
+
 import sys
 import os
 
@@ -27,7 +33,9 @@ from source.trees import Tree
 
 # Veamos el árbol de derivación
 
-```python echo=False, results="plain"
+``` {python}
+#| output: asis
+
 Tree("E",
     Tree("T",
         Tree("F",
@@ -187,7 +195,9 @@ De momento asumiremos que existe una forma de evaluarlos...
 
 ## Sea la cadena `aabbcc`, tenemos un árbol de derivación
 
-```python echo=False, results="plain"
+``` {python}
+#| output: asis
+
 Tree("S",
     Tree("A",
         Tree("a"),

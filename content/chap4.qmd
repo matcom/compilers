@@ -1,11 +1,22 @@
 ---
-previous-chapter: chap3
-next-chapter: chap5
 ---
+
+
+# Setup
+
+```{python}
+import sys
+import os
+sys.path.append(os.path.abspath(os.curdir))
+from source.trees import Tree
+from source.diagrams import Pipeline, Lexer
+```
+
 
 # Análisis Semántico
 
-```python echo=False
+``` {python}
+
 import sys
 import os
 
@@ -101,7 +112,9 @@ int y = x + 1;
 
 Pudiéramos pensar en un posible árbol de derivación para este programa (para una gramática correcta del lenguaje C), donde habría necesariamente un subárbol con la forma:
 
-```python echo=False, results="plain"
+``` {python}
+#| output: asis
+
 T("<decl-assign>",
     T("<type>"),
     T("<id>"),
@@ -114,7 +127,9 @@ T("<decl-assign>",
 
 Y por otro lado, tendríamos un subárbol con la forma:
 
-```python echo=False, results="plain"
+``` {python}
+#| output: asis
+
 T("<decl-assign>",
     T("<type>"),
     T("<id>"),
@@ -158,7 +173,9 @@ Donde indicamos explícitamente el **lexema**. Durante el análisis sińtáctico
 
 Por el momento, concentrémonos nuevamente en la cadena a parsear. Esta cadena es generada **de forma única** por el siguiente árbol de derivación:
 
-```python echo=False, results="plain"
+``` {python}
+#| output: asis
+
 T("E",
     T("T",
         T("int"),
@@ -186,7 +203,9 @@ Los elementos sintácticos innecesarios, como los paréntesis, se emplean en la 
 
 Intentemos eliminar estos elementos innecesarios en el árbol de derivación anterior:
 
-```python echo=False, results="plain"
+``` {python}
+#| output: asis
+
 T("T",
     T("int"),
     T("*"),
@@ -201,7 +220,9 @@ Este árbol representa exactamente la misma expresión aritmética, y quedan exp
 
 Pensemos ahora en la jerarquía de clases que representa este árbol, y un posible algoritmo recursivo de evaluación. Una vez en el nodo `T`, evaluados recursivamente las expresiones izquierda y derecha, ¿qué operación es necesario aplicar? Evidentemente, dependerá del nodo que representa la operación. Pero este nodo (`*` o `+`) siempre es un terminal, por lo tanto, nunca será necesario "bajar" recursivamente para descubrir que tipo de operación hay que hacer en un nodo `T` o `E`. Podemos entonces conformarnos con un árbol donde la operación a realizar esté explícita en el nodo padre (`T` o `E`) y no como un hijo adicional:
 
-```python echo=False, results="plain"
+``` {python}
+#| output: asis
+
 T("*",
     T("int"),
     T("+",

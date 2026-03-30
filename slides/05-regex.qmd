@@ -1,3 +1,8 @@
+---
+title: "Volvamos al problema original"
+format: revealjs
+---
+
 % Expresiones Regulares
 % MSc. Alejandro Piad Morffis
 % MatCom, UH (CC BY-SA-NC 4.0)

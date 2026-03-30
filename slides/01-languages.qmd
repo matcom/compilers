@@ -1,6 +1,12 @@
+---
+title: "Introducción a la Compilación: Lenguajes"
+format: revealjs
+---
+
 # Introducción a la Compilación: Lenguajes
 
-```python echo=False
+``` {python}
+
 import sys
 import os
 
@@ -99,7 +105,9 @@ donde:
 - La raíz es $S$.
 - Cada nodo visto con sus hijos representa una derivación de un no-terminal es una forma oracional.
 
-```python echo=False, results="plain"
+``` {python}
+#| output: asis
+
 Tree("S",
     Tree("a"),
     Tree("S",

@@ -1,18 +1,5 @@
 ---
-next-chapter: chap1
 ---
-
-# Introducción {-}
-
-```python echo=False
-import sys
-import os
-
-sys.path.append(os.path.abspath(os.curdir))
-
-from source.trees import Tree
-from source.diagrams import Pipeline, Lexer
-```
 
 Este documento tiene como objetivo presentar el diseño de un curso de Compilación para estudiantes de Ciencia de la Computación. Este documento no es en absoluto un libro de texto de la asignatura Compilación (ni pretende serlo). Se asume que los profesores y estudiantes cuentan con documentación adicional para profundizar en los conocimientos impartidos. Cuando se presenta una sección de contenido, es más con el objetivo de presentar una guía sobre qué contenido será impartido, ilustrar un posible enfoque para introducir dicho contenido, y quizá además para acotar ciertas cuestiones específicas que consideramos de especial importancia. En cualquier caso, los estudiantes pueden encontrar también en este documento respuestas a preguntas de su interés, no solo desde el punto de vista puramente técnico (preguntas sobre el contenido) sino también desde el punto de vista metodológico (preguntas sobre la forma, o preguntas sobre las preguntas). De esta manera pueden entender mejor qué podemos prometerles como instructores, que se espera de ellos en cambio, y de qué forma pueden sacar el máximo provecho de este curso.
 
@@ -84,7 +71,9 @@ Volvamos entonces al caso clásico, el **compilador**. o este curso vamos a usar
 
 Intentemos entonces definir esta maquinaria paso a paso. De forma abstracta nuestro compilador es una "caja negra" que convierte programas escritos en HULK a programas escritos en MIPS:
 
-```python echo=False, results="plain"
+``` {python}
+#| output: asis
+
 Pipeline(['HULK', 'Compilador', 'MIPS'], [
     (0, 1, ""),
     (1, 2, ""),
@@ -93,7 +82,9 @@ Pipeline(['HULK', 'Compilador', 'MIPS'], [
 
 Para comenzar a destapar esta caja negra, notemos que al menos tenemos dos componentes independientes: uno que opera en lenguaje COOL y otro que opera en lenguaje MIPS. Necesitamos ser capaces de "leer" un programa en COOL y "escribirlo" en MIPS. Al primer módulo, que "lee", le llamaremos *parser*, o analizador sintáctico, por motivos históricos que veremos más adelante. Al segundo componente le llamaremos simplemente el *generador*.
 
-```python echo=False, results="plain"
+``` {python}
+#| output: asis
+
 Pipeline(['HULK', 'Parser', 'Generador', 'MIPS'], [
     (0, 1, ""),
     (1, 2, ""),
@@ -103,7 +94,9 @@ Pipeline(['HULK', 'Parser', 'Generador', 'MIPS'], [
 
 De aquí surge immediatamente una pregunta: ¿qué protocolo de comunicación tienen estos módulos? Es necesario diseñar una especie de lenguaje intermedio, un mecanismo de representación que no sea ni COOL ni MIPS, sino algo que esté "a medio camino" entre ambos. Es decir, hace falta traducir el programa en COOL a alguna forma de representación abstracta, independiente de la sintaxis, que luego pueda ser interpretada por el generador y escrita en MIPS. Llamésmole de momento *representación intermedia (IR)*.
 
-```python echo=False, results="plain"
+``` {python}
+#| output: asis
+
 Pipeline(['HULK', 'Parser', 'Generador', 'MIPS'], [
     (0, 1, ""),
     (1, 2, "IR"),
@@ -124,7 +117,9 @@ Cómo justificaremos más adelante, existen estructuras linguísticas que no son
 
 La solución de estos problemas empleando las técnicas de la teoría de lenguajes solamente es en general no polinomial, y a veces no computable. Pero muchos de estos problemas se pueden resolver de forma más sencilla analizando la estructura computacional intermedia. ¿Por qué? Veremos más adelante que esta estructura tiene generalmente forma arbórea, y en una estructura arbórea es fácil analizar la consistencia de los tipos y problemas similares recorriendo cada uno de los nodos. De forma recursiva, el nodo raíz (o programa) estará correcto si cada hijo está correcto. Para realizar este tipo de procesamiento, introduciremos una nueva fase, que llamaremos *chequeo semántico*, y que opera justamente sobre la representación semántica del programa.
 
-```python echo=False, results="plain"
+``` {python}
+#| output: asis
+
 Pipeline(['HULK', 'Parser', 'Semántico', 'Generador', 'MIPS'], [
     (0, 1, ""),
     (1, 2, ""),
@@ -142,7 +137,9 @@ Finalmente, justo antes de generar el código ejecutable final, cabe preguntarse
 
 Estas optimizaciones a menudo son convenientes de realizar sobre una estructura del programa mucho más cercana al código de máquina que al código original. Son muchos los factores que influyen en esto y que veremos más adelante, pero de forma intuitiva, es fácil entender que optimizar un programa debe ser un proceso muy cercano al código de máquina, pues la propia naturaleza de la optimización requiere explotar características propias de la maquinaria donde será ejecutado el código. Introduciremos entonces una fase de optimización, que de momento visualizaremos de forma *paralela* al proceso de generación, pues en la práctica ambas fases comparten la misma representación y ambos procesos ocurren de forma más o menos simultánea.
 
-```python echo=False, results="plain"
+``` {python}
+#| output: asis
+
 Pipeline(['HULK', 'Parser', 'Semántico', 'Generador', 'MIPS'], [
     (0, 1, ""),
     (1, 2, ""),
@@ -163,7 +160,9 @@ else
 
 Esta expresión, desde el punto de vista semántico, podemos pensar que se transforma a una estructura como la siguiente:
 
-```python echo=False, results="plain"
+``` {python}
+#| output: asis
+
 Tree("IF-EXPR",
     Tree("<=",
         Tree("a"),
@@ -180,7 +179,9 @@ La solución de este problema (convertir una secuencia de texto en una represent
 
 La cadena de texto de entrada, realmente está formada por una secuencia de caracteres. En el caso anterior, por ejemplo, tenemos la siguiente secuencia:
 
-```python echo=False, results="plain"
+``` {python}
+#| output: asis
+
 Lexer('i f \\\\s ( a < = 0 ) \\\\n \\\\t b \\\\n e l s e \\\\n \\\\t c \\\\n'.split()).print(float=False, width="100%")
 ```
 
@@ -188,13 +189,17 @@ En esta secuencia hemos representado cada caracter por separado, y hemos puesto 
 
 Para simplificar la tarea del *parser*, es conveniente convertir primeramente esta secuencia de caracteres en una secuencia de **tokens**, que no son más que los elementos básicos que componen el lenguaje, lo que pudiéramos llamar las *palabras* o *símbolos* más básicos. Por ejemplo, en el caso anterior, quisiéramos obtener la siguiente secuencia de **tokens**:
 
-```python echo=False, results="plain"
+``` {python}
+#| output: asis
+
 Lexer('if ( a <= 0 ) b else c'.split()).print(float=False, width="45%")
 ```
 
 Introduciremos entonces una primera fase, que llamaremos indistintamente *tokenización*, o análisis lexicográfico, para transmitir la idea de que en esta fase solamente se procesan los elementos *léxicos*, es decir, las palabras, sin llegar todavía a tocar los elementos *sintácticos*, es decir, la estructura. Al mecanismo encargado de resolver este problema le llamaremos entonces *lexer*.
 
-```python echo=False, results="plain"
+``` {python}
+#| output: asis
+
 Pipeline(['HULK', 'Lexer', 'Parser', 'Semántico', 'Generador', 'MIPS'], [
     (0, 1, ""),
     (1, 2, ""),
