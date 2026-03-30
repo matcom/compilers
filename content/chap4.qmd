@@ -232,107 +232,92 @@ De modo que si el árbol de sintaxis concreta (o árbol de derivación) tiene un
 
 A modo de ejemplo, vamos a definir un lenguaje muy sencillo, para el que diseñaremos un árbol de sintaxis abstracta. Este lenguaje será sobre el dominio de las expresiones aritméticas. Nos permitirá operar con variables y funciones predefinidas, así como definir nuevas funciones. Comenzaremos por listar de manera informal las características que queremos obtener de este lenguaje, y veremos luego como formalizar cada una.
 
-Veamos primero las reglas **sintácticas**:
+Veamos primero las reglas **sintácticas** de HULK para `let`, `function` y `print`:
 
-* El lenguaje tiene tres tipos de instrucciones: `let`, `def` y `print`:
-    - `let <var> = <expr>` define una variable denominada `<var>` y le asigna el valor de `<expr>`
-    - `def <func>(<arg1>, <arg2>, ...) -> <expr>` define una nueva función `<func>` con los argumentos `<arg*>`
-    - `print <expr>` imprime el valor de una expresión
-* Las expresiones pueden ser de varios tipos:
-    - Expresiones ariméticas
-    - Invocación de funciones predefinidas (`sin`, `cos`, `pow`, ...)
-    - Invocación de funciones definidas en el programa
+* `let <var>[:<type>]=<init> in <body>` define una variable y la usa en una expresión cuerpo
+* `function <func>(<arg1>[:<type>], ...):<type> -> <expr>` define una función
+* `print(<expr>)` es una función predefinida que imprime valores
 
-Formalizar estas características sintácticas es relativamente fácil con las herramientas que ya tenemos. Simplemente definiremos una gramática para ello:
+Veamos la gramática de HULK para estos constructos:
 
-       <program> := <stat-list>
-     <stat-list> := <stat> ";"
-                  | <stat> ";" <stat-list>
-          <stat> := <let-var>
-                  | <def-func>
-                  | <print-stat>
-       <let-var> := "let" ID "=" <expr>
-      <def-func> := "def" ID "(" <arg-list> ")" "->" <expr>
-    <print-stat> := "print" <expr>
-      <arg-list> := ID
-                  | ID "," <arg-list>
-          <expr> := <term> + <expr>
-                  | <term> - <expr>
-                  | <term>
-          <term> := <factor> * <term>
-                  | <factor> / <term>
-                  | <factor>
-        <factor> := <atom>
-                  | "(" <expr> ")"
-          <atom> := NUMBER
-                  | ID
+        <program> := <def-list> <expr>
+        <def-list> := <def> ";"
+                    | <def> ";" <def-list>
+                    | epsilon
+           <def> := "function" ID "(" <param-list> ")" [":" <type>] "->" <expr>
+      <param-list> := <param>
+                    | <param> "," <param-list>
+                    | epsilon
+          <param> := ID [":" <type>]
+          <expr> := <let-expr>
                   | <func-call>
-     <func-call> := ID "(" <expr-list> ")"
-     <expr-list> := <expr>
-                  | <expr> "," <expr-list>
+                  | <binary-expr>
+                  | <atom>
+      <let-expr> := "let" ID [":" <type>] "=" <expr> "in" <expr>
+      <func-call> := ID "(" <expr-list> ")"
+       <expr-list> := <expr>
+                    | <expr> "," <expr-list>
+    <binary-expr> := <expr> <bin-op> <expr>
+         <bin-op> := "+" | "-" | "*" | "/" | "==" | "!=" | "<" | ">" | ...
+           <atom> := NUMBER | STRING | BOOLEAN | ID | "(" <expr> ")"
 
 La gramática anterior es bastante "natural", en el sentido de que no contiene reglas "extrañas" para resolver, por ejemplo, los problemas de ambigüedad típicos de las gramáticas LL(1). Este es el tipo de gramáticas que usualmente queremos diseñar para transmitir a otros lectores las reglas sintácticas del lenguaje. Luego, para una implementación concreta de un parser, es posible (y altamente probable), que tengamos que redefinir la gramática añadiendo producciones para convertirla en LL o LR, según el caso. En cualquier modo, como ya sabemos resolver ese problema, nos conformaremos con pensar que alguien nos dará un parser para esta gramática.
 
-Definamos ahora informalmente las reglas **semánticas** de nuestro lenguaje:
+Definamos ahora informalmente las reglas **semánticas** de HULK:
 
-* Una variable solo puede ser definida una vez en todo el programa.
-* Los nombres de variables y funciones no comparten el mismo ámbito (pueden existir una variable y una función llamadas igual).
+* Una variable solo puede ser definida una vez en cada ámbito (expresión `let`).
+* Las variables definidas en un ámbito "ocultan" las variables de ámbitos exteriores con el mismo nombre.
+* Toda variable tiene que haber sido definida antes de ser usada en una expresión.
+* Los nombres de funciones son globales y no pueden coincidir con las funciones predefinidas (`print`, `read`, etc.).
 * No se pueden redefinir las funciones predefinidas.
-* Una función puede tener distintas definiciones siempre que tengan distinta cantidad de argumentos (es decir, funciones del mismo nombre pero con cantidad de argumentos distintos se consideran funciones distintas).
-* Toda variable y función tiene que haber sido definida antes de ser usada en una expresión (salvo las funciones pre-definidas).
-* Todos los argumentos definidos en una misma función tienen que ser diferentes entre sí, aunque pueden ser iguales a variables definidas globalmente o a argumentos definidos en otras funciones.
-* En el cuerpo de una función, los nombres de los argumentos ocultan los nombres de variables iguales.
-
-> **Nota**: Una consecuencia interesante de estas reglas es que no permiten funciones recursivas...
+* Una función puede tener distintas definiciones siempre que tengan distinta cantidad de argumentos.
+* Los argumentos de una función deben tener nombres únicos dentro de esa función.
+* Toda función usada debe haber sido definida antes de su invocación (salvo las predefinidas).
+* El cuerpo de una función puede usar los argumentos y las variables definidas en ámbitos exteriores ( closures).
 
 Como vemos, todas estas reglas son de naturaleza dependiente del contexto, pues su alcance puede ser en principio todo el programa. Por lo tanto, no tenemos forma de expresar estas reglas en una gramática libre del contexto. Sin embargo, una vez tengamos el árbol de sintaxis abstracta de un programa concreto, veremos que es relativamente fácil verificar cada una de estas reglas.
 
-Para diseñar el AST de este lenguaje, pensemos en las diferentes funciones semánticas que tiene nuestro programa. Veremos que en muchos casos tenemos un paralelo directo entre un nodo del AST y un símbolo de la gramática, pero en otros casos existirán símbolos que no tienen una función semántica (como los terminales `let`, `def` y `print`) y existirán funciones semánticas (clases de nodos del AST) que no corresponden a ningún símbolo de la gramática.
+Para diseñar el AST de HULK, pensemos en las diferentes funciones semánticas del lenguaje:
 
-Comencemos entonces por el inicio. De forma general es convieniente diseñar una jerarquía de clases con una raíz `Node` (o de nombre similar) que nos representa cualquier nodo del AST. Agrupar todos los nodos del AST en una jerarquía común nos permite definir funciones abstractas sobre todos los nodos (que usaremos para el chequeo semántico más adelante). Por tanto, comenzamos por ahí:
+* Un **programa** es una lista de definiciones de funciones seguida de una expresión.
+* La expresión `let` es una **expresión** que crea un nuevo ámbito.
+* `print(x)` es una **llamada a función** (expresión).
+* `function f(a, b) -> expr` es una **definición de función**.
+
+Comencemos por la jerarquía de clases:
 
 ```python
 class Node(ABC):
-    ...
+    pass
+
+class Program(Node):
+    def __init__(self):
+        self.definitions: list[DefFunc] = []
+        self.body: Expression = None
+
+class DefFunc(Node):
+    def __init__(self):
+        self.name: str = ""
+        self.parameters: list[str] = []
+        self.body: Expression = None
+
+class Expression(Node, ABC):
+    pass
 ```
 
-A diferencia del árbol de derivación, en esta clase `Node` no hemos puesto explícitamente una propiedad `Children` ni nada similar. Esto se debe a que en el AST en principio cada hijo de un nodo tiene una función semántica propia. Por tanto, en vez de tener una lista de hijos general, es preferible en cada subclase defnir exactamente que nodos (y de qué tipo) son los hijos esperados. De modo que no tendremos un "árbol" en el sentido puro como estructura de datos, sino una colección de clases relacionadas entre sí, cuya estructura en memoria será un árbol.
-
-La primera función semántica que necesitamos es aquella que nos represente a nuestro programa. Como hemos visto en la gramática, un programa simplemente es una colección de instrucciones (*statements*), por lo tanto, necesitamos también definir esta función semántica.
+Notar que `Program` contiene directamente las definiciones (no hay una clase `Statement` intermediaria, ya que en HULK solo tenemos definiciones de funciones como construcciones de alto nivel). La expresión `let` es ahora una **expresión** que crea un nuevo ámbito:
 
 ```python
-class Program:
+class LetIn(Expression):
     def __init__(self):
-        self.statements: list[Statement] = []
-
-class Statement(ABC):
-    ...
+        self.variable: str = ""
+        self.init: Expression = None
+        self.body: Expression = None
 ```
 
-Notar que hemos definido a `Program` como una clase concreta, pero a `Statement` como a una clase abstracta. Esto se debe a que tenemos diversos tipos de instrucciones concretas, pero la instrucción "base" en sí no es realmente una función semántica propia. Una regla más o menos común es que cuando un no-terminal deriva en más de una producción, cada una de esas producciones puede corresponder a una función semántica distinta. Sin embargo, en otros casos, un no-terminal deriva en más de una producción por motivos puramente sintácticos, como en el caso de `<stat-list>`, cuya única función es describir una lista de instrucciones. En el AST, no tiene mucho sentido tener un nodo particular para una lista de instrucciones, y por tanto en `Program` tenemos esta lista de forma explícita.
+El `let` en HULK es una expresión: `let x = 5 in x + 1`, donde `x` está disponible solo dentro de `body`.
 
-Veamos entonces los tres tipos concretos de instrucciones:
-
-```python
-class LetVar(Statement):
-    def __init__(self):
-        self.identifier: str = ""
-        self.expr: Expression = None
-
-class DefFunc(Statement):
-    def __init__(self):
-        self.identifier: str = ""
-        self.arguments: list[str] = []
-        self.expr: Expression = None
-
-class Print(Statement):
-    def __init__(self):
-        self.expr: Expression = None
-```
-
-El motivo por el que estos nodos son herederos de `Statement` es justamente para poder definir en `Program` una lista de diferentes tipos de instrucciones. De modo que estamos la herencia solamente para definir estructura, y no para aprovecharnos del polimorfismo (ya que no tenemos comportamiento en los nodos). Esto cambiará más adelante cuando nos interesemos por la verificación semántica.
-
-Vamos a definir la parte de la jerarquía que representa las expresiones en sí. En la gramática tenemos los no-terminales `<expr>`, `<term>`, `<factor>` y `<atom>` que nos sirven para definir la prioridad de los operadores. Sin embargo, desde el punto de vista semántico, todos estos no-terminales juegan el mismo papel. Por ejemplo, las expresiones binarias, desde el punto de vista semántico, son prácticamente idénticas. La única diferencia es el operador concreto a aplicar. De modo que podemos tener **una única clase** de expresión binaria:
+Las expresiones binarias las manejamos con una única clase:
 
 ```python
 from enum import Enum
@@ -343,9 +328,6 @@ class Operator(Enum):
     Mult = 2
     Div = 3
 
-class Expression(Node, ABC):
-    ...
-
 class BinaryExpr(Expression):
     def __init__(self):
         self.op: Operator = Operator.Add
@@ -353,48 +335,41 @@ class BinaryExpr(Expression):
         self.right: Expression = None
 ```
 
-Este diseño puede parecer a algunos "anti-orientado-a-objetos", pues no estamos definiendo una clase por cada tipo de expresión binaria. La discusión de cuál diseño es mejor es mucho más compleja que lo que podemos abordar en este párrafo. Solamente diremos algo a favor de este enfoque, y es que, al menos de momento, si tuviéramos una clase `MultNode` y una clase `AddNode`, estas serían exactamente iguales. Por lo tanto, como no tenemos comportamiento **ni** estructura distintos en ambas clases, no tiene sentido, al menos de momento, tener una clase por cada tipo de operador. Más adelante revisaremos esta hipótesis y tendremos una discusión más profunda al respecto.
-
-Nos quedan entonces tres tipos de expresiones: constante numérica, variable y llamada a una función. Para cada una de estas tendremos una clase distinta, pues tienen estructura diferente:
+Y los tres tipos de expresiones atómicas:
 
 ```python
 class FuncCall(Expression):
     def __init__(self):
-        self.identifier: str = ""
+        self.name: str = ""
         self.args: list[Expression] = []
 
 class Variable(Expression):
     def __init__(self):
-        self.identifier: str = ""
+        self.name: str = ""
 
 class Number(Expression):
     def __init__(self):
         self.value: str = ""
 ```
 
-Hemos definido la clase `Number` con un valor de tipo `string`, ya que, en principio, no es hasta el chequeo semántico que nos interesa saber el valor concreto del número que este token representa. Por lo tanto, podemos pensar que ni el *lexer* ni el *parser* se interesarán por obtener este valor.
-
-Y en este punto hemos terminado con nuestro árbol de sintaxis abstracta. Tenemos un total de 11 clases, de las cuáles 3 son abstractas y 8 son concretas. En la gramática tenemos un total de 25 producciones, que en principio son 25 funciones sintácticas diferentes. Algunas de ellas son listas, y por tanto no tienen función semántica asociada. Otras, como en el caso de las expresiones, están para desambigüar y establecer el orden operacional, por lo que tampoco tienen una función semántica asociada. En lenguajes más complejos, podemos tener también varias producciones que simplemente sean formas sintácticas diferentes de expresar la misma función semántica (e.j. **if** con **else** e **if** sin **else**).
+En HULK, `print(x)` es simplemente una `FuncCall` con nombre `"print"`, igual que cualquier otra función definida por el usuario. Esto simplifica el AST ya que no necesitamos una clase especial para `print`.
 
 Nos queda pendiente la tarea de obtener el AST a partir del árbol de derivación (que es la salida que realmente nos da el *parser*). De momento vamos a asumir que este algoritmo existe, y nos concentraremos en los tipos de análisis que podemos hacer sobre el AST una vez construido. Más adelante veremos un mecanismo formal que nos permite expresar como se construye el AST a partir del árbol de derivación, y un algoritmo para ello.
 
 ## Validando las reglas semánticas
 
-Volvamos a la tarea que dio origen a toda esta discusión del AST: validar el cumplimiento de las reglas semánticas. Recordemos nuevamente estas reglas:
+Volvamos a la tarea que dio origen a toda esta discusión del AST: validar el cumplimiento de las reglas semánticas de HULK. Recordemos las reglas:
 
-* Una variable solo puede ser definida una vez en todo el programa.
-* Los nombres de variables y funciones no comparten el mismo ámbito (pueden existir una variable y una función llamadas igual).
-* No se pueden redefinir las funciones predefinidas.
-* Una función puede tener distintas definiciones siempre que tengan distinta cantidad de argumentos (es decir, funciones del mismo nombre pero con cantidad de argumentos distintos se consideran funciones distintas).
-* Toda variable y función tiene que haber sido definida antes de ser usada en una expresión (salvo las funciones pre-definidas).
-* Todos los argumentos definidos en una misma función tienen que ser diferentes entre sí, aunque pueden ser iguales a variables definidas globalmente o a argumentos definidos en otras funciones.
-* En el cuerpo de una función, los nombres de los argumentos ocultan los nombres de variables iguales.
+* Una variable solo puede ser definida una vez en cada ámbito.
+* Toda variable tiene que haber sido definida antes de ser usada.
+* Los argumentos de una función deben ser únicos.
+* Toda función usada debe haber sido definida antes.
 
-En esta sección vamos a presentar una solución *ad-hoc* para estos problemas, en el caso particular del lenguaje que hemos definido. Más adelante formalizaremos esta estrategia de solución y mostraremos como extenderla a lenguajes más generales.
+En esta sección presentamos una solución *ad-hoc* para estos problemas en HULK.
 
-De manera general, el enfoque que usaremos será el siguiente. Cada regla semántica realmente se aplica solo a algunos tipos de nodos, pero para cada tipo de nodo podemos determinar qué reglas se aplican. Vamos a definir entonces un método `Validate()` en cada nodo, que nos dirá si dicho nodo es correcto. Por supuesto, ya podemos intuir que la implementación concreta de este método en un nodo dependerá recursivamente de los nodos hijos.
+De manera general, el enfoque que usaremos será el siguiente. Cada regla semántica se aplica solo a algunos tipos de nodos. Vamos a definir un método `validate()` en cada nodo, que nos dirá si dicho nodo es correcto.
 
-Por otro lado, notemos que la mayoría de las reglas semánticas nos hablan sobre las definiciones y uso de las variables y funciones. De hecho, por este motivo es justamente que dichas reglas son dependientes del contexto. De modo que, intuitivamente, en cada nodo necesitaremos tener acceso a este "contexto", donde pueden estar definidas las funciones y variables que su usan en dicho nodo. Dado que tenemos todo el AST construido, cabe pensar que dicho contexto se puede calcular en un recorrido sobre el árbol. De hecho, como veremos, en el mismo recorrido que vamos validando las reglas semánticas, iremos construyendo el contexto correspondiente.   Vamos entonces a diseñar una estructura de datos que nos represente dicho contexto. En esta estructura tenemos que almacenar las funciones y variables definidas (en el caso de las funciones con la cantidad de argumentos), y poder consultar en todo momento qué es lo definido. Supongamos entonces que tenemos una implementación de la siguiente **interface**:
+La mayoría de las reglas semánticas nos hablan sobre definiciones y uso de variables y funciones. Necesitamos acceso a un "contexto" donde estén definidas las funciones y variables. Diseñemos una estructura de datos que nos represente dicho contexto:
 
 ```python
 class IContext(ABC):
@@ -403,19 +378,23 @@ class IContext(ABC):
         ...
 
     @abstractmethod
-    def is_defined(self, function: str, args: int) -> bool:
+    def is_function(self, name: str, param_count: int) -> bool:
         ...
 
     @abstractmethod
-    def define(self, variable: str) -> bool:
+    def define_variable(self, name: str) -> bool:
         ...
 
     @abstractmethod
-    def define(self, function: str, args: list[str]) -> bool:
+    def define_function(self, name: str, param_count: int) -> bool:
+        ...
+
+    @abstractmethod
+    def create_child_context(self) -> "IContext":
         ...
 ```
 
-Agregamos entonces el método siguiente:
+Agregamos el método de validación a la clase base:
 
 ```python
 class Node(ABC):
@@ -424,22 +403,42 @@ class Node(ABC):
         ...
 ```
 
-Veamos entonces como se implementa esta validación en los nodos concretos. En el caso de `Program` es muy sencillo, el programa está correcto solo si cada una de las instrucciones que lo componen se valida correctamente:
+Veamos la implementación en los nodos concretos. En `Program`, primero validamos todas las definiciones de funciones (sin aún ejecutarlas), y luego validamos el cuerpo del programa:
 
 ```python
 class Program(Node):
     def __init__(self):
-        self.statements: list[Statement] = []
+        self.definitions: list[DefFunc] = []
+        self.body: Expression = None
 
     def validate(self, context: IContext) -> bool:
-        for st in self.statements:
-            if not st.validate(context):
+        for func in self.definitions:
+            if not func.validate(context):
                 return False
-
-        return True
+        return self.body.validate(context)
 ```
 
-Pasemos entonces a la validación de las expresiones, cuyas regla semántica fundamental es que todos los identificadores usados tienen que haber sido definidos antes. En el caso de las expresiones binarias es muy sencillo:
+Para `DefFunc`, necesitamos validar que no exista una función con el mismo nombre y cantidad de parámetros, y luego validar el cuerpo de la función:
+
+```python
+class DefFunc(Node):
+    def __init__(self):
+        self.name: str = ""
+        self.parameters: list[str] = []
+        self.body: Expression = None
+
+    def validate(self, context: IContext) -> bool:
+        if not context.define_function(self.name, len(self.parameters)):
+            return False
+
+        inner_context = context.create_child_context()
+        for param in self.parameters:
+            inner_context.define_variable(param)
+
+        return self.body.validate(inner_context)
+```
+
+Para las expresiones binarias, validamos recursivamente ambos lados:
 
 ```python
 class BinaryExpr(Expression):
@@ -452,7 +451,53 @@ class BinaryExpr(Expression):
         return self.left.validate(context) and self.right.validate(context)
 ```
 
-Ahora, en el caso de las expresiones atómicas es donde realmente sucede lo importante. Comezamos por el caso más sencillo:
+La expresión `let` crea un nuevo ámbito. Primero validamos la expresión inicial (`init`) en el contexto actual, luego creamos un ámbito hijo, definimos la variable, y validamos el cuerpo:
+
+```python
+class LetIn(Expression):
+    def __init__(self):
+        self.variable: str = ""
+        self.init: Expression = None
+        self.body: Expression = None
+
+    def validate(self, context: IContext) -> bool:
+        if not self.init.validate(context):
+            return False
+
+        inner_context = context.create_child_context()
+        if not inner_context.define_variable(self.variable):
+            return False
+
+        return self.body.validate(inner_context)
+```
+
+Para una variable, verificamos que esté definida en el contexto:
+
+```python
+class Variable(Expression):
+    def __init__(self):
+        self.name: str = ""
+
+    def validate(self, context: IContext) -> bool:
+        return context.is_defined(self.name)
+```
+
+Para una llamada a función, validamos los argumentos y verificamos que la función esté definida:
+
+```python
+class FuncCall(Expression):
+    def __init__(self):
+        self.name: str = ""
+        self.args: list[Expression] = []
+
+    def validate(self, context: IContext) -> bool:
+        for arg in self.args:
+            if not arg.validate(context):
+                return False
+        return context.is_function(self.name, len(self.args))
+```
+
+Para `Number`, no hay reglas semánticas que verificar:
 
 ```python
 class Number(Expression):
@@ -463,143 +508,45 @@ class Number(Expression):
         return True
 ```
 
-Veamos entonces el caso del nodo `Variable`. Este nodo nos representa una variable siendo usada como parte de una expresión, por lo tanto, como dice la regla semántica, tiene que haber sido definida antes:
-
-```python
-class Variable(Expression):
-    def __init__(self):
-        self.identifier: str = ""
-
-    def validate(self, context: IContext) -> bool:
-        return context.is_defined(self.identifier)
-```
-
-Por último, para el caso de una función, la validación es muy similar, pero teniendo en cuenta la cantidad de argumentos. Además, dado que una invocación a función define recursivamente un conjunto de expresiones para los valores de cada argumento, es necesario validar cada una:
-
-```python
-class FuncCall(Expression):
-    def __init__(self):
-        self.identifier: str = ""
-        self.args: list[Expression] = []
-
-    def validate(self, context: IContext) -> bool:
-        for expr in self.args:
-            if not expr.validate(context):
-                return False
-
-        return context.is_defined(self.identifier, len(self.args))
-```
-
-Veamos finalmente la implementación de los nodos `LetVar` y `DefFunc`. Es justamente en estos nodos donde se definen nuevas variables y funciones, por lo que en el momento de validar estos nodos, es donde realmente se calcula este "contexto" del que tanto hemos hablado. El caso de la definición de variable es el más sencillo, así que comenzaremos por ahí:
-
-```python
-class LetVar(Statement):
-    def __init__(self):
-        self.identifier: str = ""
-        self.expr: Expression = None
-
-    def validate(self, context: IContext) -> bool:
-        if not self.expr.validate(context):
-            return False
-
-        if not context.define(self.identifier):
-            return False
-
-        return True
-```
-
-El caso de la definición de función es mucho más interesante. Por un lado es necesario validar que no exista una función con el mismo nombre y la misma cantidad de argumentos, lo que es sencillo. Por otro lado, es necesario validar recursivamente el cuerpo de la función. El problema aquí es que en el cuerpo de la función permitimos no solo usar las variables definidas globalmente, sino además *los argumentos* de la propia función. Es decir, durante la validación del cuerpo de la función, existen unas variables "especiales", que son justamente los argumentos, cuyos nombres sí pueden coincidir con los nombres de variables definidas anteriormente, pero no entre sí.
-
-Una solución rápida a este problema consiste en simplemente definir los argumentos cuyos identificadores sean nuevos (es decir, que no coincidan con una variable global), y al final de la validación, "des-definir" estos argumentos. Por un lado, esto implica adicionar un mecanismo para "des-definir", que es una operación que realmente no tiene un significado real en nuestra semántica. Además, es necesario llevar la cuenta de cuáles fueron los argumentos que se adicionaron al contexto para quitar solamente esos. Pero más importante que todos esos motivos, es el hecho de aunque un argumento tiene el mismo nombre de una variable en realidad es una variable distinta. Como ahora no estamos almacenando en el contexto nada adicional asociado a las variables, realmente esto no importa. Pero en el momento en que para cada variable querramos almacenar algo adicional, tenemos que hacer esta distinción. Por ejemplo, en algún momento vamos a querer ejecutar nuestro programa, y tendremos que asociar a cada variable y argumento un valor numérico concreto.
-
-Una solución mucho más elegante y extensible es introduciendo un nuevo concepto que llamaremos **ámbito** (*scope* en inglés). De manera general, un ámbito es una región de un programa donde están definidos ciertos símbolos (variables, funciones, etc.). Definimos entonces que entre ámbitos distintos puede haber coincidencias de nombres de símbolos, pero dentro del mismo ámbito no. Por ejemplo, podemos tener un ámbito distinto para cada función (básicamente una instancia de `IContext` distinta), y de esta forma nunca tendremos que preocuparnos por la colisión de nombres entre argumentos en diferentes funciones.
-
-Ahora, el otro problema a resolver, es que en el cuerpo de una función sí pueden aparecer referencias a variables definidas fuera de la función. De modo que nos sirve simplemente crear un nuevo `IContext` vacío y definir todos los argumentos ahí. Necesitamos que este `IContext` pueda resolver no solo lo que tiene definido explícitamente, sino todo aquello definido "afuera". Decimos entonces que este nuevo ámbito es "hijo" del ámbito global, de modo que puede sobre-escribir algunos símbolos, pero sigue teniendo acceso a todo lo definido anteriormente.
-
-En el caso actual solamente vamos a tener un ámbito global, y luego un ámbito por cada función; pero en lenguajes más complejos, es posible definir tantos ámbitos anidados como se desee (por ejemplo, en C# cada instrucción **for** crea un nuevo ámbito más interno). De modo que en general podemos pensar en los ámbitos también como una estructura árborea, donde existe un ámbito global, y luego se van creando ámbitos "hijo" según sea necesario. Este patrón de diseño es muy común en la mayoría de los lenguajes de programación existentes, por lo que vale la pena presentarlo aquí. Desde el punto de vista de diseño, simplemente necesitamos adicionar un método a nuestra **interface**:
-
-```python
-class IContext(ABC):
-    @abstractmethod
-    def is_defined(self, variable: str) -> bool:
-        ...
-
-    @abstractmethod
-    def is_defined(self, function: str, args: int) -> bool:
-        ...
-
-    @abstractmethod
-    def define(self, variable: str) -> bool:
-        ...
-
-    @abstractmethod
-    def define(self, function: str, args: list[str]) -> bool:
-        ...
-
-    @abstractmethod
-    def create_child_context(self) -> "IContext":
-        ...
-```
-
-Sin embargo, desde el punto de implementación, ahora los métodos `IsDefined` deben modificarse para buscar no solo en el diccionario de símbolos del ámbito actual, sino recursivamente en el ámbito padre. Aunque esta implementación es sencilla, no es del todo trivial, por lo que vamos a mostrar una posible solución:
+Veamos la implementación del contexto con ámbitos:
 
 ```python
 class Context(IContext):
     def __init__(self, parent: "Context" = None):
         self.parent = parent
         self.variables: set[str] = set()
-        self.functions: dict[str, list[str]] = {}
+        self.functions: dict[str, set[int]] = {}
 
     def is_defined(self, variable: str) -> bool:
-        return variable in self.variables or (
-            self.parent is not None and self.parent.is_defined(variable)
-        )
-
-    def is_defined(self, function: str, args: int) -> bool:
-        if function in self.functions and len(self.functions[function]) == args:
-            return True
-        return self.parent is not None and self.parent.is_defined(function, args)
-
-    def define(self, variable: str) -> bool:
         if variable in self.variables:
+            return True
+        if self.parent:
+            return self.parent.is_defined(variable)
+        return False
+
+    def is_function(self, name: str, param_count: int) -> bool:
+        if name in self.functions and param_count in self.functions[name]:
+            return True
+        if self.parent:
+            return self.parent.is_function(name, param_count)
+        return False
+
+    def define_variable(self, name: str) -> bool:
+        if name in self.variables:
             return False
-        self.variables.add(variable)
+        self.variables.add(name)
         return True
 
-    def define(self, function: str, args: list[str]) -> bool:
-        if function in self.functions and len(self.functions[function]) == len(args):
+    def define_function(self, name: str, param_count: int) -> bool:
+        if name not in self.functions:
+            self.functions[name] = set()
+        if param_count in self.functions[name]:
             return False
-        self.functions[function] = args
+        self.functions[name].add(param_count)
         return True
 
     def create_child_context(self) -> "Context":
         return Context(parent=self)
 ```
 
-Nuestra implementación de contexto nos garantiza que no es posible definir la misma variable o la misma función (con igual cantidad de argumentos) en un mismo contexto, pero sí nos permite sobreescribir los símbolos existentes en el contexto padre. Varios autores llaman a esta estructura de datos **tabla de símbolos**, ya que almacena todos los símbolos definidos en el programa. Nosotros le llamamos **contexto**, pues consideramos que es un nombre más general que da la idea de que en esta estructura se almacena la información dependiente del contexto que es útil para cada elemento semántico del programa.
-
-Haciendo uso de esta estructura, podemos entonces finalmente implementar la validación del nodo `DefFunc`:
-
-```python
-class DefFunc(Expression):
-    def __init__(self):
-        self.identifier: str = ""
-        self.args: list[str] = []
-        self.body: Expression = None
-
-    def validate(self, context: IContext) -> bool:
-        inner_context = context.create_child_context()
-
-        for arg in self.args:
-            inner_context.define(arg)
-
-        if not self.body.validate(inner_context):
-            return False
-
-        if not context.define(self.identifier, self.args):
-            return False
-
-        return True
-```
-
-En este punto, ya tenemos toda la semántica de nuestro lenguaje validada, y solamente quedaría el problema de realmente ejecutar las instrucciones existentes. Siguiendo el mismo enfoque visto hasta ahora, podemos pensar en una solución que vaya recursivamente evaluando cada expresión, y almacenando en una especie de "contexto de ejecución" los valores de las expresiones definidas hasta el momento. Dado que no es posible redefinir variables, es totalmente válido calcular el valor de una variable tan pronto como se define, y almacenarlo. Para el caso de las funciones, lo más conveniente es almacenar directamente la expresión que se refiere al cuerpo de la función, para poder ejecutarla cuando sea necesario. En ese caso, un problema interesante de resolver es qué los argumentos de la función se definen en el nodo `DefFunc`, pero los valores que tendrán realmente solo se conocen en algún nodo `FuncCall`. Por lo tanto, en cada invocación, es necesario poder acceder al nodo `DefFunc` correspondiente para poder asignar los valores concretos que en esa invocación serán usados. Dejamos como sugerencia intentar implementar este mecanismo de evaluación.
+Nuestra implementación de contexto nos garantiza que no es posible definir la misma variable o la misma función (con igual cantidad de argumentos) en un mismo ámbito, pero sí nos permite sobreescribir símbolos en ámbitos hijos. Varios autores llaman a esta estructura **tabla de símbolos**. Nosotros le llamamos **contexto**, pues da la idea de que en esta estructura se almacena la información dependiente del contexto para cada elemento semántico del programa.
