@@ -34,6 +34,13 @@ cd slides && quarto render 00-intro.qmd --to revealjs    # HTML slides
 cd slides && quarto render 00-intro.qmd --to pdf         # PDF
 ```
 
+### Publishing to GitHub Pages
+```bash
+make publish           # Publish book and slides to gh-pages
+make publish-book     # Publish book only
+make publish-slides   # Publish slides only
+```
+
 ### Clean
 ```bash
 make clean          # Remove build artifacts
