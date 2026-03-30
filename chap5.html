@@ -1,0 +1,1322 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.30">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>6&nbsp; — – Introducción a la Construcción de Compiladores</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./chap6.html" rel="next">
+<link href="./chap4.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-de070a7b0ab54f8780927367ac907214.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-364982630eef5352dd1537128a8ed5cb.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./chap5.html"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">—</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Introducción a la Construcción de Compiladores</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">—</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chap1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">—</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chap2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">—</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chap3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">—</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chap4.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">—</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chap5.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">—</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chap6.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">—</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chap7.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">—</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chap8.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">—</span></span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#setup" id="toc-setup" class="nav-link active" data-scroll-target="#setup"><span class="header-section-number">7</span> Setup</a></li>
+  <li><a href="#gramáticas-atributadas" id="toc-gramáticas-atributadas" class="nav-link" data-scroll-target="#gramáticas-atributadas"><span class="header-section-number">8</span> Gramáticas Atributadas</a>
+  <ul class="collapse">
+  <li><a href="#construyendo-un-ast" id="toc-construyendo-un-ast" class="nav-link" data-scroll-target="#construyendo-un-ast"><span class="header-section-number">8.1</span> Construyendo un AST</a></li>
+  <li><a href="#reglas-y-atributos-semánticos" id="toc-reglas-y-atributos-semánticos" class="nav-link" data-scroll-target="#reglas-y-atributos-semánticos"><span class="header-section-number">8.2</span> Reglas y atributos semánticos</a></li>
+  <li><a href="#resolviendo-dependencias-del-contexto" id="toc-resolviendo-dependencias-del-contexto" class="nav-link" data-scroll-target="#resolviendo-dependencias-del-contexto"><span class="header-section-number">8.3</span> Resolviendo dependencias del contexto</a></li>
+  <li><a href="#computando-el-valor-de-los-atributos" id="toc-computando-el-valor-de-los-atributos" class="nav-link" data-scroll-target="#computando-el-valor-de-los-atributos"><span class="header-section-number">8.4</span> Computando el valor de los atributos</a></li>
+  <li><a href="#evaluando-atributos-durante-el-proceso-de-parsing-descendente" id="toc-evaluando-atributos-durante-el-proceso-de-parsing-descendente" class="nav-link" data-scroll-target="#evaluando-atributos-durante-el-proceso-de-parsing-descendente"><span class="header-section-number">8.5</span> Evaluando atributos durante el proceso de <em>parsing</em> descendente</a></li>
+  <li><a href="#evaluando-atributos-durante-el-proceso-de-parsing-ascendente" id="toc-evaluando-atributos-durante-el-proceso-de-parsing-ascendente" class="nav-link" data-scroll-target="#evaluando-atributos-durante-el-proceso-de-parsing-ascendente"><span class="header-section-number">8.6</span> Evaluando atributos durante el proceso de <em>parsing</em> ascendente</a></li>
+  <li><a href="#el-proceso-de-parsing-completo" id="toc-el-proceso-de-parsing-completo" class="nav-link" data-scroll-target="#el-proceso-de-parsing-completo"><span class="header-section-number">8.7</span> El proceso de <em>parsing</em> completo</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">—</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="setup" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> Setup</h1>
+<div id="2bb8b07c" class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sys</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>sys.path.append(os.path.abspath(os.curdir))</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> source.trees <span class="im">import</span> Tree</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> source.diagrams <span class="im">import</span> Pipeline, Lexer</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="gramáticas-atributadas" class="level1" data-number="8">
+<h1 data-number="8"><span class="header-section-number">8</span> Gramáticas Atributadas</h1>
+<p>Hasta el momento hemos visto como obtener un árbol de derivación de un lenguaje, y luego hemos presentado el árbol de sintaxis abstracta como una descripción más cómoda para realizar análisis semántico. Sin embargo, todavía no tenemos un mecanismo para construir un árbol de sintaxis abstracta a partir de un árbol de derivación. En principio, podemos pensar en estrategias <em>ad-hoc</em>, y para cada gramática particular escribir un algoritmo que construye el AST. De forma general estos algoritmos serán estrategias recursivas que irán recorriendo el árbol de derivación y computando fragmentos del AST a partir de los fragmentos obtenidos en los nodos hijos. En este capítulo veremos un esquema formal para describir esta clase de algoritmos, que además nos permitirá resolver varios problemas dependientes del contexto de forma elegante y sencilla.</p>
+<section id="construyendo-un-ast" class="level2" data-number="8.1">
+<h2 data-number="8.1" class="anchored" data-anchor-id="construyendo-un-ast"><span class="header-section-number">8.1</span> Construyendo un AST</h2>
+<p>Empecemos por mostrar, de forma intuitiva, como construir un AST para un árbol de derivación de una gramática conocida. Usaremos la gramática de expresiones aritméticas tan gastada:</p>
+<pre><code>E -&gt; E + T
+   | E - T
+   | T
+
+T -&gt; T * F
+   | T / F
+   | F
+
+F -&gt; ( E )
+   | i</code></pre>
+<p>Una posible jerarquía para el AST de esta gramática es la siguiente:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode cs code-with-copy"><code class="sourceCode cs"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">enum</span> Op <span class="op">{</span> Add<span class="op">,</span> Sub<span class="op">,</span> Mult<span class="op">,</span> Div <span class="op">}</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">abstract</span> <span class="kw">class</span> Expression <span class="op">:</span> <span class="op">{</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> BinaryExpr <span class="op">:</span> Expression <span class="op">{</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> Op Operator<span class="op">;</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> Expression Left<span class="op">;</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> Expression Right</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> Number <span class="op">:</span> Expression <span class="op">{</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">float</span> Value<span class="op">;</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Supongamos entonces que tenemos un árbol de derivación para una cadena particular. Recordemos que un árbol de derivación es una estructura donde en cada nodo hay un símbolo, y los hijos de dicho nodo coinciden exactamente con los símbolos de la parte derecha de la producción aplicada. Una posible definición de un árbol de derivación para esta gramática particular sería:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode cs code-with-copy"><code class="sourceCode cs"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">enum</span> Symbol <span class="op">{</span> E<span class="op">,</span> T<span class="op">,</span> add<span class="op">,</span> sub<span class="op">,</span> mult<span class="op">,</span> div<span class="op">,</span> i<span class="op">,</span> left<span class="op">,</span> right <span class="op">}</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> Node <span class="op">{</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> Symbol Symbol<span class="op">;</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> List<span class="op">&lt;</span>Node<span class="op">&gt;</span> Children <span class="op">=</span> <span class="kw">new</span> <span class="op">...</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Supongamos entonces que tenemos un algoritmo de parsing que nos devuelve este árbol de derivación (LR en este caso, dado la gramática que hemos definido). Queremos entonces adicionar un método <code>GetAST()</code> en la clase <code>Node</code> que nos devuelve un objeto de tipo <code>Expression</code>.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode cs code-with-copy"><code class="sourceCode cs"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> Node <span class="op">{</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">// ...</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> Expression <span class="fu">GetAST</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>        <span class="co">// ...</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>De forma general hay 3 patrones distintos en la gramática que nos generan nodos semánticamente distintos en el árbol de derivación:</p>
+<ul>
+<li>las producciones que derivan en una expresión binaria;</li>
+<li>las producciones que derivan en un solo no-terminal, incluyendo <code>F -&gt; ( E )</code>; y</li>
+<li>el símbolo <code>i</code> que es el único terminal con una función semántica asociada.</li>
+</ul>
+<p>Cada uno de estos tipos de producciones genera un nodo particular del AST. Por lo tanto, nuestro código consiste en identificar en qué caso nos encontrarmos, y construir el nodo correspondiente.</p>
+<p>Si la producción es de la forma <span class="math inline">\(X \to Y o Z\)</span>, donde <span class="math inline">\(X\)</span>, <span class="math inline">\(Y\)</span> y <span class="math inline">\(Z\)</span> son símbolos y <span class="math inline">\(o\)</span> es un operador, creamos un nuevo nodo <code>BinaryExpr</code> con el operador adecuado, y los hijos se convierten recursivamente en las expresiones izquierda y derecha:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode cs code-with-copy"><code class="sourceCode cs"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> Expression <span class="fu">GetAST</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">// X -&gt; Y o Z</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">if</span> <span class="op">(</span>Children<span class="op">.</span><span class="fu">Count</span> <span class="op">==</span> <span class="dv">3</span> <span class="op">&amp;&amp;</span> Children<span class="op">[</span><span class="dv">1</span><span class="op">].</span><span class="fu">Symbol</span> <span class="op">&gt;=</span> <span class="dv">2</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>        <span class="kw">return</span> <span class="kw">new</span> <span class="fu">BinaryExpr</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>            Left  <span class="op">=</span> Children<span class="op">[</span><span class="dv">0</span><span class="op">].</span><span class="fu">GetAST</span><span class="op">(),</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>            Op    <span class="op">=</span> <span class="fu">GetOperator</span><span class="op">(</span>Children<span class="op">[</span><span class="dv">1</span><span class="op">]),</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>            Right <span class="op">=</span> Children<span class="op">[</span><span class="dv">2</span><span class="op">].</span><span class="fu">GetAST</span><span class="op">()</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>        <span class="op">};</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Si la producción es de la forma <span class="math inline">\(X \to Y\)</span>, simplemente devolvemos la expresión hija. Notemos que en este caso el resultado que se produce es una “compactación” del árbol de derivación, eliminando las producciones de un solo símbolo:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode cs code-with-copy"><code class="sourceCode cs"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> Expression <span class="fu">GetAST</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">// ...</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">// X -&gt; Y</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">else</span> <span class="kw">if</span> <span class="op">(</span>Children<span class="op">.</span><span class="fu">Count</span> <span class="op">==</span> <span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>        <span class="kw">return</span> Children<span class="op">[</span><span class="dv">0</span><span class="op">].</span><span class="fu">GetAST</span><span class="op">();</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Si la producción es particularmente <code>F -&gt; ( E )</code> también devolvemos la expresión hija:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode cs code-with-copy"><code class="sourceCode cs"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> Expression <span class="fu">GetAST</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">// ...</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">// F -&gt; ( E )</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">else</span> <span class="kw">if</span> <span class="op">(</span>Children<span class="op">.</span><span class="fu">Count</span> <span class="op">==</span> <span class="dv">3</span> <span class="op">&amp;&amp;</span> Children<span class="op">[</span><span class="dv">1</span><span class="op">].</span><span class="fu">Symbol</span> <span class="op">==</span> Symbol<span class="op">.</span><span class="fu">E</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>        <span class="kw">return</span> Children<span class="op">[</span><span class="dv">1</span><span class="op">].</span><span class="fu">GetAST</span><span class="op">();</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Finalmente, cuando el nodo actual del árbol de derivación es una hoja, tiene que ser un nodo <code>i</code> y se crea la expresión unaria <code>Number</code>:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode cs code-with-copy"><code class="sourceCode cs"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> Expression <span class="fu">GetAST</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">// ...</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">// i</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">else</span> <span class="kw">if</span> <span class="op">(</span>Children<span class="op">.</span><span class="fu">Count</span> <span class="op">==</span> <span class="dv">0</span> <span class="op">&amp;&amp;</span> Symbol <span class="op">==</span> Symbol<span class="op">.</span><span class="fu">i</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>        <span class="kw">return</span> <span class="kw">new</span> <span class="fu">Number</span><span class="op">()</span> <span class="op">{</span> Value <span class="op">=</span> <span class="co">/* valor del token */</span> <span class="op">};</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">throw</span> <span class="kw">new</span> <span class="fu">InvalidParseTreeException</span><span class="op">(</span><span class="st">"xP"</span><span class="op">);</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="reglas-y-atributos-semánticos" class="level2" data-number="8.2">
+<h2 data-number="8.2" class="anchored" data-anchor-id="reglas-y-atributos-semánticos"><span class="header-section-number">8.2</span> Reglas y atributos semánticos</h2>
+<p>Veamos nuevamente la implementación que hemos hecho para nuestra gramática de expresiones. De forma general, lo que hemos hecho ha sido intentar identificar qué producción concreta está representada en cada nodo, y según el caso, aplicar una regla que nos permite construir el fragmento de AST. Vamos a intentar generalizar este concepto de asociar reglas a producciones. Para ello, adicionaremos a cada símbolo de la gramática un conjunto de atributos, y a cada producción un conjunto de reglas que describen cómo se computan dichos atributos. Llamaremos a estas gramáticas: <strong>gramáticas atributadas</strong>:</p>
+<p>Una <strong>gramática atributada</strong> es una tupla <span class="math inline">\(&lt;G,A,R&gt;\)</span>, donde:</p>
+<ul>
+<li><span class="math inline">\(G = &lt;S,P,N,T&gt;\)</span> es una gramática libre del contexto,</li>
+<li><span class="math inline">\(A\)</span> es un conjunto de atributos de la forma <span class="math inline">\(X \cdot a\)</span> donde <span class="math inline">\(X \in N \cup T\)</span> y <span class="math inline">\(a\)</span> es un identificador único entre todos los atributos del mismo símbolo, y</li>
+<li><span class="math inline">\(R\)</span> es un conjunto de reglas de la forma <span class="math inline">\(&lt;p_i, r_i&gt;\)</span> donde <span class="math inline">\(p_i \in P\)</span> es una producción <span class="math inline">\(X \to Y_1, \ldots, Y_n\)</span>, y <span class="math inline">\(r_i\)</span> es una regla de la forma:
+<ol type="1">
+<li><span class="math inline">\(X \cdot a = f(Y_1 \cdot a_1, \ldots, Y_n \cdot a_n)\)</span>, o</li>
+<li><span class="math inline">\(Y_i \cdot a = f(X \cdot a_0, Y_1 \cdot a_1, \ldots, Y_n \cdot a_n)\)</span>.</li>
+</ol>
+En el primer caso decimos que <span class="math inline">\(a\)</span> es un <strong>atributo sintetizado</strong>, y en el segundo caso, un <strong>atributo heredado</strong>.</li>
+</ul>
+<p>Hablemos ahora sobre la notación. Aunque en la definición formal hemos especificado los atributos y reglas como elementos adicionales a la gramática, desde el punto de vista notacional es conveniente especificar las reglas y los atributos directamente asociados a la producción que corresponden:</p>
+<pre><code>X -&gt; YZ { X.a = f(Y.a, Z.a) }</code></pre>
+<p>De este modo, tenemos una notación compacta, donde se puede reconocer a simple vista la gramática, los atributos, y las reglas. Por convenio llamamos a estas reglas, <strong>reglas semánticas</strong>, pues nos permiten definir de cierta forma la <em>función semántica</em> de cada producción. Consideraremos que los terminales tienen un conjunto de atributos cuyos valores son suministrados por el <em>lexer</em>. Cuando tenemos más de un símbolo con el mismo nombre, pondremos índices, por ejemplo:</p>
+<p><span class="math inline">\(X \to cX \{ X_0 \cdot a = f(X_1 \cdot a_1, c \cdot a_2 ) \}\)</span></p>
+<p>En realidad es necesario definir algunas restricciones adicionales sobre las reglas para que una gramática atributada sea consistente. En particular, necesitamos que no existan definiciones contradictorias de los atributos (es decir, no haya más de una regla que defina el mismo atributo en la misma producción, y que todo atributo sea o bien sintetizado, o bien heredado), y que todos los atributos estén bien definidos en cualquier árbol de derivación. A este último problema nos dedicaremos más adelante cuando nos preocupemos por la evaluación de los atributos. De momento simplemente digamos que necesitamos definir las reglas de forma que sean consistentes y completas.</p>
+<p>En esta definición no hemos especificado de qué naturaleza son los atributos o las reglas. De forma general, asumimos que los atributos son de tipos que sean convenientes computacionalmente: numéricos, conjuntos, diccionarios, listas, o incluso tipos complejos en un entorno orientado a objetos. Las reglas las consideraremos en general como funciones computables en algún sistema de cómputo. Cuando solo nos interese definir formalmente un lenguaje, emplearemos una notación matemática y funciones puras (sin efectos colaterales).</p>
+<p>Veamos entonces cómo redefinir la gramática de expresiones vista anteriormente para computar el AST. Usaremos la misma notación para definir árboles que hemos visto en la sección de <em>parsing</em> LR: un nodo de tipo <span class="math inline">\(T\)</span> cuyos hijos son los árboles <span class="math inline">\(t_1, \ldots, t_n\)</span> lo representaremos como <span class="math inline">\(T(t_1, \ldots, t_n)\)</span>. Es decir, representaremos un árbol según el <strong>recorrido en pre-orden</strong> de sus nodos. Particularmente en esta gramática, usaremos las siguiente notación:</p>
+<ul>
+<li>Un nodo terminal de tipo <code>Number</code> lo representaremos mediante el símbolo <code>n</code>.</li>
+<li>Un nodo no-terminal de tipo <code>BinaryExpr</code> lo representaremos según el tipo del operador, como <code>exp(op, e1, e2)</code></li>
+</ul>
+<p>Definiremos un atributo de nombre <code>ast</code> en cada símbolo, que almacenará el árbol de sintaxis abstracta. La gramática nos quedaría entonces:</p>
+<pre><code>E -&gt; E + T { E0.ast = exp(+, E1.ast, T.ast) }
+   | E - T { E0.ast = exp(-, E1.ast, T.ast) }
+   | T     { E0.ast = T.ast }
+
+T -&gt; T * F { T0.ast = exp(*, T1.ast, F.ast) }
+   | T / F { T0.ast = exp(/, T1.ast, F.ast) }
+   | F     { T0.ast = F.ast }
+
+F -&gt; ( E ) {  F.ast = E.ast }
+   | i     {  F.ast = n }</code></pre>
+<p>Puede parecer que no hemos logrado mucho, más allá de formalizar en una notación una idea que ya sabíamos manejar. Y de alguna manera es cierto, lo que hemos hecho ha sido simplemente formalizar en una notación la idea intuitiva de cómo construir a partir de un árbol de derivación una representación más conveniente. La ventaja de tener esta notación formalizada, además de permitirnos razonar y comunicarnos al respecto, es que hemos simplificado considerablemente la cantidad de “código” a escribir para construir el AST. Hemos quitado del medio toda la sintaxis superflua de definición de métodos, parámetros, variables temporales, etc, y solamente hemos puesto en cada producción exactamente la “línea de código” que iría dentro del <code>if</code> correspondiente. De hecho, esta notación es tan conveniente, que la mayoría de los generadores de <em>parsers</em> usan una sintaxis similar para describir justamente cómo se construye el AST, y generan todo el engranaje de métodos recursivos, variables, paso de parámetros y demás que son necesarios para hacer funcionar este mecanismo.</p>
+</section>
+<section id="resolviendo-dependencias-del-contexto" class="level2" data-number="8.3">
+<h2 data-number="8.3" class="anchored" data-anchor-id="resolviendo-dependencias-del-contexto"><span class="header-section-number">8.3</span> Resolviendo dependencias del contexto</h2>
+<p>En nuestra definición de gramática atributada no hemos dicho nada del AST. Aunque en la práctica usamos los atributos la mayoría de las veces para construir el AST, y luego resolver los problemas dependientes del contexto sobre el AST, en ocasiones es conveniente resolver algunos de estos problemas directamente empleando el mecanismo de gramática atributada. Esto tiene sentido sobre todo si estamos construyendo lenguajes pequeños, con pocas reglas semánticas y no queremos diseñar una jerarquía de AST independiente.</p>
+<p>Por ejemplo, tomemos el lenguaje dependiente del contexto canónico <span class="math inline">\(L = a^n b^n c^n\)</span>, y veamos como podemos describir mediante una gramática atributada los predicados semánticos que definen este lenguaje. Comenzamos por la gramática:</p>
+<pre><code>S -&gt; ABC
+A -&gt; aA | epsilon
+B -&gt; bB | epsilon
+C -&gt; cC | epsilon</code></pre>
+<p>Como convenio, vamos a definir un atributos <code>S.ok</code> cuyo valor será <code>true</code> si y solo si la cadena reconocida pertenece al lenguaje. En cada no terminal vamos a definir un atributo <code>cnt</code> que almacenará la cantidad de veces que este no terminal ha derivado en el terminal correspondiente. De modo que en cada producción de <code>A</code>, <code>B</code> o <code>C</code>, iremos “contando” la cantidad de <code>a</code>, <code>b</code> o <code>c</code> que se van produciendo, y luego en <code>S</code> determinaremos si la cadena es correcta. Vamos a usar para la definición de las reglas una notación más parecida a un lenguaje de programación convencional:</p>
+<pre><code>S -&gt; ABC       {   S.ok = (A.cnt == B.cnt &amp;&amp; B.cnt == C.cnt) }
+A -&gt; aA        { A0.cnt = 1 + A1.cnt }
+   | epsilon   {  A.cnt = 0 }
+B -&gt; bB        { B0.cnt = 1 + B1.cnt }
+   | epsilon   {  B.cnt = 0 }
+C -&gt; cC        { C0.cnt = 1 + C1.cnt }
+   | epsilon   {  C.cnt = 0 }</code></pre>
+<p>En este punto hemos definido una gramática con atributos que reconoce todas las cadenas de la forma <span class="math inline">\(a^*b^*c^*\)</span>, pero para las cuales el valor del atributo <code>S.ok</code> es <code>true</code> solamente en las cadenas exactamente de la forma <span class="math inline">\(a^n b^n c^n\)</span>. La forma de resolverlo ha sido definir una gramática libre del contexto, y hemos adicionado la dependencia del contexto en forma de reglas semánticas. Si observamos la gramática definida, notaremos que nos hemos conformado con reconocer solamente la parte regular del lenguaje, y hemos dejado todo el resto del problema a las reglas semánticas. Un enfoque alternativo consiste en intentar resolver en el análisis sintáctico tanto como sea posible.</p>
+<p>Por ejemplo, podemos reconocer <span class="math inline">\(a^n b^n c^*\)</span>, en la gramática, y luego solamente verificar la correspondencia entre la cantidad de <code>b</code> y la cantidad de <code>c</code>. Comencemos por definir una gramática libre del contexto para esto:</p>
+<pre><code>S -&gt; XC
+X -&gt; aXb | epsilon
+C -&gt; cC  | epsilon</code></pre>
+<p>Almacenaremos entonces en <code>X.cnt</code> la cantidad de <code>b</code> que aparecen, y luego lo compararemos con <code>C.cnt</code>:</p>
+<pre><code>S -&gt; XC       {   S.ok = (X.cnt == B.cnt) }
+X -&gt; aXb      { X0.cnt = 1 + X1.cnt }
+   | epsilon  {  X.cnt = 0 }
+C -&gt; cC       { C0.cnt = 1 + C1.cnt }
+   | epsilon  {  C.cnt = 0 }</code></pre>
+<p>La pregunta es por supuesto, entre estas dos alternativas, cuál es mejor. Y como casi siempre la respuesta será que depende de qué queremos lograr. Por un lado, una gramática más simple es más fácil de leer y entender, y (en ocasiones) más fácil de parsear. En ese caso la mayor carga queda en la fase semántica, que generalmente es más compleja y tiene un costo computacional mayor. Por otro lado, si la gramática es más compleja, pero captura una mayor cantidad de propiedades del lenguaje, es posible reconocer una mayor cantidad de errores en la fase sintáctica, y probablemente se obtenga un compilador más eficiente. Sin embargo, estas gramáticas son más complejas, y por tanto más difíciles de entender.</p>
+<p>Otro factor a tener en cuenta, desde el punto de vista de la ingeniería de software, es la <em>mantenibilidad</em> del compilador. En general, es más difícil hacer cambios en las primeras fases, pues es más probable que un cambio en la gramática o en el <em>lexer</em> provoquen una disrupción en las fases siguientes. En cambio, por la propia naturaleza de la programación orientada a objetos, con un buen diseño es posible lograr que los cambios en la fase semántica sean lo menos disruptores posibles. Por este motivo, es conveniente definir bien temprano una gramática lo más sencilla posible que englobe todas las propiedades sintácticas del lenguaje en cuestión, y dejar para la fase semántica toda propiedad cuyo significado o implementación tenga una alta probabilidad de variar.</p>
+</section>
+<section id="computando-el-valor-de-los-atributos" class="level2" data-number="8.4">
+<h2 data-number="8.4" class="anchored" data-anchor-id="computando-el-valor-de-los-atributos"><span class="header-section-number">8.4</span> Computando el valor de los atributos</h2>
+<p>Una vez definida una gramática atributada, nos queda pendiente el problema de cómo evaluar las reglas semánticas para asignar el valor correcto a los atributos. Como es de esperar, esta evaluación la vamos a realizar una vez construido el árbol de derivación de una cadena particular. De forma general, podemos tener en cualquier nodo tanto atributos sintetizados como atributos heredados. Necesitamos entonces encontrar un orden para evaluar los atributos que garantice que siempre sea posible evaluar las reglas correspondientes. Para esto, necesitamos saber las <em>dependencias</em> de cada atributo en una regla particular, es decir, cuales son los otros atributos que es necesario haber evaluado antes. Intuitivamente, estas dependencias son justamente los atributos usados dentro de la función <span class="math inline">\(f\)</span> en la regla semántica.</p>
+<p>Tomemos entonces a modo de ejemplo la cadena <code>aabbcc</code> y veamos un árbol de derivación para la gramática atributada definida anteriormente:</p>
+<pre class="tree"><code>         S
+       / | \
+      A  B  C
+     /| / \ |\
+    a A b B c C
+     /|  /|  /|
+    a A b B c C
+      |   |   |
+      e   e   e</code></pre>
+<p>Vamos entonces a construir sobre este árbol de derivación un <em>grafo de dependencia</em> de los atributos asociados. Este grafo se construye de la siguiente forma:</p>
+<ul>
+<li>Los nodos son los atributos de cada símbolo en cada nodo del árbol de derivación</li>
+<li>Existe una arista dirigida entre un par de nodos <span class="math inline">\(v \to w\)</span> del grafo de dependencia, si los atributos correspondientes participan en una regla semántica definida en la producción asociada al nodo del árbol de derivación donde aparece <span class="math inline">\(w\)</span>, de la forma <span class="math inline">\(w = f(\ldots, v, \ldots)\)</span>. Es decir, si el atributo <span class="math inline">\(w\)</span> <em>depende</em> del atributo <span class="math inline">\(v\)</span>.</li>
+</ul>
+<p>Veamos entonces como quedaría el árbol anterior, una vez señaladas las dependencias entre los atributos. Para simplificar la notación, vamos a representar solamente las aristas del grafo de dependencias, y no las del árbol de derivación en sí.:</p>
+<pre><code>     --&gt;  S.ok  &lt;--
+     |     ^      |
+     |     |      |
+   A.cnt  B.cnt  C.cnt
+    ^       ^       ^
+    |       |       |
+ a A.cnt b B.cnt c C.cnt
+    ^       ^       ^
+    |       |       |
+ a A.cnt b B.cnt c C.cnt
+
+    e       e       e</code></pre>
+<p>La propiedad más interesante de este grafo de dependencias es que nos dice, en primer lugar, si existe una forma de evaluar los atributos, y en caso de ser posible, nos da un orden para la evaluación. Si existe algún ciclo en este grafo de dependencias, evidentemente no podremos evaluar los atributos que participan en el ciclo. Por lo tanto, decimos que la gramática es evaluable si y solo si el grafo de dependencias es acíclico, es decir, un DAG. En este caso, la evaluación se realiza siguiendo algún <em>orden topológico</em> del grafo de dependencia.</p>
+<p>En el caso anterior, nuestro grafo de dependencias es justamente un árbol, donde todas las aristas están orientadas de un hijo a un padre en el AST. Esto sucede cada vez que en una gramática todos los atributos son <em>sintetizados</em>. Evidentemente, en este caso es posible evaluar siempre los atributos de un nodo padre, una vez evaluados todos los atributos de los hijos. A este tipo de gramática les llamaremos <strong>gramáticas s-atributadas</strong> (la <em>s</em> viene de <em>sintetizado</em>). Este tipo de gramáticas son las más sencillas de evaluar, y también las más comunes. En general cuando estamos definiendo el AST nos saldrán casi siempre atributos sintetizados, pues como lo que queremos construir es un árbol, es natural que definamos los atributos en este orden. La buena noticia con las gramáticas s-atributadas, es que siempre es posible evaluar los atributos (en todo árbol de derivación), y esto siempre será con un recorrido en post-orden. Formalmente:</p>
+<blockquote class="blockquote">
+<p>Una gramática atributada es <strong>s-atributada</strong> si y solo si, para toda regla <span class="math inline">\(r_i\)</span> asociada a una producción <span class="math inline">\(X \to Y_1, \ldots, Y_n\)</span>, se cumple que <span class="math inline">\(r_i\)</span> es de la forma <span class="math inline">\(X \cdot a = f(Y_1 \cdot a_1, \ldots, Y_n \cdot a_n)\)</span>.</p>
+</blockquote>
+<p>Para evaluar los atributos en una gramática s-atributada, podemos seguir una estrategia como la siguiente. Asumiremos que durante la construcción del árbol de derivación, el <em>parser</em> introduce en cada nodo una lista de todas las reglas semánticas asociadas a dicha producción, y que los atributos están definidos en cada símbolo.</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode cs code-with-copy"><code class="sourceCode cs"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> Node <span class="op">{</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> Symbol Symbol<span class="op">;</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> List<span class="op">&lt;</span>Node<span class="op">&gt;</span> Children<span class="op">;</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> List<span class="op">&lt;</span>Rule<span class="op">&gt;</span> Rules<span class="op">;</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">EvaluateSynthesized</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>        <span class="kw">foreach</span><span class="op">(</span><span class="dt">var</span> node <span class="kw">in</span> Children<span class="op">)</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>            node<span class="op">.</span><span class="fu">EvaluateSynthesized</span><span class="op">();</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>        <span class="kw">foreach</span><span class="op">(</span><span class="dt">var</span> rule <span class="kw">in</span> Rules<span class="op">)</span></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>            rule<span class="op">.</span><span class="fu">evaluate</span><span class="op">(</span>Symbol<span class="op">,</span> Children<span class="op">);</span></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Veamos entonces otro caso un poco más general, donde también podemos decir de antemano que la gramática es evaluable. Este es el caso cuando todo atributo es, o bien sintetizado, o si es heredado, solo depende de atributos de símbolos que le anteceden en la producción. Es decir, si tenemos una regla <span class="math inline">\(Y_i \cdot a_i = f(X \cdot a, Y_1 \cdot a_1, \ldots, Y_{i-1} \cdot a_{i-1})\)</span>. A estas gramáticas las llamaremos <strong>gramáticas l-atributadas</strong> (donde <em>l</em> viene de <em>left</em>), ya que todo atributo depende solo de atributos que se evalúan antes en el pre-orden. En este caso, también podemos siempre evaluar la gramática haciendo un recorrido en profundidad, aunque es un poco más complicado que para el caso anterior. En cada llamado recursivo, primero evaluaremos los atributos heredados, pues solo dependen de atributos en los hermanos anteriores y el padre. Luego descendemos recursivamente en cada hijo, y al retornar, evaluamos los atributos sintetizados en el nodo actual. Formalizando:</p>
+<blockquote class="blockquote">
+<p>Una gramática atributada es <strong>l-atributada</strong> si y solo si toda regla <span class="math inline">\(r_i\)</span> asociada a una producción <span class="math inline">\(X \to Y_1, \ldots, Y_n\)</span> es de una de las siguientes formas: 1. <span class="math inline">\(X \cdot a = f(Y_1 \cdot a_1, \ldots, Y_n \cdot a_n)\)</span>, ó 2. <span class="math inline">\(Y_i \cdot a_i = f(X \cdot a, Y_1 \cdot a_1, \ldots, Y_{i-1} \cdot a_{i-1})\)</span>.</p>
+</blockquote>
+<p>Y un ejemplo de cómo evaluar los atributos, suponiendo que el <em>parser</em> es capaz de suministrar en par de listas separadas aquellas reglas que sintetizan atributos de las que los heredan. Supongamos que cada nodo recibe además una referencia al nodo padre en el árbol de derivación (para poder acceder a los hermanos). En el nodo raíz simplemente pasaremos <code>null</code> como padre:</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode cs code-with-copy"><code class="sourceCode cs"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> Node <span class="op">{</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> Symbol Symbol<span class="op">;</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> List<span class="op">&lt;</span>Node<span class="op">&gt;</span> Children<span class="op">;</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> List<span class="op">&lt;</span>Rule<span class="op">&gt;</span> SyntethicRules<span class="op">;</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> List<span class="op">&lt;</span>Rule<span class="op">&gt;</span> InheritedRules<span class="op">;</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="dt">void</span> <span class="fu">EvaluateInherited</span><span class="op">(</span>Node parent<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>        <span class="kw">foreach</span><span class="op">(</span><span class="dt">var</span> rule <span class="kw">in</span> InheritedRules<span class="op">)</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>            rule<span class="op">.</span><span class="fu">evaluate</span><span class="op">(</span>Symbol<span class="op">,</span> parent<span class="op">,</span> parent<span class="op">.</span><span class="fu">Children</span><span class="op">);</span></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>        <span class="kw">foreach</span><span class="op">(</span><span class="dt">var</span> node <span class="kw">in</span> Children<span class="op">)</span></span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>            node<span class="op">.</span><span class="fu">EvaluateInherited</span><span class="op">(</span><span class="kw">this</span><span class="op">);</span></span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>        <span class="kw">foreach</span><span class="op">(</span><span class="dt">var</span> rule <span class="kw">in</span> SyntheticRules<span class="op">)</span></span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>            rule<span class="op">.</span><span class="fu">evaluate</span><span class="op">(</span>Symbol<span class="op">,</span> Children<span class="op">);</span></span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="evaluando-atributos-durante-el-proceso-de-parsing-descendente" class="level2" data-number="8.5">
+<h2 data-number="8.5" class="anchored" data-anchor-id="evaluando-atributos-durante-el-proceso-de-parsing-descendente"><span class="header-section-number">8.5</span> Evaluando atributos durante el proceso de <em>parsing</em> descendente</h2>
+<p>Cabe preguntarnos entonces sino es posible evaluar las reglas semánticas a medida que se realiza el proceso de parsing. Intuitivamente, al menos para las gramáticas s-atributadas y l-atributadas esto debe ser posible, pues existe un orden claro de dependencia entre los atributos. Por supuesto, esto dependerá también del algoritmo de <em>parsing</em> empleado.</p>
+<p>Por ejemplo, para gramáticas LL, si estamos empleando un algoritmo recursivo descendente, el orden en que se construye el árbol de derivación es exactamente el mismo que el orden de evaluación de una gramática l-atributada. Tomemos como ejemplo la gramática LL(1) de expresiones aritméticas que hemos visto anteriormente:</p>
+<pre><code>E -&gt; T X
+T -&gt; i Y | ( E )
+X -&gt; + E | - E | epsilon
+Y -&gt; * T | / T | epsilon</code></pre>
+<p>Como hemos visto anteriormente, los árboles de derivación que salen de esta gramática son bastante complicados. Vamos a intentar escribir un conjunto de reglas semánticas que nos calculen directamente el valor de la expresión durante el proceso de parsing. El problema radica en que cuando tenemos la producción <code>E -&gt; T X</code>, no sabemos en este punto si la operación a realizar es una suma o una resta. Es solo cuando vemos la producción en que derivó <code>X</code> que podemos decidir que operación hacer. Sin embargo, en la producción <code>X -&gt; + E</code>, por ejemplo, ya no tenemos el valor de <code>T</code> disponible para hacer el cálculo. De modo que tenemos que “pasar” el valor de <code>T</code> a <code>X</code> en la producción <code>E -&gt; T X</code>, para que luego <code>X</code> pueda decidir que hacer con este valor.</p>
+<p>Vamos a definir entonces 3 atributos diferentes, de tipo numérico. En primer lugar, el atributo <code>i.val</code>, suministrado por el <em>lexer</em>, que contiene el valor numérico del token. Tendremos además los atributos <code>E.sval</code>, <code>T.sval</code>, <code>X.sval</code> y <code>Y.sval</code>, que son respectivamente los valores de las expresiones aritméticas representadas en cada caso. Los hemos llamado con el prefijo <code>s</code> justamente porque estos atributos serán <em>sintetizados</em>. Finalmente, vamos a tener los atributos <code>X.hval</code> y <code>Y.hval</code> que contendrán los valores de las expresiones a la izquierda de <code>X</code> o <code>Y</code> y son atributos <em>heredados</em>.</p>
+<p>Una vez definidos estos atributos, veamos algunas ideas sobre cómo computarlos. Algunos casos bases son fáciles, por ejemplo para <code>T -&gt; ( E )</code> simplemente tenemos que “subir” el valor de <code>E.sval</code> a <code>T.sval</code>. Por otro lado, tomemos por ejemplo la producción <code>E -&gt; T X</code>. Sabemos que en <code>T</code> tenemos un atributo sintetizado con el valor numérico de lo que sea que haya sido reconocido como <code>T</code> por ese lado. Sin embargo, aún no sabemos si sumarlo o restarlo con lo que resta. La estrategia en este caso será “pasar” este valor computado hasta el momento a <code>X</code> (por medio del atributo <code>X.hval</code>), y luego pedirle a <code>X</code> que compute el valor <code>X.sval</code> como la suma (o resta) del valor heredado de <code>T</code> y lo que sea que <code>X</code> en sí haya parseado. Es decir, primero “bajaremos” el valor de <code>T</code> hacia <code>X</code>, sumando o restando según el caso, hasta llegar a las hojas (donde <code>X -&gt; epsilon</code>). En este punto, lo que sea que tengamos acumulado lo “subiremos” hacia la raíz (por medio de <code>X.sval</code>).</p>
+<p>Veamos entonces toda la lista de reglas semánticas:</p>
+<pre><code>E -&gt; T X      { X.hval = T.sval, E.sval = X.sval }
+T -&gt; i Y      { Y.hval = i.val,  T.sval = Y.sval }
+   | ( E )    { T.sval = E.sval }
+X -&gt; + E      { X.sval = X.hval + E.sval }
+   | - E      { X.sval = X.hval - E.sval }
+   | epsilon  { X.sval = X.hval }
+Y -&gt; * T      { Y.sval = Y.hval * T.sval }
+   | / T      { Y.sval = Y.hval / T.sval }
+   | epsilon  { Y.sval = Y.hval }</code></pre>
+<p>Intentemos ahora parsear una cadena, a la vez que vamos evaluando los atributos. Vamos a representar por un lado la cadena que vamos parseando, y por otro lado la pila de “llamados” recursivos que se va formando con cada llamado del <em>parser</em> recursivo descedente asociado a esta gramática. En cada “llamado” recursivo reprsentaremos también el valor de cada atributo en la forma <code>S[attr=val]</code> (un <code>.</code> significa que el valor aún no ha sido calculado). Comenzamos por la cadena completa, y el llamado al símbolo <code>E</code>. Una advertencia para los débiles de espíritu, cualquiera que haya almorzado recientemente debería saltar al siguiente capítulo…</p>
+<pre><code>|i{2} * ( i{5} - i{3} )
+
+ E[sval=.]</code></pre>
+<p>En el primer paso, como <code>E</code> solo deriva en <code>T X</code>, no queda otra que llamar a <code>T</code>. Vamos a representar también el llamado a <code>X</code> para no olvidar que al retornar <code>T</code> debemos descender recursivamente por <code>X</code>.</p>
+<pre><code>|i{2} * ( i{5} - i{3} )
+
+ T[sval=.] , X[sval=.,hval=.]
+ E[sval=.]</code></pre>
+<p>Ahora, mirando el token <code>i</code> y los <span class="math inline">\(First\)</span> de cada producción, aplicamos <code>T -&gt; i Y</code>:</p>
+<pre><code>|i{2} * ( i{5} - i{3} )
+
+ i[val=.] , Y[sval=.,hval=.]
+ T[sval=.] , X[sval=.,hval=.]
+ E[sval=.]</code></pre>
+<p>Podemos entonces reconocer <code>i</code> y asociar el valor adecuado al atributo:</p>
+<pre><code> i{2}|* ( i{5} - i{3} )
+
+ i[val=2] , Y[sval=.,hval=.]
+ T[sval=.] , X[sval=.,hval=.]
+ E[sval=.]</code></pre>
+<p>Al retornar de <code>i</code> a <code>T</code>, como tenemos ya en <code>i</code> el valor asociado al token, aplicamos la regla semántica correspondiente a <code>Y</code>:</p>
+<pre><code> i{2}|* ( i{5} - i{3} )
+
+ Y[sval=.,hval=2]
+ T[sval=.] , X[sval=.,hval=.]
+ E[sval=.]</code></pre>
+<p>Procedemos entonces expandir el símbolo <code>Y</code>:</p>
+<pre><code> i{2}|* ( i{5} - i{3} )
+
+ *[] , T[sval=.]
+ Y[sval=.,hval=2]
+ T[sval=.] , X[sval=.,hval=.]
+ E[sval=.]</code></pre>
+<p>En este punto solo es necesario reconocer el token <code>*</code>, y luego descendemos recursivamente por <code>T</code>, pero esta vez por la producción <code>( E )</code>:</p>
+<pre><code> i{2} *|( i{5} - i{3} )
+
+ ([], E[sval=.], )[]
+ T[sval=.]
+ Y[sval=.,hval=2]
+ T[sval=.] , X[sval=.,hval=.]
+ E[sval=.]</code></pre>
+<p>Avanzamos el siguiente token:</p>
+<pre><code> i{2} * (|i{5} - i{3} )
+
+ E[sval=.], )[]
+ T[sval=.]
+ Y[sval=.,hval=2]
+ T[sval=.] , X[sval=.,hval=.]
+ E[sval=.]</code></pre>
+<p>Y ahora volvemos a descender recursivamente:</p>
+<pre><code> i{2} * (|i{5} - i{3} )
+
+ T[sval=.] , X[sval=.,hval=.]
+ E[sval=.], )[]
+ T[sval=.]
+ Y[sval=.,hval=2]
+ T[sval=.] , X[sval=.,hval=.]
+ E[sval=.]</code></pre>
+<p>Y luego:</p>
+<pre><code> i{2} * (|i{5} - i{3} )
+
+ i[val=.] , Y[sval=.,hval=.]
+ T[sval=.] , X[sval=.,hval=.]
+ E[sval=.], )[]
+ T[sval=.]
+ Y[sval=.,hval=2]
+ T[sval=.] , X[sval=.,hval=.]
+ E[sval=.]</code></pre>
+<p>Reconocemos <code>i</code>:</p>
+<pre><code> i{2} * ( i{5}|- i{3} )
+
+ i[val=5] , Y[sval=.,hval=.]
+ T[sval=.] , X[sval=.,hval=.]
+ E[sval=.], )[]
+ T[sval=.]
+ Y[sval=.,hval=2]
+ T[sval=.] , X[sval=.,hval=.]
+ E[sval=.]</code></pre>
+<p>Y retornamos recursivamente poniendo el valor de <code>i</code> en el atributo <code>hval</code> de Y:</p>
+<pre><code> i{2} * ( i{5}|- i{3} )
+
+ Y[sval=.,hval=5]
+ T[sval=.] , X[sval=.,hval=.]
+ E[sval=.], )[]
+ T[sval=.]
+ Y[sval=.,hval=2]
+ T[sval=.] , X[sval=.,hval=.]
+ E[sval=.]</code></pre>
+<p>Dado que <code>-</code> está en el <span class="math inline">\(Follow(Y)\)</span>, aplicamos <code>Y -&gt; epsilon</code>, y aquí veremos la magia de las gramáticas atributadas actuando, pues el valor de <code>hval</code> pasa a <code>sval</code> justo antes de retornar:</p>
+<pre><code> i{2} * ( i{5}|- i{3} )
+
+ Y[sval=5,hval=5]
+ T[sval=.] , X[sval=.,hval=.]
+ E[sval=.], )[]
+ T[sval=.]
+ Y[sval=.,hval=2]
+ T[sval=.] , X[sval=.,hval=.]
+ E[sval=.]</code></pre>
+<p>Y ahora al retornar aplicamos la regla semántica en <code>X</code> que “sube” el valor de <code>Y.sval</code>:</p>
+<pre><code> i{2} * ( i{5}|- i{3} )
+
+ T[sval=5] , X[sval=.,hval=.]
+ E[sval=.], )[]
+ T[sval=.]
+ Y[sval=.,hval=2]
+ T[sval=.] , X[sval=.,hval=.]
+ E[sval=.]</code></pre>
+<p>Una vez parseado <code>T</code>, antes de retornar, pasamos su valor a <code>hval</code> de <code>X</code>:</p>
+<pre><code> i{2} * ( i{5}|- i{3} )
+
+ X[sval=.,hval=5]
+ E[sval=.], )[]
+ T[sval=.]
+ Y[sval=.,hval=2]
+ T[sval=.] , X[sval=.,hval=.]
+ E[sval=.]</code></pre>
+<p>Expandimos entonces la producción <code>X -&gt; - E</code>:</p>
+<pre><code> i{2} * ( i{5}|- i{3} )
+
+ -[], E[sval=.]
+ X[sval=.,hval=5]
+ E[sval=.], )[]
+ T[sval=.]
+ Y[sval=.,hval=2]
+ T[sval=.] , X[sval=.,hval=.]
+ E[sval=.]</code></pre>
+<p>Avanzamos el siguiente token y expandimos:</p>
+<pre><code> i{2} * ( i{5} -|i{3} )
+
+ T[sval=.], X[sval=.,hval=.]
+ E[sval=.]
+ X[sval=.,hval=5]
+ E[sval=.], )[]
+ T[sval=.]
+ Y[sval=.,hval=2]
+ T[sval=.] , X[sval=.,hval=.]
+ E[sval=.]</code></pre>
+<p>Nuevamente, expandimos <code>T -&gt; i Y</code> (ya esto se está volviendo un poquito repetitivo…):</p>
+<pre><code> i{2} * ( i{5} -|i{3} )
+
+ i[val=.], Y[sval=.,hval=.]
+ T[sval=.], X[sval=.,hval=.]
+ E[sval=.]
+ X[sval=.,hval=5]
+ E[sval=.], )[]
+ T[sval=.]
+ Y[sval=.,hval=2]
+ T[sval=.] , X[sval=.,hval=.]
+ E[sval=.]</code></pre>
+<p>Y de nuevo hacemos la secuencia de <code>match</code> y paso de valor de <code>i</code> para <code>Y</code>:</p>
+<pre><code> i{2} * ( i{5} - i{3}|)
+
+ Y[sval=.,hval=3]
+ T[sval=.], X[sval=.,hval=.]
+ E[sval=.]
+ X[sval=.,hval=5]
+ E[sval=.], )[]
+ T[sval=.]
+ Y[sval=.,hval=2]
+ T[sval=.] , X[sval=.,hval=.]
+ E[sval=.]</code></pre>
+<p>Ahora vendrá una cascada de evaluaciones y reducciones a <span class="math inline">\(\epsilon\)</span> que disfrutaremos en cámara lenta. Primero, pasamos el valor <code>Y.hval</code> para <code>Y.sval</code>:</p>
+<pre><code> i{2} * ( i{5} - i{3}|)
+
+ Y[sval=3,hval=3]
+ T[sval=.], X[sval=.,hval=.]
+ E[sval=.]
+ X[sval=.,hval=5]
+ E[sval=.], )[]
+ T[sval=.]
+ Y[sval=.,hval=2]
+ T[sval=.] , X[sval=.,hval=.]
+ E[sval=.]</code></pre>
+<p>Al retornar <code>Y</code>, sintetizamos el valor de <code>T.sval</code>:</p>
+<pre><code> i{2} * ( i{5} - i{3}|)
+
+ T[sval=3], X[sval=.,hval=.]
+ E[sval=.]
+ X[sval=.,hval=5]
+ E[sval=.], )[]
+ T[sval=.]
+ Y[sval=.,hval=2]
+ T[sval=.] , X[sval=.,hval=.]
+ E[sval=.]</code></pre>
+<p>Y lo pasamos para <code>X.hval</code>:</p>
+<pre><code> i{2} * ( i{5} - i{3}|)
+
+ X[sval=.,hval=3]
+ E[sval=.]
+ X[sval=.,hval=5]
+ E[sval=.], )[]
+ T[sval=.]
+ Y[sval=.,hval=2]
+ T[sval=.] , X[sval=.,hval=.]
+ E[sval=.]</code></pre>
+<p>Como <code>)</code> está en el <span class="math inline">\(Follow(X)\)</span>, solo queda pasar el valor <code>X.hval</code> para <code>X.sval</code>:</p>
+<pre><code> i{2} * ( i{5} - i{3}|)
+
+ X[sval=3,hval=3]
+ E[sval=.]
+ X[sval=.,hval=5]
+ E[sval=.], )[]
+ T[sval=.]
+ Y[sval=.,hval=2]
+ T[sval=.] , X[sval=.,hval=.]
+ E[sval=.]</code></pre>
+<p>Y al retornar felizmente este valor va para <code>E.sval</code>:</p>
+<pre><code> i{2} * ( i{5} - i{3}|)
+
+ E[sval=3]
+ X[sval=.,hval=5]
+ E[sval=.], )[]
+ T[sval=.]
+ Y[sval=.,hval=2]
+ T[sval=.] , X[sval=.,hval=.]
+ E[sval=.]</code></pre>
+<p>Ahora se está poniendo interesante la pila. En el tope tenemos a <code>E[sval=3]</code> que debe retornar para <code>X</code>. Recordemos que esta producción era justamente <code>X -&gt; - E</code>, por lo que al retornar <code>E</code> se aplica la regla semántica que computa, por primera vez, la operación resta! LoL! Siguiendo esta regla, tenemos que hacer <code>X.sval</code> igual a <code>X.hval - E.sval</code>.</p>
+<pre><code> i{2} * ( i{5} - i{3}|)
+
+ X[sval=2,hval=5]
+ E[sval=.], )[]
+ T[sval=.]
+ Y[sval=.,hval=2]
+ T[sval=.] , X[sval=.,hval=.]
+ E[sval=.]</code></pre>
+<p>Retornamos entonces “subiendo” el valor de <code>X.sval</code>:</p>
+<pre><code> i{2} * ( i{5} - i{3}|)
+
+ E[sval=2], )[]
+ T[sval=.]
+ Y[sval=.,hval=2]
+ T[sval=.] , X[sval=.,hval=.]
+ E[sval=.]</code></pre>
+<p>Y ahora al retornar <code>E</code>, justo antes de llamar a <code>match</code>, “subimos” a <code>T</code> el valor correspondiente:</p>
+<pre><code> i{2} * ( i{5} - i{3}|)
+
+ )[]
+ T[sval=2]
+ Y[sval=.,hval=2]
+ T[sval=.] , X[sval=.,hval=.]
+ E[sval=.]</code></pre>
+<p>Luego avanzamos al último token que nos queda de la cadena de entrada:</p>
+<pre><code> i{2} * ( i{5} - i{3} )|
+
+ T[sval=2]
+ Y[sval=.,hval=2]
+ T[sval=.] , X[sval=.,hval=.]
+ E[sval=.]</code></pre>
+<p>Y ahora vuelve a producirse otro paso mágico, pues <code>Y</code> al retornar <code>T</code> realiza la tan esperada operación de multiplicación!</p>
+<pre><code> i{2} * ( i{5} - i{3} )|
+
+ Y[sval=4,hval=2]
+ T[sval=.] , X[sval=.,hval=.]
+ E[sval=.]</code></pre>
+<p>El retorno de <code>Y</code> es recibido de buena gana por <code>T</code>:</p>
+<pre><code> i{2} * ( i{5} - i{3} )|
+
+ T[sval=4] , X[sval=.,hval=.]
+ E[sval=.]</code></pre>
+<p>Que estaba esperando solo para pasarle este valor a <code>X</code>:</p>
+<pre><code> i{2} * ( i{5} - i{3} )|
+
+ X[sval=.,hval=4]
+ E[sval=.]</code></pre>
+<p>Ahora <code>X</code>, sin nada más que hacer, debe expandirse en <span class="math inline">\(\epsilon\)</span>, pero antes, computará el valor de su atributo <code>X.sval</code>:</p>
+<pre><code> i{2} * ( i{5} - i{3} )|
+
+ X[sval=4,hval=4]
+ E[sval=.]</code></pre>
+<p>Y lo devuelve con gracia a <code>E</code>:</p>
+<pre><code> i{2} * ( i{5} - i{3} )|
+
+ E[sval=4]</code></pre>
+<p>De modo que hemos terminado de parsear la cadena, y no solo hemos reconocido su bien merecida pertenencia al lenguaje, sino que además nos la hemos ingeniado para obtener, a la misma vez, el valor ya computado de la expresión aritmética! xD.</p>
+<p>Si parece que hemos tenido que hacer malabares para calcular el valor de la expresión, intentemos pensar en el código equivalente que realiza esta misma evaluación sobre el árbol de derivación ya creado. Hemos definido un mecanismo formal para expresar el cómputo de atributos sobre un árbol de derivación, que nos ha permitido expresar fácilmente la evaluación de la expresión aritmética, sin tener que lidiar con todos los detalles de implementación, paso de parámetros, etc. De hecho, este mecanismo es tan formal, que lo hemos ejecutado de forma mecánica, sin pararnos a razonar, solamente siguiendo a ciegas las reglas semánticas, ¡y ha funcionado!</p>
+</section>
+<section id="evaluando-atributos-durante-el-proceso-de-parsing-ascendente" class="level2" data-number="8.6">
+<h2 data-number="8.6" class="anchored" data-anchor-id="evaluando-atributos-durante-el-proceso-de-parsing-ascendente"><span class="header-section-number">8.6</span> Evaluando atributos durante el proceso de <em>parsing</em> ascendente</h2>
+<p>Antes de terminar, para aquellos que no quedaron satisfechos con la sección anterior, pues tenemos más… Vamos a realizar un proceso similar, pero esta vez sobre una gramática LR. En este tipo de gramáticas, tenemos que pagar un precio a la hora de definir atributos, pues solamente podemos evaluarlos durante el proceso de parsing si todos los atributos son sintetizados. Intuitivamente, esto es cierto ya que en la pila de símbolos nunca tendremos a un “padre” antes que a un “hijo”, debido a la naturaleza <em>bottom-up</em> del proceso de <em>parsing</em>. Por tanto, los atributos del símbolo “padre” solamente pueden depender de los atributos de sus “hijos”, y nunca de su propio “padre”. Por otro lado, como se construye el árbol de derivación extrema derecha, tampoco pueden depender de los atributos de los hermanos.</p>
+<p>El proceso de evaluación general funcionará de la siguiente manera. Cada vez que se introduce un símbolo en la pila, computaremos el valor de todos sus atributos, a partir de los símbolos hijo que acabamos de sacar de la pila. Los tokens entran a la pila con sus atributos ya evaluados por el <em>lexer</em>.</p>
+<p>Con esto en mente, vamos a definir entonces la gramática LR de expresiones aritméticas con un único atributo sintetizado <code>val</code> en cada nodo. En el proceso de <em>parsing</em> ascendente, iremos computando los valores correspondientes a partir de los valores de los hijos. Las reglas semánticas que nos quedan son bastante intuitivas, y no requieren de mayor explicación:</p>
+<pre><code>E -&gt; E + T  { E0.val = E1.val + T.val }
+   | E - T  { E0.val = E1.val - T.val }
+   | T      { E0.val = T.val }
+T -&gt; T * F  { T0.val = T1.val * F.val }
+   | T / F  { T0.val = T1.val / F.val }
+   | F      { T0.val = F.val }
+F -&gt; i      {  F.val = i.val }
+   | ( E )  {  F.val = E.val }</code></pre>
+<p>Vamos entonces a representar para esta gramática en la pila de símbolos además los valores de los atributos, y la cadena de entrada como siempre:</p>
+<pre><code>|i{2} * ( i{5} - i{3} )
+|</code></pre>
+<p>No vamos a mostrar aquí la tabla LR, ya que para esta gramática es bastante intuitivo que operación realizar en cada caso. Por tanto nos ahorraremos especificar exactamente en qué estado nos encontramos, y simplemente asumiremos que automáta LR funciona. Comenzamos entonces por introducir <code>i</code> en la pila, y calculamos el valor correspondiente (que viene en el token):</p>
+<pre><code>    i{2}|* ( i{5} - i{3} )
+i[val=2]|</code></pre>
+<p>En este punto podemos reducir <code>F -&gt; i</code>, y calcular el valor correspondiente:</p>
+<pre><code>    i{2}|* ( i{5} - i{3} )
+F[val=2]|</code></pre>
+<p>Seguimos teniendo un <em>handle</em>, así que volvemos a reducir:</p>
+<pre><code>    i{2}|* ( i{5} - i{3} )
+T[val=2]|</code></pre>
+<p>El siguiente paso es un <strong>shift</strong> (pues no hay <code>*</code> en el <span class="math inline">\(Follow(E)\)</span>):</p>
+<pre><code>    i{2} *|( i{5} - i{3} )
+T[val=2] *|</code></pre>
+<p>Y el siguiente:</p>
+<pre><code>    i{2} * (|i{5} - i{3} )
+T[val=2] * (|</code></pre>
+<p>Y el siguiente:</p>
+<pre><code>        i{2} * ( i{5}|- i{3} )
+T[val=2] * ( i[val=5]|</code></pre>
+<p>Podemos entonces reducir nuevamente (subiendo el valor del atributo):</p>
+<pre><code>        i{2} * ( i{5}|- i{3} )
+T[val=2] * ( F[val=5]|</code></pre>
+<p>Y de nuevo:</p>
+<pre><code>        i{2} * ( i{5}|- i{3} )
+T[val=2] * ( T[val=5]|</code></pre>
+<p>Y de nuevo:</p>
+<pre><code>        i{2} * ( i{5}|- i{3} )
+T[val=2] * ( E[val=5]|</code></pre>
+<p>Seguimos entrando en la pila:</p>
+<pre><code>        i{2} * ( i{5} -|i{3} )
+T[val=2] * ( E[val=5] -|</code></pre>
+<p>Y el siguiente:</p>
+<pre><code>            i{2} * ( i{5} - i{3}|)
+T[val=2] * ( E[val=5] - i[val=3]|</code></pre>
+<p>Y ahora vamos a reducir a <code>F -&gt; i</code> de nuevo:</p>
+<pre><code>            i{2} * ( i{5} - i{3}|)
+T[val=2] * ( E[val=5] - F[val=3]|</code></pre>
+<p>Y a <code>T -&gt; F</code>:</p>
+<pre><code>            i{2} * ( i{5} - i{3}|)
+T[val=2] * ( E[val=5] - T[val=3]|</code></pre>
+<p>Y ahora podemos reducir <code>E -&gt; E - T</code> y aplicar la regla semántica que computa la resta:</p>
+<pre><code> i{2} * ( i{5} - i{3}|)
+T[val=2] * ( E[val=2]|</code></pre>
+<p>Luego no nos queda otra opción que hacer <strong>shift</strong> por última vez:</p>
+<pre><code> i{2} * ( i{5} - i{3} )|
+T[val=2] * ( E[val=2] )|</code></pre>
+<p>Y ahora, como es de esperar, reducimos <code>F -&gt; ( E )</code> quedándonos con el valor almacenado:</p>
+<pre><code>i{2} * ( i{5} - i{3} )|
+   T[val=2] * F[val=2]|</code></pre>
+<p>Luego reducimos <code>T -&gt; T * F</code> computando el valor correspondiente:</p>
+<pre><code>i{2} * ( i{5} - i{3} )|
+              T[val=4]|</code></pre>
+<p>Y por último <code>E -&gt; T</code>, dejando en la pila el símbolo inicial, y teniendo computado el valor asociado al atributo <code>val</code>:</p>
+<pre><code>i{2} * ( i{5} - i{3} )|
+              E[val=4]|</code></pre>
+<p>Como hemos podido ver, el proceso de <em>parsing</em> LR es bastante más sencillo (una vez computada la tabla, claro), y además más poderoso en términos de las gramáticas que puede reconocer que el <em>parsing</em> LL. Sin embargo, desde el punto de vista de los atributos, el <em>parsing</em> LR nos obliga a definir todos nuestros atributos de forma sintetizada, lo que reduce el poder expresivo de las gramáticas atributadas. En la práctica, sin embargo, este es el tipo de <em>parser</em> más utilizado, y las reglas semánticas que queremos expresar son lo suficientemente amables como para contentarnos con gramáticas s-atributadas.</p>
+</section>
+<section id="el-proceso-de-parsing-completo" class="level2" data-number="8.7">
+<h2 data-number="8.7" class="anchored" data-anchor-id="el-proceso-de-parsing-completo"><span class="header-section-number">8.7</span> El proceso de <em>parsing</em> completo</h2>
+<p>Hemos visto entonces los conceptos fundamentales que nos permiten llegar desde una cadena, hasta un árbol de sintaxis abstracta. De forma general, el proceso completo es el siguiente:</p>
+<ul>
+<li>Definimos una gramática libre del contexto que capture las propiedades sintácticas del lenguaje, de la forma más “natural” posible (con la menor cantidad de producciones “superfluas”).</li>
+<li>Diseñamos un árbol de sintaxis abstracta con los tipos de nodos que representan exactamente las funciones semánticas de nuestro lenguaje.</li>
+<li>Definimos las reglas semánticas que construyen el árbol de sintaxis abstracta, preferiblemente quedando una gramática s-atributada.</li>
+<li>Construimos un <em>lexer</em> a partir de las expresiones regulares que definen a los tokens.</li>
+<li>Construimos un <em>parser</em>, idealmente LALR (o LR si no es posible) que además de reconocer la cadena, nos evalúe y construya el AST durante el proceso de <em>parsing</em>.</li>
+<li>Implementamos los predicados semánticos restantes sobre el AST construido.</li>
+</ul>
+<p>Este proceso está tan bien estudiado, que la mayoría de los generadores de <em>parser</em> existentes automatizan toda esta parte. A partir de una gramática libre del contexto con reglas semánticas, y una jerarquía de nodos del AST, estos generadores de <em>parsers</em> son capaces de construir el autómata LR y devolvernos directamente el AST instanciado. Contar con herramientas de este tipo nos permite iterar muy rápidamente sobre el lenguaje, modificando la gramática o el AST de forma independiente, ya que el único punto de acoplamiento son las reglas semánticas. Por este motivo es preferible tener gramáticas más sencillas, y dejar para la fase semántica la mayor cantidad de problemas.</p>
+<p>De modo que prácticamente toda la complejidad de diseñar un lenguaje radica en definir correctamente las funciones semánticas, e implementar la fase de chequeo semántico. De hecho, en los últimos años, casi toda la investigación sobre <em>parsing</em> se ha movido a lenguajes ambigüos o lenguaje natural, y la investigación en temas de compilación puros se ha concentrado en implementar funciones semánticas más complejas. En los capítulos siguientes nos concentraremos en problemas típicos del análisis semántico, y veremos estructuras de datos y estrategias para su implementación.</p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./chap4.html" class="pagination-link" aria-label="---">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">—</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./chap6.html" class="pagination-link" aria-label="---">
+        <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">—</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.30">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>2&nbsp; — – Introducción a la Construcción de Compiladores</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./chap2.html" rel="next">
+<link href="./index.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-de070a7b0ab54f8780927367ac907214.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-364982630eef5352dd1537128a8ed5cb.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./chap1.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">—</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Introducción a la Construcción de Compiladores</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">—</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chap1.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">—</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chap2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">—</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chap3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">—</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chap4.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">—</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chap5.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">—</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chap6.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">—</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chap7.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">—</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chap8.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">—</span></span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#setup" id="toc-setup" class="nav-link active" data-scroll-target="#setup"><span class="header-section-number">3</span> Setup</a></li>
+  <li><a href="#análisis-lexicográfico" id="toc-análisis-lexicográfico" class="nav-link" data-scroll-target="#análisis-lexicográfico"><span class="header-section-number">4</span> Análisis Lexicográfico</a>
+  <ul class="collapse">
+  <li><a href="#tokens" id="toc-tokens" class="nav-link" data-scroll-target="#tokens"><span class="header-section-number">4.1</span> Los <em>tokens</em> de nuestro lenguaje</a></li>
+  <li><a href="#dfa" id="toc-dfa" class="nav-link" data-scroll-target="#dfa"><span class="header-section-number">4.2</span> Autómatas Finitos Deterministas</a></li>
+  <li><a href="#regular" id="toc-regular" class="nav-link" data-scroll-target="#regular"><span class="header-section-number">4.3</span> Lenguajes Regulares</a></li>
+  <li><a href="#expreg" id="toc-expreg" class="nav-link" data-scroll-target="#expreg"><span class="header-section-number">4.4</span> Expresiones Regulares</a></li>
+  <li><a href="#regnfa" id="toc-regnfa" class="nav-link" data-scroll-target="#regnfa"><span class="header-section-number">4.5</span> Convirtiendo expresiones regulares a autómatas finitos</a></li>
+  <li><a href="#opers" id="toc-opers" class="nav-link" data-scroll-target="#opers"><span class="header-section-number">4.6</span> Operaciones entre lenguajes regulares</a></li>
+  <li><a href="#pumping" id="toc-pumping" class="nav-link" data-scroll-target="#pumping"><span class="header-section-number">4.7</span> Los límites de los lenguajes regulares</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">—</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="setup" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Setup</h1>
+<div id="597e1cee" class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sys</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>sys.path.append(os.path.abspath(os.curdir))</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> source.trees <span class="im">import</span> Tree</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> source.diagrams <span class="im">import</span> Pipeline, Lexer</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="análisis-lexicográfico" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Análisis Lexicográfico</h1>
+<div id="47fd0a26" class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sys</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>sys.path.append(os.path.abspath(os.curdir))</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> source.automata <span class="im">import</span> Automaton</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>En este capítulo vamos a atacar el problema de implementar un <em>lexer</em>, y todos los elementos teóricos que nos ayudarán en esta tarea, y que nos servirán además para resolver problemas independientes pero relacionados con esta fase. Vamos a comenzar definiendo formalmente el problema que queremos resolver, y luego veremos como desarrollar una teoría que nos permita atacar su solución. Para ello:</p>
+<ul>
+<li>Definiremos el concepto de <a href="#tokens"><em>token</em></a>.</li>
+<li>Diseñaremos <a href="#dfa">autómatas finitos deterministas</a> para reconocer lenguajes regulares.</li>
+<li>Caracterizaremos los <a href="#regular">lenguajes regulares</a>.</li>
+<li>Conoceremos las <a href="#expreg">expresiones regulares</a> para describir esta clase de lenguajes.</li>
+<li>Veremos un algoritmo <a href="#regnfa">convertir expresiones regulares en autómatas</a>.</li>
+<li>Aprenderemos sobre las <a href="#opers">operaciones entre lenguajes regulares</a>.</li>
+<li>Y por si fuera poco, veremos finalmente <a href="#pumping">los límites de los lenguajes regulares</a>.</li>
+</ul>
+<section id="tokens" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="tokens"><span class="header-section-number">4.1</span> Los <em>tokens</em> de nuestro lenguaje</h2>
+<p>Comenzaremos por definir el concepto de <em>token</em>, básicamente, como una secuencia de caracteres con cumple con cierta estructura sintáctica. Más adelante impondremos restricciones sobre qué tipos de estructuras son válidas. De momento, pondremos algunos ejemplos:</p>
+<ul>
+<li>Las palabras claves de un lenguaje: <strong>if</strong>, <strong>else</strong>, <strong>function</strong>, <strong>class</strong>, etc.</li>
+<li>Los literales numéricos: <code>42</code>, <code>3.1415</code>, <code>0.123e-44</code>, etc.</li>
+<li>Los literales de cadena: <code>"hello world!"</code>, etc.</li>
+<li>Los literales booleanos: <code>True</code>, <code>False</code>.</li>
+<li>Los operadores: <code>+</code>, <code>-</code>, <code>*</code>, <code>&lt;</code>, <code>&lt;=</code>, etc.</li>
+<li>Identificadores: <code>x</code>, <code>value</code>, <code>someMethodName</code>, etc.</li>
+</ul>
+<p>De modo que queremos idear un mecanismo que reciba como entrada una descripción del conjunto de <em>tokens</em> de nuestro lenguaje, y una cadena de caracteres, y nos devuelva la secuencia de <em>tokens</em> que aparecen en la cadena.</p>
+<p>Un primer análisis nos puede llevar a pensar idea similar a dividir la cadena por espacios en blanco y quedarnos con cada elemento como un <em>token</em>, pero es muy sencillo ver por qué esta idea no es suficiente. En primer lugar, existen <em>tokens</em> que no necesariamente aparecen separados por espacio, como en el caso de <code>value&lt;=0.001</code>. Además, existen <em>tokens</em> que son prefijos de otros <em>tokens</em>, como <code>&lt;</code> y <code>&lt;=</code>; o <code>class</code> que es una palabra clave y <code>class1</code> que es un identificador cualquiera. Esto quiere decir que necesitamos realizar un análisis un poco más complejo para determinar qué parte de una secuencia de caracteres corresponde a un <em>token</em> o a <em>otro</em>.</p>
+<p>Veamos el problema entonces desde el siguiente punto de vista: supongamos que escaneamos la secuencia de caracteres de inicio a fin, un caracter a la vez, y lo que deseamos es en cada momento ser capaces de determinar si estamos en el medio de un <em>token</em>, o si acabamos de reconocer un <em>token</em> completo. Por ejemplo, tomemos nuevamente la cadena de ejemplo del capítulo anterior:</p>
+<pre><code>if (a&lt;=0) b else c</code></pre>
+<p>Vamos a simbolizar con el símbolo <code>|</code> el punto que divide el fragmento de la cadena que hemos analizado, de la parte de la cadena que falta por analizar. Es decir, al inicio de nuestro procesamiento, estamos en el siguiente estado:</p>
+<pre><code>|if (a&lt;=0) b else c</code></pre>
+<p>Que simboliza que aún no hemos visto ningún caracter de la cadena. Queremos entonces idear una maquinaria que “avance” por la cadena, caracter a caracter, y en cada instante sepa determinar si con los caracteres vistos hasta el momento ya tiene un <em>token</em> construido, o si necesita seguir avanzando. Veamos paso a paso cómo podría funcionar un mecanismo así. Comenzamos con el inicio de la cadena, y vamos además a almacenar el fragmento de <em>token</em> que estamos construyendo, y la lista de <em>tokens</em> que vamos reconociendo como salida:</p>
+<pre><code>CADENA: |if a&lt;=0 then b else c
+ TOKEN:
+SALIDA:</code></pre>
+<p>El primer paso consiste en analizar el caracter <code>i</code>. Cómo acabamos de empezar, no tenemos nada almacenado, entonces la única posibilidad es que este caracter <code>i</code> sea parte del <em>token</em> que estamos intentando reconocer.</p>
+<pre><code>CADENA: i|f a&lt;=0 then b else c
+ TOKEN: i
+SALIDA:</code></pre>
+<p>Ahora vemos el caracter <code>f</code>. Cómo viene immediatamente después de otro caracter, pudiera ser que estemos viendo un <em>token</em> de tipo identificador. Por otro lado, pudiera ser que estuviéramos viendo particularmente el <em>token</em> <code>if</code>, que es una palabra clave. De momento, lo tomamos.</p>
+<pre><code>CADENA: if| a&lt;=0 then b else c
+ TOKEN: if
+SALIDA:</code></pre>
+<p>Nos encontramos entonces con un espacio en blanco, lo que nos permite decidir que efectivamente hemos encontrado el <em>token</em> <code>if</code>, por lo que podemos devolverlo en la secuencia de salida.</p>
+<pre><code>CADENA: if |a&lt;=0 then b else c
+ TOKEN:
+SALIDA: [if]</code></pre>
+<p>Ahora nos encontramos un caracter <code>a</code>, que pudiera ser un identificador, pero todavía no podemos decir nada al respecto pues es posible que el identificador tenga más letras.</p>
+<pre><code>CADENA: if a|&lt;=0 then b else c
+ TOKEN: a
+SALIDA: [if]</code></pre>
+<p>En este paso nos encontramos un caracter <code>&lt;</code>, y como estábamos tratando de reconocer un identificador que empieza con <code>a</code>, y nuestras reglas dicen que <code>&lt;</code> no puede ser parte del nombre de ningún identificador, entonces podemos concluir que el <em>token</em> anterior es justamente <code>a</code>, y comenzar un nuevo <em>token</em>:</p>
+<pre><code>CADENA: if a&lt;|=0 then b else c
+ TOKEN: &lt;
+SALIDA: [if] [a]</code></pre>
+<p>Del mismo modo, hemos comenzado a construir un <em>token</em> <code>&lt;</code>, que pudiera ser el operador en sí, o pudiera ser el operador <code>&lt;=</code>, todo depende de lo que le siga. Al ver a continuación el caracter <code>=</code>, concluimos que tenemos el <em>token</em> <code>&lt;=</code> sin necesidad de seguir buscando, pues no existe ningún <em>token</em> con prefijo <code>&lt;=</code>.</p>
+<pre><code>CADENA: if a&lt;=|0 then b else c
+ TOKEN:
+SALIDA: [if] [a] [&lt;=]</code></pre>
+<p>Es fácil ver como continúa este proceso, llevando finalmente a la secuencia de <em>tokens</em> correcta:</p>
+<pre><code>[if] [a] [&lt;=] [0] [then] [b] [else] [c]</code></pre>
+<p>La pregunta consiste entonces en cómo implementamos este mecanismo computacionalmente. De modo general, la decisión que hemos tomado en cada paso depende únicamente de dos factores: el caracter que estamos examinando, y lo que hemos hecho hasta el paso anterior. Para modelar este segundo factor de “lo que hemos hecho hasta el paso anterior”, analizemos primero de cuántas formas posibles podemos hablar de lo que hemos hecho hasta el paso anterior. Básicamente, tenemos un conjunto finito de clases de <em>tokens</em>, y lo que necesitamos saber es simplemente que clase de <em>token</em> estamos intentando construir, para saber si el nuevo caracter puede completar esta clase o no.</p>
+<p>De modo que podemos pensar en una especie de <strong>máquina de estados</strong>, donde modelaremos con los estados el hecho de llevar la cuenta de qué clase de <em>token</em> estamos construyendo, y por ende, cuáles son los posibles caracteres a esperar a continuación. Esta máquina de estados es una clase particular de máquina de <em>Turing</em>, que tiene la característica de que solo puede moverse hacia la izquierda en la cinta y solo puede leer (no está permitido escribir). A las máquinas de estado que solo se mueven en una dirección en la cinta se les llama <strong>autómatas</strong>. Distintos tipos de autómatas se diferencian entonces por los tipos de transiciones que le son permitidas, y los tipos de análisis que pueden realizar para tomar una decisión. En este caso particular, estaremos definiendo la clase más sencilla de autómata, un <strong>autómata finito determinista</strong>.</p>
+</section>
+<section id="dfa" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="dfa"><span class="header-section-number">4.2</span> Autómatas Finitos Deterministas</h2>
+<p>Formalizando, un autómata finito determinista es un quíntuplo <span class="math inline">\(A = &lt;Q,q_0,V,F,f&gt;\)</span> con las siguientes características:</p>
+<ul>
+<li><span class="math inline">\(Q\)</span> es un conjunto finito de estados (<span class="math inline">\(Q = \{ q_0, \ldots, q_n \}\)</span>), de ahí el adjetivo de <strong>finito</strong>.</li>
+<li><span class="math inline">\(q_0 \in Q\)</span> es el estado inicial.</li>
+<li><span class="math inline">\(V\)</span> es un conjunto finito de símbolos que pueden aparecer en la cinta.</li>
+<li><span class="math inline">\(F \subseteq Q\)</span> es un subconjunto de estados que denominaremos <em>estados finales</em>.</li>
+<li><span class="math inline">\(f: Q \times V \to Q\)</span> es una <em>función de transición</em>, que determina, para cada par posible de estados y símbolos, cuál es el estado de destino. Se denomina un autómata <strong>determinista</strong> justamente porque en un estado particular, para un símbolo particular, existe solamente un estado posible de destino (o ninguno), por lo tanto, siempre existe una única decisión que tomar.</li>
+</ul>
+<p>El modo de funcionamiento de un autómata finito determinista es el siguiente. Tenemos una cadena de entrada, que no es más que una secuencia de símbolos de <span class="math inline">\(V\)</span>, o sea, un elemento <span class="math inline">\(\omega \in V^k\)</span> para algún valor de <span class="math inline">\(k\)</span> (que será la longitud de la cadena). El estado inicial del autómata es <span class="math inline">\(q^{(0)} = q_0\)</span>. Por cada símbolo en <span class="math inline">\(\omega_i \in \omega\)</span>, realizamos la operación <span class="math inline">\(q^{(i)} = f(q^{(i-1)}, \omega_i)\)</span>. Al concluir, si <span class="math inline">\(q^{(k)} \in V\)</span>, decimos que el autómata <strong>acepta</strong> o <strong>reconoce</strong> la cadena <span class="math inline">\(\omega\)</span>.</p>
+<p>Si en un caso particular la función <span class="math inline">\(f(q_i,a_i)\)</span> no estuviera definida, entonces diremos que el autómata “se traba”, y no reconoce la cadena. Este convenio lo tomamos para evitar tener que definir un autómata completamente cuando existen muchos estados “superfluos”. Siempre es posible convertir un autómata con algunas transiciones no definidas (<em>parcialmente especificado</em>) a un autómata con todas las transiciones definidas (<em>completamente especificado</em>), si añadimos un estado adicional <span class="math inline">\(q_{error}\)</span>, a dónde apuntan todas las transiciones faltantes, y de donde salen además para el propio estado <span class="math inline">\(q_{error}\)</span> todas transiciones con todos los símbolos. Este estado sirve como especie de “sumidero”.</p>
+<p>Veamos entonces un ejemplo. Para representar gráficamente un autómata, usaremos un grafo dirigido para visualizar la función de transición, donde el nodo <span class="math inline">\(i\)</span> representa al estado <span class="math inline">\(q_i\)</span>, y la artista <span class="math inline">\((i,j)\)</span> está etiquetada con el símbolo <span class="math inline">\(a_k\)</span> si <span class="math inline">\(f(q_i,a_k) = q_j\)</span>. Los estados finales se representan con un borde doble, y el resto de los estados con un borde normal.</p>
+<p>Por ejemplo, si tenemos el siguiente autómata <span class="math inline">\(A=&lt;Q,q_0,V,F,f&gt;\)</span>, donde:</p>
+<ul>
+<li><p><span class="math inline">\(Q = {q_0, q_1, q_2}\)</span></p></li>
+<li><p><span class="math inline">\(V = \{a,b\}\)</span></p></li>
+<li><p><span class="math inline">\(F = \{q_2\}\)</span></p></li>
+<li><p><span class="math inline">\(f\)</span> se define por la siquiente tabla:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Estado</th>
+<th>Símbolo</th>
+<th><span class="math inline">\(f\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(q_0\)</span></td>
+<td><span class="math inline">\(a\)</span></td>
+<td><span class="math inline">\(q_1\)</span></td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(q_0\)</span></td>
+<td><span class="math inline">\(b\)</span></td>
+<td><span class="math inline">\(q_0\)</span></td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(q_1\)</span></td>
+<td><span class="math inline">\(a\)</span></td>
+<td><span class="math inline">\(q_2\)</span></td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(q_1\)</span></td>
+<td><span class="math inline">\(b\)</span></td>
+<td><span class="math inline">\(q_0\)</span></td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(q_2\)</span></td>
+<td><span class="math inline">\(a\)</span></td>
+<td><span class="math inline">\(q_2\)</span></td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(q_2\)</span></td>
+<td><span class="math inline">\(b\)</span></td>
+<td><span class="math inline">\(q_0\)</span></td>
+</tr>
+</tbody>
+</table></li>
+</ul>
+<p>Podemos representar gráficamente el autómata anterior con el siguiente gráfico:</p>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>Automaton(<span class="st">'q0'</span>, [<span class="st">'q2'</span>], {</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'q0'</span>, <span class="st">'a'</span>): <span class="st">'q1'</span>,</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'q0'</span>, <span class="st">'b'</span>): <span class="st">'q0'</span>,</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'q1'</span>, <span class="st">'a'</span>): <span class="st">'q2'</span>,</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'q1'</span>, <span class="st">'b'</span>): <span class="st">'q0'</span>,</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'q2'</span>, <span class="st">'a'</span>): <span class="st">'q2'</span>,</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'q2'</span>, <span class="st">'b'</span>): <span class="st">'q0'</span>,</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>}).<span class="bu">print</span>(<span class="bu">float</span><span class="op">=</span><span class="va">False</span>, width<span class="op">=</span><span class="st">"50%"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>En este gráfico queda completamente representado el autómata, sin necesidad de especificar el resto, pues de la función de transición se pueden inferir los estados y el alfabeto, y se toma el convenio de que el estado <span class="math inline">\(q_0\)</span> siempre es el estado inicial.</p>
+<p>Cabe preguntarnos entonces la siguiente interrogante:</p>
+<blockquote class="blockquote">
+<p>¿Qué lenguajes es capaz de reconocer un autómata finito determinista?</p>
+</blockquote>
+<p>A responder esta pregunta dedicaremos la mayor parte del resto de este capítulo. Para comenzar, debemos formalizar primeramente la pregunta planteada. Necesitamos definir qué es un <strong>lenguaje</strong>, y qué significa que un autómata <strong>reconozca</strong> cierto lenguaje.</p>
+<p>Para definir un lenguaje, comenzaremos con la definición de <strong>alfabeto</strong>. Un alfabeto <span class="math inline">\(V\)</span> no es más que un conjunto de símbolos, que son elementos básicos indivisibles. Por ejemplo, <span class="math inline">\(V = \{a, b\}\)</span> es el alfabeto que contiene los símbolos <span class="math inline">\(a\)</span> y <span class="math inline">\(b\)</span>. El “significado” de cada símbolo no nos interesa en la teoría de lenguajes formales, solamente nos interesa diferenciar un símbolo de otro. Dejaremos el problema del “significado” para cuando lleguemos a la fase semántica.</p>
+<p>Una vez armados con el concepto de alfabeto, podemos definir el concepto de <strong>cadena</strong>. Una cadena <span class="math inline">\(\omega\)</span> es un elemento del conjunto <span class="math inline">\(V^k\)</span> para algún valor de <span class="math inline">\(k\)</span> arbitrario. Por ejemplo, la cadena <span class="math inline">\(abba\)</span> es un elemento del conjunto <span class="math inline">\(\{a,b\}^4\)</span>. Se llama <em>longitud</em> de la cadena justamente al valor <span class="math inline">\(k\)</span>. Si <span class="math inline">\(k=0\)</span>, tenemos la <em>cadena vacía</em>, que se simboliza generalmente como <span class="math inline">\(\epsilon\)</span> independientemente del conjunto <span class="math inline">\(V\)</span>.</p>
+<p>Finalmente, definiremos un <strong>lenguaje</strong> <span class="math inline">\(L\)</span>, como un conjunto de cadenas sobre un alfabeto particular, o alternativamente, como un subconjunto de la clausura del producto cartesiano de dicho de alfabeto. Es decir, <span class="math inline">\(L \subseteq V^*\)</span>, donde:</p>
+<p><span class="math display">\[
+V^* = \bigcup_{k=0}^{\infty} V^k
+\]</span></p>
+<p>Vamos a introducir entonces algo de notación adicional. Sea <span class="math inline">\(A\)</span> un autómata finito determinista, denominaremos <span class="math inline">\(L_A\)</span> al lenguaje de todas las cadenas reconocidas por <span class="math inline">\(A\)</span>. Es decir, <span class="math inline">\(\omega \in L_A\)</span> si y solo <span class="math inline">\(A\)</span> reconoce <span class="math inline">\(\omega\)</span>. Cabe entonces preguntarnos qué tipos de lenguajes pueden ser reconocidos por este mecanismo. Podemos entonces definir la interrogante anterior de manera más precisa cómo:</p>
+<blockquote class="blockquote">
+<p>¿Qué características tienen los lenguajes que son posibles de reconocer por algún autómata finito determinista?</p>
+</blockquote>
+<p>A este tipo de lenguajes les llamaremos <strong>lenguajes regulares</strong>, por motivos históricos que veremos más adelante. A modo definición:</p>
+<blockquote class="blockquote">
+<p><strong>Definición (Lenguaje Regular):</strong> Sea <span class="math inline">\(L\)</span> un lenguaje sobre el alfabeto <span class="math inline">\(V\)</span>, se dice que <span class="math inline">\(L\)</span> es <strong>regular</strong> si y solo si existe un autómata finito determinista <span class="math inline">\(A=&lt;Q,q_0,V,F,f&gt;\)</span> (sobre el mismo alfabeto), tal que <span class="math inline">\(L = L_A\)</span>.</p>
+</blockquote>
+<p>Pasemos entonces a describir algunos ejemplos de lenguajes regulares, que nos darán una idea intuitiva del poder de cómputo de estos autómatas.</p>
+</section>
+<section id="regular" class="level2" data-number="4.3">
+<h2 data-number="4.3" class="anchored" data-anchor-id="regular"><span class="header-section-number">4.3</span> Lenguajes Regulares</h2>
+<p>El más simple de todos los lenguajes que podemos definir sobre un alfabeto <span class="math inline">\(V\)</span> es justamente <span class="math inline">\(V^*\)</span>, el lenguaje de todas las cadenas que se pueden construir con los símbolos de <span class="math inline">\(V\)</span>. A este lenguaje le llamamos <em>universo</em>. Para construir un autómata para este lenguaje, simplemente necesitamos un estado que será a la vez inicial y final, y una transición para cada símbolo del alfabeto desde este estado hacia el propio estado. Por ejemplo, si <span class="math inline">\(V = \{ a, b, c \}\)</span>, tenemos el siguiente autómata:</p>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>Automaton(<span class="st">'q0'</span>, [<span class="st">'q0'</span>], {</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'q0'</span>, <span class="st">'a b c'</span>): <span class="st">'q0'</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>}).<span class="bu">print</span>(width<span class="op">=</span><span class="st">"20%"</span>, <span class="bu">float</span><span class="op">=</span><span class="va">False</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Con esta idea podemos demostrar nuestro primer teorema en la teoría de lenguajes formales:</p>
+<blockquote class="blockquote">
+<p><strong>Teorema:</strong> El lenguaje <em>universo</em> <span class="math inline">\(L = V^*\)</span> es regular.</p>
+</blockquote>
+<p>La demostración se realiza por construcción. Sea <span class="math inline">\(V = \{ a_1, \ldots, a_n \}\)</span> el alfabeto, sea <span class="math inline">\(A\)</span> el autómata <span class="math inline">\(&lt;Q,q_0,F,V,f&gt;\)</span>, donde <span class="math inline">\(Q = F = \{ q_0\}\)</span> y <span class="math inline">\(f(q_0, a_i) = q_0\)</span> para todo símbolo <span class="math inline">\(a_i \in V\)</span>; entonces <span class="math inline">\(A\)</span> reconoce el lenguaje <span class="math inline">\(V^*\)</span>.</p>
+<p>Yendo al extremo contrario, vamos a definir el lenguaje que contiene exactamente las palabras claves <strong>if</strong>, <strong>then</strong>, <strong>else</strong>, <strong>fi</strong>. Para este lenguaje también es fácil definir un autómata. Creamos dos estados, uno inicial y uno final, y por cada palabra del lenguaje creamos un camino entre el estado inicial y final con un estado intermedio para cada símbolo de la palabra correspondiente (menos el último, claro):</p>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>Automaton(<span class="st">'q0'</span>, [<span class="st">'q02'</span>, <span class="st">'q06'</span>, <span class="st">'q10'</span>, <span class="st">'q12'</span>], {</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'q0'</span>,  <span class="st">'i'</span>): <span class="st">'q01'</span>,</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'q01'</span>, <span class="st">'f'</span>): <span class="st">'q02'</span>,</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'q0'</span>,  <span class="st">'t'</span>): <span class="st">'q03'</span>,</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'q03'</span>, <span class="st">'h'</span>): <span class="st">'q04'</span>,</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'q04'</span>, <span class="st">'e'</span>): <span class="st">'q05'</span>,</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'q05'</span>, <span class="st">'n'</span>): <span class="st">'q06'</span>,</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'q0'</span>,  <span class="st">'e'</span>): <span class="st">'q07'</span>,</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'q07'</span>, <span class="st">'l'</span>): <span class="st">'q08'</span>,</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'q08'</span>, <span class="st">'s'</span>): <span class="st">'q09'</span>,</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'q09'</span>, <span class="st">'e'</span>): <span class="st">'q10'</span>,</span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'q0'</span> , <span class="st">'f'</span>): <span class="st">'q11'</span>,</span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'q11'</span>, <span class="st">'i'</span>): <span class="st">'q12'</span>,</span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>}).<span class="bu">print</span>(width<span class="op">=</span><span class="st">"80%"</span>, <span class="bu">float</span><span class="op">=</span><span class="va">False</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Este autómata nos da una idea para demostrar nuestro segundo teorema:</p>
+<blockquote class="blockquote">
+<p><strong>Teorema:</strong> Sea <span class="math inline">\(L = \{ \omega_1, \ldots, \omega_n \}\)</span> un lenguaje <em>finito</em>, entonces <span class="math inline">\(L\)</span> es regular.</p>
+</blockquote>
+<p>La demostración es muy sencilla, simplemente necesitamos construir un autómata que contenga un camino por cada cadena del lenguaje. Si existen cadenas con prefijos comunes, los estados correspondientes a los símbolos que participan en los prefijos se comparten (para mantener el determinismo, aunque veremos pronto que esto no es estrictamente necesario).</p>
+<p>Para nuestro siguiente ejemplo, vamos a complejizar un poco el lenguaje a reconocer, y de paso veremos una estrategia general para la construcción de autómatas. El lenguaje que queremos reconocer es el lenguaje de las cadenas sobre el alfabeto <span class="math inline">\(V = \{a, b\}\)</span>, con exactamente <span class="math inline">\(3\)</span> letras <span class="math inline">\(a\)</span>. Antes de lanzarnos a construir el autómata, tratemos de pensar en una solución algorítmica para este problema. De forma general, la estrategia de solución sería algo así:</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> match(s: <span class="bu">str</span>) <span class="op">-&gt;</span> <span class="bu">bool</span>:</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    count_a <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> c <span class="kw">in</span> s:</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> c <span class="op">==</span> <span class="st">'a'</span>:</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>            count_a <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> count_a <span class="op">==</span> <span class="dv">3</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Esta solución es correcta, pero padece de un problema que nos hace imposible convertirla en un autómata finito. El problema es justamente que la cantidad de memoria que usa esta solución es potencialmente <em>infinita</em>, o al menos, proporcional al tamaño de la cadena. ¿Por qué? Pues, porque hemos utilizado un contador no acotado superiormente (<code>count_a</code>), por lo que, en principio, podemos necesitar hasta <span class="math inline">\(log_2(n)\)</span> bits de memoria para una cadena con longitud <span class="math inline">\(|w|=n\)</span>. Claro que en la práctica sabemos que ese entero es de 32 bits, independientemente del tamaño de la cadena, pero la idea que queremos transmitir es que <em>no hemos acotado la cantidad de memoria</em>, por lo que no sabemos cuántos estados debería tener un autómata que haga lo mismo que este método.</p>
+<p>Una solución mejor consiste en notar que solamente hay 5 posibles situaciones:</p>
+<ul>
+<li>Hemos visto <span class="math inline">\(0\)</span> símbolos <span class="math inline">\(a\)</span>.</li>
+<li>Hemos visto <span class="math inline">\(1\)</span> símbolo <span class="math inline">\(a\)</span>.</li>
+<li>Hemos visto <span class="math inline">\(2\)</span> símbolos <span class="math inline">\(a\)</span>.</li>
+<li>Hemos visto <span class="math inline">\(3\)</span> símbolos <span class="math inline">\(a\)</span>.</li>
+<li>Hemos visto <span class="math inline">\(4\)</span> símbolos <span class="math inline">\(a\)</span> <em>o más</em>.</li>
+</ul>
+<p>Una vez que hayamos visto <span class="math inline">\(4\)</span> veces una <span class="math inline">\(a\)</span> en la cadena, ya sabemos que la cadena es incorrecta, y no es posible que “se arregle” más adelante pues la cantidad de <span class="math inline">\(a\)</span> solo puede aumentar. Con esta idea en mente, cambiemos el método anterior para que solo use, a lo sumo, <strong>5 valores diferentes</strong> de la variable <code>count_a</code>:</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> match(s: <span class="bu">str</span>) <span class="op">-&gt;</span> <span class="bu">bool</span>:</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    count_a <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> c <span class="kw">in</span> s:     <span class="co"># esto es lo nuevo</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> c <span class="op">==</span> <span class="st">'a'</span> <span class="kw">and</span> count_a <span class="op">&lt;=</span> <span class="dv">3</span>:</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>            count_a <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> count_a <span class="op">==</span> <span class="dv">3</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Parece que no hemos hecho mucho, pero hemos logrado garantizar que nuestro método solamente tiene a lo sumo <strong>5 valores diferentes</strong> de la variable <code>count_a</code>, a saber, <span class="math inline">\(0 \ldots 4\)</span>. ¿De qué nos sirve esto? Pues, ahora podemos diseñar un autómata tranquilamente, con la siguiente idea: contamos la cantidad posible de valores que toman <em>todas las variables locales</em>, y por <em>cada combinación de valores</em> tendremos un estado. Si este número es finito, entonces tenemos un autómata finito (que puede ser o no determinista, ya llegaremos a ese problema).</p>
+<p>En este ejemplo, tenemos entonces 5 posibles estados, desde <span class="math inline">\(q_0\)</span> hasta <span class="math inline">\(q_4\)</span>. Para determinar las transiciones, veremos cómo cambian los valores en nuestro método. En todo momento, si tenemos un valor <code>count_a = qi</code>, en la siguiente iteración o bien <code>count_a = qi</code> o de lo contrario <code>count_a = qi + 1</code>, y esto solo ocurre si el símbolo recién “visto” es <span class="math inline">\(a\)</span>. Esto nos dice entonces que tenemos entre los estados <span class="math inline">\(q_i\)</span> y <span class="math inline">\(q_{i+1}\)</span> siempre una transición con <span class="math inline">\(a\)</span>, <em>excepto</em> en <span class="math inline">\(q_4\)</span>, pues en ese caso no se cumple la condición <code>count_a &lt;= 3</code>. Solo nos queda definir el estado final, y en este ejemplo no puede estar más claro, pues la línea <code>return count_a == 3</code> nos dice exactamente qué estado (valor de <code>count_a</code>) corresponde a un valor <code>True</code>. De modo que tenemos nuestro autómata:</p>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>Automaton(<span class="st">'q0'</span>, [<span class="st">'q3'</span>], {</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'q0'</span>, <span class="st">'a'</span>): <span class="st">'q1'</span>,</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'q1'</span>, <span class="st">'a'</span>): <span class="st">'q2'</span>,</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'q2'</span>, <span class="st">'a'</span>): <span class="st">'q3'</span>,</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'q3'</span>, <span class="st">'a'</span>): <span class="st">'q4'</span>,</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'q0'</span>, <span class="st">'b'</span>): <span class="st">'q0'</span>,</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'q1'</span>, <span class="st">'b'</span>): <span class="st">'q1'</span>,</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'q2'</span>, <span class="st">'b'</span>): <span class="st">'q2'</span>,</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'q3'</span>, <span class="st">'b'</span>): <span class="st">'q3'</span>,</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'q4'</span>, <span class="st">'b'</span>): <span class="st">'q4'</span>,</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>}).<span class="bu">print</span>(<span class="bu">float</span><span class="op">=</span><span class="va">False</span>, width<span class="op">=</span><span class="st">"70%"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Lo que hemos hecho es un ejemplo de lo que informalmente llamamos “programar con autómatas”. La idea fundamental radica en pensar en una solución algorítmica al problema de reconocer una cadena de cierto lenguaje <span class="math inline">\(L\)</span>, y luego extraer de esta solución un autómata. Para que funcione, informalmente, la solución algorítmica debe cumplir:</p>
+<ol type="1">
+<li>Consiste en un método que recibe una cadena y devuelve verdadero o falso.</li>
+<li>El método consiste en <strong>una sola iteración</strong> sobre la cadena, que analiza cada símbolo exactamente una vez.</li>
+<li>La memoria local de dicho método, para cualquier cadena, <em>tanto si pertenece o no</em> al lenguaje, debe alcanzar a lo sumo una cantidad <strong>finita</strong> de valores diferentes (estos serán los estados de nuestro autómata).</li>
+</ol>
+<p>Para obtener el autómata correspondiente, simplemente contamos <em>todos</em> los posibles valores que pueden alcanzar todas las variables locales de nuestro método, y definimos un estado por cada uno. Luego, analizando cómo cambian estos valores en función del símbolo siguiente en la cadena, se definen las transiciones (asumamos que son deterministas de momento). Los estados finales estarán determinidos por las combinaciones de valores para los cuáles el método devuelve <code>True</code>.</p>
+<p>De manera general, informalmente, podemos decir que los lenguajes regulares son todos aquellos cuyas cadenas pueden ser reconocidas mediante un método (función en un lenguaje de programación) que, usando <em>un solo recorrido</em> sobre la cadena, y una <em>cantidad finita de memoria (independiente del tamaño de la cadena)</em> es capaz de determinar <em>para toda cadena</em>, si pertenece o no al lenguaje. Si tal método existe, podremos construir un autómata equivalente.</p>
+</section>
+<section id="expreg" class="level2" data-number="4.4">
+<h2 data-number="4.4" class="anchored" data-anchor-id="expreg"><span class="header-section-number">4.4</span> Expresiones Regulares</h2>
+<p>Ahora que ya sabemos cómo construir autómatas para cualquier lenguaje regular, y sabemos (intuitivamente) que el lenguaje de los <em>tokens</em> de un lenguaje de programación se puede definir como un lenguaje regular, nos dedicamos a la pregunta de cómo es mejor definir ese lenguaje. Evidentemente, podemos diseñar un autómata, de forma manual, que reconozca los <em>tokens</em>, pero esta tarea, incluso para los lenguajes más sencillos, es muy engorrosa. El problema radica en los autómatas son un mecanismo de cómputo, podemos decir, un mecanismo <em>procedural</em> o <em>imperativo</em>, para definir lenguajes. Para definir un autómata hay que decidir una cantidad de estados, el conjunto de estados finales y las transiciones. Todo esto no parece intuitivo de antemano. Por otro lado, un autómata es muy difícil de “leer” para un humano. Al mirar un autómata, identificar rápidamente el lenguaje que reconoce no es una tarea sencilla, mucho menos intuitiva.</p>
+<p>De forma alternativa, pudiéramos desear tener un mecanismo <em>declarativo</em> que nos permita definir lenguajes de forma más sencilla, y de dónde sea posible de forma automática obtener el autómata correspondiente. Como sabemos de la experiencia anterior en otros lenguajes de programación, los humanos somos muchos mejores mientras mayor sea el nivel de abstracción, y las máquinas son mucho mejores mientras menor sea el nivel abstracción. ¡Justamente por esta diferencia es que surgió la ciencia de la compilación en sí misma! Estamos volviendo a enfrentarnos al mismo problema original, pero en una escala menor. Cabe preguntarnos entonces si podemos crear un mecanismo de “alto nivel” para definir lenguajes regulares, y una especie de “compilador” que transforme este mecanismo de alto nivel al autómata correspondiente.</p>
+</section>
+<section id="regnfa" class="level2" data-number="4.5">
+<h2 data-number="4.5" class="anchored" data-anchor-id="regnfa"><span class="header-section-number">4.5</span> Convirtiendo expresiones regulares a autómatas finitos</h2>
+</section>
+<section id="opers" class="level2" data-number="4.6">
+<h2 data-number="4.6" class="anchored" data-anchor-id="opers"><span class="header-section-number">4.6</span> Operaciones entre lenguajes regulares</h2>
+</section>
+<section id="pumping" class="level2" data-number="4.7">
+<h2 data-number="4.7" class="anchored" data-anchor-id="pumping"><span class="header-section-number">4.7</span> Los límites de los lenguajes regulares</h2>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./index.html" class="pagination-link" aria-label="---">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">—</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./chap2.html" class="pagination-link" aria-label="---">
+        <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">—</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

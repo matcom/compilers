@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.30">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Alejandro Piad Morffis">
+<meta name="author" content="Juan Pablo Consuegra Ayala">
+<meta name="author" content="Rocío Cruz Linares">
+
+<title>Introducción a la Construcción de Compiladores</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./chap1.html" rel="next">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-de070a7b0ab54f8780927367ac907214.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-364982630eef5352dd1537128a8ed5cb.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">—</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Introducción a la Construcción de Compiladores</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">—</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chap1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">—</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chap2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">—</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chap3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">—</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chap4.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">—</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chap5.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">—</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chap6.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">—</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chap7.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">—</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chap8.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">—</span></span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#diseño-del-curso" id="toc-diseño-del-curso" class="nav-link active" data-scroll-target="#diseño-del-curso">Diseño del Curso</a></li>
+  <li><a href="#un-poco-de-historia" id="toc-un-poco-de-historia" class="nav-link" data-scroll-target="#un-poco-de-historia">Un poco de historia</a></li>
+  <li><a href="#anatomía-de-un-compilador" id="toc-anatomía-de-un-compilador" class="nav-link" data-scroll-target="#anatomía-de-un-compilador">Anatomía de un Compilador</a></li>
+  <li><a href="#contenido" id="toc-contenido" class="nav-link" data-scroll-target="#contenido">Contenido</a></li>
+  <li><a href="#evaluación-y-retroalimentación" id="toc-evaluación-y-retroalimentación" class="nav-link" data-scroll-target="#evaluación-y-retroalimentación">Evaluación y retroalimentación</a></li>
+  <li><a href="#conclusiones" id="toc-conclusiones" class="nav-link" data-scroll-target="#conclusiones">Conclusiones</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Introducción a la Construcción de Compiladores</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Authors</div>
+    <div class="quarto-title-meta-contents">
+             <p>Alejandro Piad Morffis </p>
+             <p>Juan Pablo Consuegra Ayala </p>
+             <p>Rocío Cruz Linares </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>Este documento tiene como objetivo presentar el diseño de un curso de Compilación para estudiantes de Ciencia de la Computación. Este documento no es en absoluto un libro de texto de la asignatura Compilación (ni pretende serlo). Se asume que los profesores y estudiantes cuentan con documentación adicional para profundizar en los conocimientos impartidos. Cuando se presenta una sección de contenido, es más con el objetivo de presentar una guía sobre qué contenido será impartido, ilustrar un posible enfoque para introducir dicho contenido, y quizá además para acotar ciertas cuestiones específicas que consideramos de especial importancia. En cualquier caso, los estudiantes pueden encontrar también en este documento respuestas a preguntas de su interés, no solo desde el punto de vista puramente técnico (preguntas sobre el contenido) sino también desde el punto de vista metodológico (preguntas sobre la forma, o preguntas sobre las preguntas). De esta manera pueden entender mejor qué podemos prometerles como instructores, que se espera de ellos en cambio, y de qué forma pueden sacar el máximo provecho de este curso.</p>
+<section id="diseño-del-curso" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="diseño-del-curso">Diseño del Curso</h2>
+<p>Este curso fue diseñado bajo una concepción más dinámica e interactiva, más integrada con el resto de las disciplinas, y más práctica, pero sin perder en formalidad, precisión y profundidad en el conocimiento impartido. Para desarrollar este curso, primeramente nos planteamos primerante la siguiente pregunta: <em>¿Cuáles son las cuestiones fundamentales que esta asignatura ayuda a responder y comprender?</em></p>
+<p>El objetivo de esta pregunta es cuestionarse primeramente el porqué de un curso de Compilación, antes de decidir qué contenidos específicos se deben incluir. Para ellos analizamos el lugar que ocupa la asignatura dentro del plan general de la carrera de Ciencia de la Computación, y los diversos conocimientos que enlaza. De esta forma pretendemos diseñar un curso más integrado y de mayor utilidad para la formación profesional.</p>
+<p>En una primera mirada, el curso de Compilación ocupa un lugar privilegiado dentro de la carrera. Ocurre justo en un momento donde los estudiantes han obtenido la mayor parte de los conocimientos básicos (programación, diseño de algoritmos, lógica y matemática y discreta), y están a punto de comenzar a adentrarse en las cuestiones propias de la Ciencia de la Computación. Esta asignatura viene a ser, de un modo tal vez un poco arrogante, la asignatura más integradora de toda esta primera parte. En este punto los estudiantes conocen cuestiones de muy alto nivel, tales como diseños de algoritmos y estructuras de datos, teoría de la computabilidad y la complejidad computacional, patrones de diseño y diversos paradigmas de programación, así como una creciente colección de lenguajes de programación particulares. Además conocen muchos detalles de bajo nivel, tales como la arquitectura de los procesadores, la memoria, los procesos y los sistemas operativos, lenguajes de máquina y ensambladores y modelos computacionales para la implementación de operaciones aritméticas eficientes.</p>
+<p>Compilación viene a ser la asignatura que enlaza estos dos mundos, el de alto nivel, y el de bajo nivel. Por primera vez los estudiantes pueden hacerse una idea del proceso completo que sucede desde la concepción de una idea de un algoritmo o sistema, su análisis, su implementación en un lenguaje de alto nivel (o varios lenguajes, frameworks y bibliotecas), y como todo ello se traduce a un lenguaje de máquina, y se ejecuta encima de un dispositivo de cómputo concreto. Desde este punto de vista, Compilación permite integrar los conocimientos del resto de las disciplinas de esta primera parte de la carrera, y viene a cerrar lo que podemos llamar el perfil básico del Científico de la Computación. Es en cierta forma la última de las asignaturas básicas y la primera de las asignaturas avanzadas.</p>
+<p>En una primera enumeración, podemos intentar definir habilidades y conocimientos concretos que los estudiantes pueden aspirar a obtener en esta asignatura. Un buen ejercicio consiste en preguntar a los propios estudiantes qué creen que deberían aprender en esta asignatura. Aunque realmente no tienen una idea clara de cuál es el campo de estudio que tienen delante, o dicho de otra forma, sobre qué <em>deberían</em> aprender; hemos encontrado que los estudiantes sí tienen expectativas bastante claras sobre qué <em>quieren</em> aprender. Por supuesto, encontrar un balance adecuado entre ambos intereses (los <em>nuestros</em> y los <em>suyos</em>) debe ser un objetivo a perseguir. Presentamos a continuación una posible e incompleta lista de estas habilidades, que hemos recopilado de varias sesiones de preguntas a estudiantes, edulcoradas con nuestras propias concepciones:</p>
+<ul>
+<li>Reconocer problemas típicos de compilación y teoría de lenguajes.</li>
+<li>Crear reconocedores y generadores de lenguajes.</li>
+<li>Entender el funcionamiento de un compilador.</li>
+<li>Saber cómo se implementan instrucciones de alto nivel.</li>
+<li>Diseñar lenguajes de dominio específico.</li>
+<li>Poder implementar intérpretes y compiladores de un lenguaje arbitrario.</li>
+<li>Entender las diferencias y similaridades entre lenguajes distintos.</li>
+<li>Conectar lenguajes de alto nivel con arquitecturas de máquina.</li>
+<li>Aprender técnicas de procesamiento de lenguaje natural.</li>
+</ul>
+<p>Estas habilidades cubren desde los temas más prácticos sobre el diseño de lenguajes y compiladores hasta cuestions más filósoficas y abstractas relacionadas con otras áreas del conocimiento, desde la ingeniería de software hasta la inteligencia artificial. Los estudiantes quieren no sólo ser capaces de <em>hacer</em>, sino también, y tal vez más importante, quieren ser capaces de <em>entender</em> cómo funcionan los algoritmos, técnicas, estructuras de datos, patrones de diseño, modelos de razonamiento, que son empleados en esta ciencia.</p>
+<p>Para dar forma a un curso que pueda ayudar a los estudiantes a obtener estas habilidades (y otras relacionadas), nos dimos entonces a la tarea de resumir las preguntas o cuestiones fundamentales que debe responder dicho curso. En una primera instancia, parece que una pregunta tan clara cómo <em>¿qué es un compilador?</em> o incluso <em>¿cómo funciona un compilador?</em> puede servir de guía al contenido del curso. Sin embargo, en una mirada más profunda, podemos descubrir que hay cuestiones más primarias, a las cuáles un compilador es ya una respuesta, un medio más que un fin en sí mismo. De hecho, podemos cuestionarnos porqué surgió la necesidad de hacer compiladores en primer lugar, a qué problema intentaron dar respuesta, y tratar de escarbar entonces las preguntas más primarias que subyacen en esta historia.</p>
+</section>
+<section id="un-poco-de-historia" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="un-poco-de-historia">Un poco de historia</h2>
+<p>Podemos comenzar esta historia más o menos así. Hay una gran distancia entre el nivel de razonamiento que ocurre en el cerebro y el nivel de razonamiento que ocurre en una computadora. Los problemas de cualquier dominio se resuelven pensando a un nivel de abstracción con un lenguaje que describe las reglas de ese dominio. Hubo una época en que estos niveles de abstracción tenía que conectarlos el programador. De hecho, en esta época, la diferencia entre analista y programador era justamente que el analista diseñaba la solución en su lenguaje, y el programador la traducía a un programa ejecutable en el lenguaje de máquina.</p>
+<p>Por ejemplo, en 1952 Grace Hooper trabajaba en la simulación de trayectorias balísticas. Para dirigir un proyectil a su objetivo, los modelos físicos se describen en un lenguaje de ecuaciones diferenciales y mecánica newtoniana. Sin embargo, para poder implementar estos modelos en un dispositivo de cómputo hay que hablar en un lenguaje de registros, pilas e interrupciones. Esta diferencia es lo que hace que programar sea tan difícil, y hacía extremadamente lento el desarrollo de nuevos modelos porque a cada paso podían haber errores tanto en la modelación como en la codificación. ¿Cuando algo fallaba, de quién era la culpa? ¿Del analista o del programador? ¿O peor, del sistema de cómputo?</p>
+<p>Entonces a Grace Hooper se le ocurrió una genial idea: viendo que el proceso de convertir las ecuaciones diferenciales a programas concretos era fundamentalmente mecánico, ¿por qué no dejar que la propia computadora hiciera esta conversión?</p>
+<p>Esta idea genial tomaría varios años en perfeccionarse al punto de ser una realidad. El primer compilador de Grace Hooper para el lenguaje A-0 realmente era prácticamente un linker con algunas funciones básicas. Los primeros lenguajes de alto nivel en tener compiladores “serios” son FORTRAN (1957, John Backus), ALGOL (1958, Friedrich Bauer) y COBOL (1960, Grace Hooper). Una ventaja adicional además de reducir el tiempo de desarrollo, era la posibilidad de compilar el mismo programa para múltiples plataformas. En 1960 por primera vez se compiló el mismo programa de COBOL para dos máquinas distintas: UNIVAC II y RCA 501.</p>
+<p>En este punto los lenguajes se volvieron suficientemente complicados, al punto que ya los compiladores no se podían escribir “a mano”. Entonces hizo falta volcarse a la teoría, y desarrollar una ciencia sobre qué tipos de lenguajes de programación se podían compilar, y con qué compiladores. Esto dio nacimiento, en 1960, a la ciencia que hoy conocemos como Compilación. Motivada no solo por un motivo práctico, sino también fundamentada en los principios teóricos más sólidos, la compilación vino a convertirse en una de las primeras justificaciones para que la computación se cuestionara problemas propios, y dejara de ser una mera herramienta de cálculo. Problemas tan distantes como el procesamiento de lenguaje natural y la naturaleza de las funciones computables han caído bajo el diapasón de las problemáticas estudiadas en este campo. Hoy la compilación es una ciencia sólida, fundamentada en años de teoría formal y práctica ingenieril.</p>
+<p>Escondida bajo todo este aparataje formal y toda la gama de experiencias y resultados teóricos y prácticos de los últimos 60 años, podemos encontrar una cuestión más fundamental, una pregunta que quizá retroceda hasta el propio Alan Turing, o incluso más allá, hasta Ada Lovelace y Charles Babbage con su máquina analítica. La cuestión es esta:</p>
+<blockquote class="blockquote">
+<p><strong>¿Cómo hablar con una computadora?</strong></p>
+</blockquote>
+<p>Esta pregunta es, a nuestro modo de ver, en última instancia la cuestión a responder en este curso. Todos los intentos de diseñar lenguajes, todos los algoritmos y técnicas descubiertos, todos los patrones de diseño y arquitecturas, están en última instancia ligados al deseo de poder hacer una <em>pregunta</em> a la computadora, y obtener una <em>respuesta</em> a cambio. No importa si la pregunta es calcular cierta trayectoria de proyectiles, o encontrar la secuencia de parámetros que minimizan cierta función. Todo programa es en cierto modo una conversación con la computadora, un canal de comunicación, que queremos que sea lo suficientemente poderoso como para poder expresar nuestras ideas más complejas, y lo suficientemente simple como para poder ser entendido por una máquina de Turing. Como veremos en este curso, hallar el balance adecuado es un problema sumamente interesante, e intentar responderlo nos llevará por un camino que nos planteará muchas otras interrogantes, entre ellas las siguientes:</p>
+<ul>
+<li>¿Qué tipos de lenguajes es capaz de <em>entender</em> una computadora?</li>
+<li>¿Cuánto de un lenguaje debe ser <em>entendido</em> para poder entablar una conversación?</li>
+<li>¿Qué es <em>entender</em> un lenguaje?</li>
+<li>¿Es igual de fácil o difícil <em>entender</em> que <em>hablar</em> un lenguaje?</li>
+<li>¿Podemos caracterizar los lenguajes en términos computacionales según su complejidad para ser <em>entendidos</em> por una computadora?</li>
+<li>¿Cómo se relacionan estos lenguajes con el lenguaje humano?</li>
+<li>¿Qué podemos aprender sobre la naturaleza de las computadoras y los problemas computables, a partir de los lenguajes que son capaces de reconocer?</li>
+<li>¿Qué podemos aprender sobre el lenguaje humano para hacer más inteligentes a las computadoras?</li>
+<li>¿Qué podemos aprender sobre el lenguaje humano, y la propia naturaleza de nuestra inteligencia, a partir de estudiar los lenguajes entendibles por distintos tipos de máquinas?</li>
+</ul>
+<p>Estas preguntas, aunque no serán directamente respondidas en los siguientes capítulos, forman la columna vertebral del contenido del curso, en el sentido en qué todo lo presentado es con la intención de, al menos, poder echar un poco de luz en estos temas. Esperamos que al finalizar el curso, los estudiantes sean capaces de discutir las implicaciones filosóficas de las posibles respuestas a estas preguntas, y no solo a las cuestiones técnicas o más prácticas que el curso ataca. Por este motivo, sí trataremos en la medida de lo posible de, además del contenido técnico, adicionar en ocasiones algunos comentarios o discusiones más filósoficas al respecto de estas preguntas y otras similares.</p>
+</section>
+<section id="anatomía-de-un-compilador" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="anatomía-de-un-compilador">Anatomía de un Compilador</h2>
+<p>Comenzaremos este viaje diseccionando el sistema computacional canónico de la teoría de lenguajes formales: un compilador. A grandes razgos, un compilador no es más que un programa, cuya entrada y salida resultan ser también programas. La entrada es un programa en un lenguaje que llamaremos “de alto nivel”, y la salida en un lenguaje de “bajo nivel”, que es equivalente al primero. Exactamente qué es alto y bajo nivel dependerá de muchos factores, y no existe una definición formal. De forma general, un lenguaje de alto nivel es aquel que nos es cómodo a los programadores para expresar las operaciones que nos interesa ejecutar. Así mismo, un lenguaje de bajo nivel es aquel que un dispositivo de cómputo puede ejecutar de forma eficiente. Tal vez los ejemplos más típicos sean un lenguaje orientado a objetos y un lenguaje ensamblador respectivamente, pero existen muchas otras combinaciones de lenguaje de entrada y salida de interés.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../graphics/mountain.svg" class="img-fluid figure-img" style="width:100.0%"></p>
+<figcaption>Representación abstracta del proceso de compilación.</figcaption>
+</figure>
+</div>
+<p>Ahora bien, antes de zambullirnos de lleno en la anatomía de un compilador, es conveniente mencionar algunas sistemas de procesamiento de lenguajes relacionados. Podemos intentar categorizarlos según el “tipo” del lenguaje de entrada y salida. En primer lugar, el ejemplo clásico es cuando queremos convertir un lenguaje de alto nivel a otro de bajo nivel, y justamente llamamos a este sistema un <strong>compilador</strong>. El caso contrario, cuando queremos convertir de un lenguaje en bajo nivel a otro en alto nivel, podemos llamarle por analogía un <strong>decompilador</strong>. Este tipo de herramientas son útiles para analizar y realizar ingeniería inversa en programas para los que, tal vez, ya no tenemos el código fuente, y necesitamos entender o modificar. Los otros dos casos, de alto nivel a alto nivel y de bajo nivel a nivel son básicamente <strong>traductores</strong>; y en ocasiones se les llama también <strong>transpiladores</strong>. Por ejemplo, TypeScript es un lenguaje de alto nivel que se “transpila” a JavaScript, otro lenguaje también de alto nivel. Entre lenguajes de bajo nivel podemos tener también traductores. Un ejemplo son los llamados <strong>compiladores JIT</strong> (<em>just-in-time</em>), que se usan para traducir un programa compilado a un lenguaje de bajo nivel genérico (por ejemplo <strong>IL</strong>) a un lenguaje de máquina específico para la arquitectura donde se ejecuta.</p>
+<p>Volvamos entonces al caso clásico, el <strong>compilador</strong>. o este curso vamos a usar como una guía didáctica el diseño de un compilador para el lenguaje HULK, que compilará a un lenguaje de máquina denominado MIPS. Los detalles de ambos lenguajes serán introducidos a medida que sea conveniente, pero por el momento cabe decir que HULK es un lenguaje orientado a objetos, con recolección automática de basura, herencia simple, polimorfismo, y un sistema de tipos unificado. MIPS es un lenguaje ensamblador de pila para una arquitectura de 32 bits con registros y operaciones aritméticas, lógicas y orientadas a cadenas.</p>
+<p>Intentemos entonces definir esta maquinaria paso a paso. De forma abstracta nuestro compilador es una “caja negra” que convierte programas escritos en HULK a programas escritos en MIPS:</p>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>Pipeline([<span class="st">'HULK'</span>, <span class="st">'Compilador'</span>, <span class="st">'MIPS'</span>], [</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    (<span class="dv">0</span>, <span class="dv">1</span>, <span class="st">""</span>),</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    (<span class="dv">1</span>, <span class="dv">2</span>, <span class="st">""</span>),</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>], startshape<span class="op">=</span><span class="st">'plaintext'</span>, endshape<span class="op">=</span><span class="st">'plaintext'</span>).<span class="bu">print</span>(width<span class="op">=</span><span class="st">"50%"</span>, <span class="bu">float</span><span class="op">=</span><span class="va">False</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Para comenzar a destapar esta caja negra, notemos que al menos tenemos dos componentes independientes: uno que opera en lenguaje COOL y otro que opera en lenguaje MIPS. Necesitamos ser capaces de “leer” un programa en COOL y “escribirlo” en MIPS. Al primer módulo, que “lee”, le llamaremos <em>parser</em>, o analizador sintáctico, por motivos históricos que veremos más adelante. Al segundo componente le llamaremos simplemente el <em>generador</em>.</p>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>Pipeline([<span class="st">'HULK'</span>, <span class="st">'Parser'</span>, <span class="st">'Generador'</span>, <span class="st">'MIPS'</span>], [</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    (<span class="dv">0</span>, <span class="dv">1</span>, <span class="st">""</span>),</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    (<span class="dv">1</span>, <span class="dv">2</span>, <span class="st">""</span>),</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    (<span class="dv">2</span>, <span class="dv">3</span>, <span class="st">""</span>),</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>], startshape<span class="op">=</span><span class="st">'plaintext'</span>, endshape<span class="op">=</span><span class="st">'plaintext'</span>).<span class="bu">print</span>(width<span class="op">=</span><span class="st">"70%"</span>, <span class="bu">float</span><span class="op">=</span><span class="va">False</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>De aquí surge immediatamente una pregunta: ¿qué protocolo de comunicación tienen estos módulos? Es necesario diseñar una especie de lenguaje intermedio, un mecanismo de representación que no sea ni COOL ni MIPS, sino algo que esté “a medio camino” entre ambos. Es decir, hace falta traducir el programa en COOL a alguna forma de representación abstracta, independiente de la sintaxis, que luego pueda ser interpretada por el generador y escrita en MIPS. Llamésmole de momento <em>representación intermedia (IR)</em>.</p>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>Pipeline([<span class="st">'HULK'</span>, <span class="st">'Parser'</span>, <span class="st">'Generador'</span>, <span class="st">'MIPS'</span>], [</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    (<span class="dv">0</span>, <span class="dv">1</span>, <span class="st">""</span>),</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    (<span class="dv">1</span>, <span class="dv">2</span>, <span class="st">"IR"</span>),</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    (<span class="dv">2</span>, <span class="dv">3</span>, <span class="st">""</span>),</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>], startshape<span class="op">=</span><span class="st">'plaintext'</span>, endshape<span class="op">=</span><span class="st">'plaintext'</span>).<span class="bu">print</span>(width<span class="op">=</span><span class="st">"75%"</span>, <span class="bu">float</span><span class="op">=</span><span class="va">False</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Pasemos entonces a analizar qué forma debe tener esta representación intermedia. En principio, debe ser totalmente independiente de COOL o de MIPS, en términos de sintaxis. A fin de cuentas, podemos estar generando para cualquier otra plataforma, no solo MIPS. Por otro lado, tiene que ser capaz de capturar todo lo qué es posible expresar en COOL. A este tipo de representación, independiente de la sintaxis, pero que captura todo el significado, le vamos a llamar indistintamente <em>representación semántica</em> en ocasiones, justamente por este motivo. ¿Qué va en una representación semántica? Pues todos los conceptos que son expresables en un programa, dígase clases, métodos, variables, expresiones, ciclos. ¿Qué no va? Pues todo lo que sea “superfluo” al significado. Por ejemplo, el hecho de que un método tiene un nombre, pertenece a una clase, y tiene ciertos argumentos de ciertos tipos, es importante semánticamente. Dos métodos se diferencian por alguno de estos elementos. Por otro lado, el hecho de que un método se escribe primero por su nombre, luego por los argumentos entre paréntesis seguidos por los nombres de sus tipos, es poco importante <em>en este momento</em>. Daría lo mismo que los tipos fueran delante o detrás de los nombres de los argumentos, ya en esta fase del procesamiento lo que nos interesa es de qué tipo es un argumento, y no si ese tipo se declara antes o después textualmente.</p>
+<p>Definir exactamente qué es semánticamente importante en un lenguaje particular no es una tarea fácil, y veremos una vez llegados a ese punto algunas ideas para atacar este problema (qué es en última instancia un problema de diseño, y por lo tanto es más un arte que una ciencia, al menos en el sentido artístico de Donald Knuth). Lo que sí es interesante de momento, es analizar qué tipo de procesamiento es importante, o al menos conveniente, realizar sobre esta representación intermedia.</p>
+<p>Cómo justificaremos más adelante, existen estructuras linguísticas que no son fáciles de reconocer, porque son dependientes del contexto. Por ejemplo, la expresión <code>x = y + z</code> es muy sencilla de reconocer sintácticamente, pero en un lenguaje con tipado estático esta expresión puede no pertenecer al lenguaje según los tipos de cada variable. Este es un problema clásico de dependencia del contexto, donde la expresión <code>x = y + z</code> es válida si existe en el contexto donde, por ejemplo existe, <code>int x, int y, int z</code> pero no donde el contexto es <code>int x, int y, object z</code>. Hay muchos problemas que son dependientes del contexto, entre ellos:</p>
+<ul>
+<li>Declaración de variables antes de su uso</li>
+<li>Consistencia en los tipos declarados y las operaciones realizadas</li>
+<li>Consistencia entre la declaración de una función y su invocación</li>
+<li>Retornos en todos los caminos de ejecución</li>
+</ul>
+<p>La solución de estos problemas empleando las técnicas de la teoría de lenguajes solamente es en general no polinomial, y a veces no computable. Pero muchos de estos problemas se pueden resolver de forma más sencilla analizando la estructura computacional intermedia. ¿Por qué? Veremos más adelante que esta estructura tiene generalmente forma arbórea, y en una estructura arbórea es fácil analizar la consistencia de los tipos y problemas similares recorriendo cada uno de los nodos. De forma recursiva, el nodo raíz (o programa) estará correcto si cada hijo está correcto. Para realizar este tipo de procesamiento, introduciremos una nueva fase, que llamaremos <em>chequeo semántico</em>, y que opera justamente sobre la representación semántica del programa.</p>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>Pipeline([<span class="st">'HULK'</span>, <span class="st">'Parser'</span>, <span class="st">'Semántico'</span>, <span class="st">'Generador'</span>, <span class="st">'MIPS'</span>], [</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    (<span class="dv">0</span>, <span class="dv">1</span>, <span class="st">""</span>),</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    (<span class="dv">1</span>, <span class="dv">2</span>, <span class="st">""</span>),</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    (<span class="dv">2</span>, <span class="dv">3</span>, <span class="st">""</span>),</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    (<span class="dv">3</span>, <span class="dv">4</span>, <span class="st">""</span>),</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>], startshape<span class="op">=</span><span class="st">'plaintext'</span>, endshape<span class="op">=</span><span class="st">'plaintext'</span>).<span class="bu">print</span>(width<span class="op">=</span><span class="st">"100%"</span>, <span class="bu">float</span><span class="op">=</span><span class="va">False</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Finalmente, justo antes de generar el código ejecutable final, cabe preguntarse si existe algún tipo de procesamiento adicional conveniente. Descubriremos más adelante varios tipos de optimizaciones que se pueden aplicar en este punto, entre ellas:</p>
+<ul>
+<li>Eliminar código no alcanzable</li>
+<li>Expandir expresiones constantes</li>
+<li>Elimiar asignaciones superfluas</li>
+<li>Desenrrollar ciclos con extremos constantes</li>
+</ul>
+<p>Estas optimizaciones a menudo son convenientes de realizar sobre una estructura del programa mucho más cercana al código de máquina que al código original. Son muchos los factores que influyen en esto y que veremos más adelante, pero de forma intuitiva, es fácil entender que optimizar un programa debe ser un proceso muy cercano al código de máquina, pues la propia naturaleza de la optimización requiere explotar características propias de la maquinaria donde será ejecutado el código. Introduciremos entonces una fase de optimización, que de momento visualizaremos de forma <em>paralela</em> al proceso de generación, pues en la práctica ambas fases comparten la misma representación y ambos procesos ocurren de forma más o menos simultánea.</p>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>Pipeline([<span class="st">'HULK'</span>, <span class="st">'Parser'</span>, <span class="st">'Semántico'</span>, <span class="st">'Generador'</span>, <span class="st">'MIPS'</span>], [</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    (<span class="dv">0</span>, <span class="dv">1</span>, <span class="st">""</span>),</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    (<span class="dv">1</span>, <span class="dv">2</span>, <span class="st">""</span>),</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    (<span class="dv">2</span>, <span class="dv">3</span>, <span class="st">""</span>),</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    (<span class="dv">3</span>, <span class="dv">4</span>, <span class="st">""</span>),</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    (<span class="dv">3</span>, <span class="dv">3</span>, <span class="st">"Optimización"</span>),</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>], startshape<span class="op">=</span><span class="st">'plaintext'</span>, endshape<span class="op">=</span><span class="st">'plaintext'</span>).<span class="bu">print</span>(width<span class="op">=</span><span class="st">"100%"</span>, <span class="bu">float</span><span class="op">=</span><span class="va">False</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Antes de terminar vamos a develar una fase adicional, justo antes del proceso de <em>parsing</em>. Para entender por qué, debemos introducirnos un poco más profundamente en este proceso. El proceso de <em>parsing</em> básicamente de lo que se encarga es convertir cadenas de texto (escritas en el lenguaje origen) a una estructura (arbórea) que captura la semántica del programa. Por ejemplo, supongamos que tenemos la siguiente expresión como parte de un programa en HULK:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode hulk code-with-copy"><code class="sourceCode mustache"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>if (a &lt;= 0)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    b</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>else</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    c</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Esta expresión, desde el punto de vista semántico, podemos pensar que se transforma a una estructura como la siguiente:</p>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>Tree(<span class="st">"IF-EXPR"</span>,</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    Tree(<span class="st">"&lt;="</span>,</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>        Tree(<span class="st">"a"</span>),</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>        Tree(<span class="st">"0"</span>)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    Tree(<span class="st">"b"</span>),</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    Tree(<span class="st">"c"</span>),</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>).<span class="bu">print</span>(<span class="bu">float</span><span class="op">=</span><span class="va">False</span>, width<span class="op">=</span><span class="st">"40%"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>De forma simplificada, en esta estructura hemos representado semánticamente el significado de la expresión sintáctica anterior, extrayendo los elementos importantes (el hecho de que una expresión <code>if</code> contiene tres elementos: condición, parte del cuerpo <code>true</code> y parte del cuerpo <code>false</code>) y obviando los detalles de sintaxis que ya no son imporantes (por ejemplo las palabras <code>then</code>, <code>else</code> y <code>fi</code> que solamente sirven para separar los bloques correspondientes).</p>
+<p>La solución de este problema (convertir una secuencia de texto en una representación semántica) nos tomará la primera mitad del curso, pues es uno de los temas centrales en toda la teoría de lenguajes y la compilación en particular. Más adelante formalizaremos con exactitud este problema y veremos muchísimas estrategias de solución. Pero antes de llegar a ese punto, es necesario resolver un sub-problema de menor complejidad, que aún así nos dará suficiente trabajo como para desarrollar gran parte de la teoría de lenguajes en su solución. El problema en cuestión es el siguiente.</p>
+<p>La cadena de texto de entrada, realmente está formada por una secuencia de caracteres. En el caso anterior, por ejemplo, tenemos la siguiente secuencia:</p>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>Lexer(<span class="st">'i f </span><span class="ch">\\\\</span><span class="st">s ( a &lt; = 0 ) </span><span class="ch">\\\\</span><span class="st">n </span><span class="ch">\\\\</span><span class="st">t b </span><span class="ch">\\\\</span><span class="st">n e l s e </span><span class="ch">\\\\</span><span class="st">n </span><span class="ch">\\\\</span><span class="st">t c </span><span class="ch">\\\\</span><span class="st">n'</span>.split()).<span class="bu">print</span>(<span class="bu">float</span><span class="op">=</span><span class="va">False</span>, width<span class="op">=</span><span class="st">"100%"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>En esta secuencia hemos representado cada caracter por separado, y hemos puesto explícitamente los espacios en blanco (<code>\s</code>), cambios de línea (<code>\n</code>) y espacios de tabulación (<code>\t</code>). Esta secuencia es lo que realmente “ve” el compilador en la entrada. Por lo tanto, desde el punto de vista puramente sintáctico, existen muchas secuencias que son exactamente el mismo programa. Por ejemplo, si existen varios espacios entre dos símbolos, o si no hay cambios de línea, o si los bloques están indentados con 4 espacios en vez con un caracter <code>\t</code>, realmente estamos en presencia del mismo programa.</p>
+<p>Para simplificar la tarea del <em>parser</em>, es conveniente convertir primeramente esta secuencia de caracteres en una secuencia de <strong>tokens</strong>, que no son más que los elementos básicos que componen el lenguaje, lo que pudiéramos llamar las <em>palabras</em> o <em>símbolos</em> más básicos. Por ejemplo, en el caso anterior, quisiéramos obtener la siguiente secuencia de <strong>tokens</strong>:</p>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>Lexer(<span class="st">'if ( a &lt;= 0 ) b else c'</span>.split()).<span class="bu">print</span>(<span class="bu">float</span><span class="op">=</span><span class="va">False</span>, width<span class="op">=</span><span class="st">"45%"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Introduciremos entonces una primera fase, que llamaremos indistintamente <em>tokenización</em>, o análisis lexicográfico, para transmitir la idea de que en esta fase solamente se procesan los elementos <em>léxicos</em>, es decir, las palabras, sin llegar todavía a tocar los elementos <em>sintácticos</em>, es decir, la estructura. Al mecanismo encargado de resolver este problema le llamaremos entonces <em>lexer</em>.</p>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>Pipeline([<span class="st">'HULK'</span>, <span class="st">'Lexer'</span>, <span class="st">'Parser'</span>, <span class="st">'Semántico'</span>, <span class="st">'Generador'</span>, <span class="st">'MIPS'</span>], [</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    (<span class="dv">0</span>, <span class="dv">1</span>, <span class="st">""</span>),</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    (<span class="dv">1</span>, <span class="dv">2</span>, <span class="st">""</span>),</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    (<span class="dv">2</span>, <span class="dv">3</span>, <span class="st">""</span>),</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    (<span class="dv">3</span>, <span class="dv">4</span>, <span class="st">""</span>),</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    (<span class="dv">4</span>, <span class="dv">4</span>, <span class="st">"Optimización"</span>),</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    (<span class="dv">4</span>, <span class="dv">5</span>, <span class="st">""</span>),</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>], startshape<span class="op">=</span><span class="st">'plaintext'</span>, endshape<span class="op">=</span><span class="st">'plaintext'</span>).<span class="bu">print</span>(width<span class="op">=</span><span class="st">"100%"</span>, <span class="bu">float</span><span class="op">=</span><span class="va">False</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>A modo de resumen, tenemos entonces cinco fases fundamentales:</p>
+<dl>
+<dt>Análisis Lexicográfico (<em>lexer</em>)</dt>
+<dd>
+<p>donde se realiza la conversión de una secuencia de caracteres a una secuencia de <em>tokens</em>.</p>
+<p>En esta fase se detectan los errores relacionados con la escritura incorrecta de símbolos, por ejemplo, un número decimal con más dígitos de los permitidos, una cadena de texto que no termina en <code>"</code>, un identificador que usa un caracter inválido (e.j. <code>$</code>).</p>
+</dd>
+<dt>Análisis Sintáctico (<em>parser</em>)</dt>
+<dd>
+<p>donde se determina la estructura sintáctica del programa a partir de los <em>tokens</em> y se obtiene una estructura intermedia.</p>
+<p>En esta fase se detectan los errores relacionados con la sintaxis, por ejemplo, un paréntesis no balanceado, una función que no tiene cuerpo, un <code>if-else</code> con la parte <code>else</code> vacía.</p>
+</dd>
+<dt>Análisis Semántico</dt>
+<dd>
+<p>donde se verifican las condiciones semánticas del programa y se valida el uso correcto de todos los símbolos definidos.</p>
+<p>En esta fase se determinan los errores relacionados con los símbolos y tipos, por ejemplo, variables no declaradas o usadas antes de su declaración o funciones invocadas con un número o un tipo incorrecto de los argumentos.</p>
+</dd>
+<dt>Optimización</dt>
+<dd>
+donde se eliminan o simplifican secciones del programa en función de la arquitectura de máquina hacian donde se vaya a compilar.
+</dd>
+<dt>Generación</dt>
+<dd>
+donde se convierte finalmente la estructura semántica y optimizada hacia el lenguaje objetivo en la arquitectura donde será ejecutado.
+</dd>
+</dl>
+<p>Comenzaremos entonces a estudiar la fase de análisis lexicográfico, donde introduciremos los primeros elementos de la teoría de lenguajes formales.</p>
+</section>
+<section id="contenido" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="contenido">Contenido</h2>
+<p>Para intentar responder algunas de las interrogantes planteadas arriba, hemos dividido el contenido del curso en 6 temas fundamentales, aunque existen muchos elementos que son trans-temáticos y por tanto no quedarían bien ubicados en ningún lugar particular. Por este mismo motivo, estos temas no deben tomarse como particiones rígidas del contenido, sino más bien guías a grandes razgos que giran alrededor de un concepto común. De hecho, estos temas no son presentados estrictamente en orden, sino que se van entrelazando a medida que avanza el curso. Los motivos para esto quedarán más claros adelante.</p>
+<dl>
+<dt>Teoría de lenguajes:</dt>
+<dd>
+<p>En este tema trataremos sobre los aspectos teóricos de la teoría de lenguajes formales, entre otras cuestiones:</p>
+<ul>
+<li>Definiciones matemáticas y computacionales</li>
+<li>Tipos de lenguajes y características</li>
+<li>Equivalencias y relaciones entre lenguajes</li>
+<li>Problemas interesantes sobre lenguajes</li>
+<li>Relación entre la teoría de lenguajes y la computabilidad</li>
+</ul>
+</dd>
+<dt>Mecanismos de generación:</dt>
+<dd>
+<p>En este tema trataremos las diferentes clases de gramáticas, sus propiedades, los tipos de lenguajes que pueden generar, y algunos algoritmos de conversión entre ellas:</p>
+<ul>
+<li>Jerarquía de gramáticas de Chomsky</li>
+<li>Gramáticas atributadas</li>
+<li>Formas normales y algoritmos de conversión</li>
+</ul>
+</dd>
+<dt>Mecanismos de reconocimiento:</dt>
+<dd>
+<p>En este tema trataremos sobre los autómatas como reconocedores de lenguajes, sus propiedades, y los algoritmos de construcción a partir de las gramáticas correspondientes:</p>
+<ul>
+<li>Tipos de autómatas según el tipo de lenguaje</li>
+<li>Conversión entre autómatas y expresiones regulares</li>
+<li>Autómatas para el problema de <em>parsing</em></li>
+</ul>
+</dd>
+<dt>Análisis semántico:</dt>
+<dd>
+<p>En este tema trataremos los problemas fundamentales de semántica en el contexto de los compiladores y las estrategias de modelación y solución:</p>
+<ul>
+<li>Representaciones semánticas y problemas típicos</li>
+<li>Solución de referencias y <em>aliases</em></li>
+<li>Inferencia de tipos y expresiones</li>
+<li>Validación de pre- y post-condiciones e invariantes</li>
+</ul>
+</dd>
+<dt>Generación de código:</dt>
+<dd>
+<p>En este tema trataremos las diferentes arquitecturas de código de máquina y los problemas asociados:</p>
+<ul>
+<li>Semánticas operacionales</li>
+<li>Arquitecturas de generación código</li>
+<li>Optimizaciones</li>
+</ul>
+</dd>
+<dt>Ejecución de código:</dt>
+<dd>
+<p>En este tema trataremos los problemas que surgen o son resueltos posterior a la generación de código, y que dependen de operaciones especiales por parte del mecanismo de ejecución:</p>
+<ul>
+<li>Intérpretes y máquinas virtuales</li>
+<li>Manejo de excepciones</li>
+<li>Recolección de basura</li>
+</ul>
+</dd>
+</dl>
+<p>La guía general del curso será orientada a la tarea canónica de construir un compilador. Para ello usaremos el lenguaje <code>COOL</code> diseñado específicamente para este propósito. Con esta guía en mente, iremos presentando los contenidos en el orden que sean necesarios para ir avanzando en el propósito de construir el compilador. Por este motivo, a diferencia de otros cursos, no daremos primero toda la teoría de lenguajes formales y luego los algoritmos de <em>parsing</em>, sino que iremos introduciendo elementos teóricos y prácticos según lo vaya requiriendo el compilador que estamos diseñando en clase.</p>
+<p>El objetivo de esta forma de ordenar los contenidos es, en primer lugar, brindar una visión más unificada de todo el proceso de compilación y todas las técnicas, elementos teóricos y cuestiones de diseño. Por otro lado, aspiramos con esto a lograr que los estudiantes realmente obtengan las habilidades planteadas al inicio, al tener que poner desde el principio del curso todo el conocimiento en función de un proyecto práctico.</p>
+</section>
+<section id="evaluación-y-retroalimentación" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="evaluación-y-retroalimentación">Evaluación y retroalimentación</h2>
+<p>Una vez que los estudiantes saben que habilidades obtendrán, entonces se plantea el problema de la evaluación. En este curso consideramos la evaluación como una necesidad y una ventaja para los estudiantes, no como una obligación o una arbitrariedad del profesor. Por eso hemos diseñado un sistema de evaluación que permita a los estudiantes reconocerlo como un mecanismo de retroalimentación que les permite entender su propio avance y optimizar su estudio. Claro que la evaluación tiene un valor externo, que le permite a la sociedad saber quienes están preparados o no. Pero las notas particulares obtenidas en una asignatura no significan nada fuera del sistema educacional. A nadie se le ofrece un trabajo por las notas que obtuvo. Lo que cuenta es graduarse o no. Entonces, ¿por qué se toma tanto trabajo en cuantificar la evaluación? La respuesta es que el número obtenido en una evaluación es una métrica de retroalimentación para que el estudiante sepa en qué grado fue capaz de cumplir las expectativas del profesor.</p>
+<p>Teniendo esta máxima en cuenta, hemos planteado algunos principios básicos que creemos deben guiar el sistema de evaluación del curso. En primer lugar, la idea de que todos los estudiantes deben tener tantas oportunidades como sea posible para experimentar y aprender. Esto significa que deben permitirse fallar sin miedo a ser recriminados. Por tanto, no consideramos ninguna práctica que penalice a los estudiantes por fallar en una evaluación, en particular, todos los estudiantes tienen derecho a todos los exámenes independientemente de los resultados obtenidos anteriormente.</p>
+<p>Por otro lado, queremos incentivar un estudio constante y consistente en vez de un maratón de última hora, por lo que sí aprobamos las prácticas que premien por el trabajo continuado, incluso teniendo en cuenta los posibles errores que hayan cometido. De modo que hemos dividido el curso en 3 grandes conjuntos de habilidades:</p>
+<ul>
+<li>Habilidades teóricas de modelación con lenguajes formales.</li>
+<li>Habilidades en el uso y diseño de algoritmos relacionados con lenguajes.</li>
+<li>Habilidades en el diseño de arquitecturas y patrones para sistemas de procesamiento de lenguajes.</li>
+</ul>
+<p>De forma aproximada podemos incluir todo contenido dado en el curso en uno de estos conjuntos de habilidades. Consideramos en un estudiante que domine de forma efectiva estos tres conjuntos de habilidades, está preparado para enfrentarse a las preguntas y problemáticas típicas de este campo de estudio. Por el mismo motivo, consideramos que es imprescindible haber vencido las tres habilidades para poder aprobar el curso.</p>
+<p>Por tanto, hemos concebido un sistema de evaluación que se compone de 3 exámenes parciales y tres proyectos opcionales, cada par respectivamente orientado a evaluar uno de los tres conjuntos de habilidades mencionados. Los estudiantes que obtienen resultados satisfactorios en cada caso se considera que vencieron dicha habilidad. Al finalizar el curso hay un exámen final que permite a los estudiantes complementar sus resultados hasta el momento, en caso de no haber cumplido todos los objetivos en las evaluaciones parciales.</p>
+<p>Así mismo, se orientarán a menudo tareas de menor envergadura que pueden ayudar también a complementar la comprensión (y la consecuente evaluación) en cualquiera de los temas presentados.</p>
+</section>
+<section id="conclusiones" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="conclusiones">Conclusiones</h2>
+<p>Este curso es un viaje, un viaje por una de las ramas más espectaculares de la historia de la computación, una rama que definió a la computación como ciencia, y que creó algunos de sus héroes más famosos. Es un viaje lleno de dificultades, pero detrás de cada obstáculo hay algo increíble que descubrir. Los que hemos pasado por este viaje les podemos prometer que vale la pena. Pero la mejor forma de experimentarlo no es como espectador, como un simple pasajero. La mejor forma de experimentarlo es coger el timón y decidir ustedes cuáles son los lugares que quieren explorar. Nosotros haremos el mejor esfuerzo por llevarlos allí, pero no les podemos mantener los ojos abiertos. Mirar, oler y tocar todo lo que puedan es responsabilidad de ustedes.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./chap1.html" class="pagination-link" aria-label="---">
+        <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">—</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
