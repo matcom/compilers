@@ -1,18 +1,3 @@
----
----
-
-
-# Setup
-
-```{python}
-import sys
-import os
-sys.path.append(os.path.abspath(os.curdir))
-from source.trees import Tree
-from source.diagrams import Pipeline, Lexer
-```
-
-
 # Gramáticas Atributadas
 
 Hasta el momento hemos visto como obtener un árbol de derivación de un lenguaje, y luego hemos presentado el árbol de sintaxis abstracta como una descripción más cómoda para realizar análisis semántico. Sin embargo, todavía no tenemos un mecanismo para construir un árbol de sintaxis abstracta a partir de un árbol de derivación. En principio, podemos pensar en estrategias *ad-hoc*, y para cada gramática particular escribir un algoritmo que construye el AST. De forma general estos algoritmos serán estrategias recursivas que irán recorriendo el árbol de derivación y computando fragmentos del AST a partir de los fragmentos obtenidos en los nodos hijos. En este capítulo veremos un esquema formal para describir esta clase de algoritmos, que además nos permitirá resolver varios problemas dependientes del contexto de forma elegante y sencilla.
@@ -34,45 +19,60 @@ Empecemos por mostrar, de forma intuitiva, como construir un AST para un árbol 
 
 Una posible jerarquía para el AST de esta gramática es la siguiente:
 
-```cs
-public enum Op { Add, Sub, Mult, Div }
+```python
+from enum import Enum
+from abc import ABC
 
-public abstract class Expression : {
+class Op(Enum):
+    Add = 0
+    Sub = 1
+    Mult = 2
+    Div = 3
 
-}
+class Expression(ABC):
+    pass
 
-public class BinaryExpr : Expression {
-    public Op Operator;
-    public Expression Left;
-    public Expression Right
-}
+class BinaryExpr(Expression):
+    def __init__(self):
+        self.operator: Op = Op.Add
+        self.left: Expression = None
+        self.right: Expression = None
 
-public class Number : Expression {
-    public float Value;
-}
+class Number(Expression):
+    def __init__(self):
+        self.value: float = 0.0
 ```
 
 Supongamos entonces que tenemos un árbol de derivación para una cadena particular. Recordemos que un árbol de derivación es una estructura donde en cada nodo hay un símbolo, y los hijos de dicho nodo coinciden exactamente con los símbolos de la parte derecha de la producción aplicada. Una posible definición de un árbol de derivación para esta gramática particular sería:
 
-```cs
-public enum Symbol { E, T, add, sub, mult, div, i, left, right }
+```python
+from enum import IntEnum
 
-public class Node {
-    public Symbol Symbol;
-    public List<Node> Children = new ...
-}
+class Symbol(IntEnum):
+    E = 0
+    T = 1
+    add = 2
+    sub = 3
+    mult = 4
+    div = 5
+    i = 6
+    left = 7
+    right = 8
+
+class Node:
+    def __init__(self):
+        self.symbol: Symbol = Symbol.E
+        self.children: list[Node] = []
 ```
 
 Supongamos entonces que tenemos un algoritmo de parsing que nos devuelve este árbol de derivación (LR en este caso, dado la gramática que hemos definido). Queremos entonces adicionar un método `GetAST()` en la clase `Node` que nos devuelve un objeto de tipo `Expression`.
 
-```cs
-public class Node {
-    // ...
+```python
+class Node:
+    # ...
 
-    public Expression GetAST() {
-        // ...
-    }
-}
+    def get_ast(self) -> Expression:
+        ...
 ```
 
 De forma general hay 3 patrones distintos en la gramática que nos generan nodos semánticamente distintos en el árbol de derivación:
@@ -85,55 +85,47 @@ Cada uno de estos tipos de producciones genera un nodo particular del AST. Por l
 
 Si la producción es de la forma $X \to Y o Z$, donde $X$, $Y$ y $Z$ son símbolos y $o$ es un operador, creamos un nuevo nodo `BinaryExpr` con el operador adecuado, y los hijos se convierten recursivamente en las expresiones izquierda y derecha:
 
-```cs
-public Expression GetAST() {
-    // X -> Y o Z
-    if (Children.Count == 3 && Children[1].Symbol >= 2) {
-        return new BinaryExpr() {
-            Left  = Children[0].GetAST(),
-            Op    = GetOperator(Children[1]),
-            Right = Children[2].GetAST()
-        };
-    }
-}
+```python
+def get_ast(self) -> Expression:
+    # X -> Y o Z
+    if len(self.children) == 3 and self.children[1].symbol >= 2:
+        return BinaryExpr(
+            left=self.children[0].get_ast(),
+            op=self.get_operator(self.children[1]),
+            right=self.children[2].get_ast()
+        )
 ```
 
 Si la producción es de la forma $X \to Y$, simplemente devolvemos la expresión hija. Notemos que en este caso el resultado que se produce es una "compactación" del árbol de derivación, eliminando las producciones de un solo símbolo:
 
-```cs
-public Expression GetAST() {
-    // ...
-    // X -> Y
-    else if (Children.Count == 1) {
-        return Children[0].GetAST();
-    }
-}
+```python
+def get_ast(self) -> Expression:
+    # ...
+    # X -> Y
+    elif len(self.children) == 1:
+        return self.children[0].get_ast()
 ```
 
 Si la producción es particularmente `F -> ( E )` también devolvemos la expresión hija:
 
-```cs
-public Expression GetAST() {
-    // ...
-    // F -> ( E )
-    else if (Children.Count == 3 && Children[1].Symbol == Symbol.E) {
-        return Children[1].GetAST();
-    }
-}
+```python
+def get_ast(self) -> Expression:
+    # ...
+    # F -> ( E )
+    elif len(self.children) == 3 and self.children[1].symbol == Symbol.E:
+        return self.children[1].get_ast()
 ```
 
 Finalmente, cuando el nodo actual del árbol de derivación es una hoja, tiene que ser un nodo `i` y se crea la expresión unaria `Number`:
 
-```cs
-public Expression GetAST() {
-    // ...
-    // i
-    else if (Children.Count == 0 && Symbol == Symbol.i) {
-        return new Number() { Value = /* valor del token */ };
-    }
+```python
+def get_ast(self) -> Expression:
+    # ...
+    # i
+    elif len(self.children) == 0 and self.symbol == Symbol.i:
+        return Number(value=self.token_value)
 
-    throw new InvalidParseTreeException("xP");
-}
+    raise InvalidParseTreeException("xP")
 ```
 
 ## Reglas y atributos semánticos
@@ -271,20 +263,19 @@ En el caso anterior, nuestro grafo de dependencias es justamente un árbol, dond
 
 Para evaluar los atributos en una gramática s-atributada, podemos seguir una estrategia como la siguiente. Asumiremos que durante la construcción del árbol de derivación, el *parser* introduce en cada nodo una lista de todas las reglas semánticas asociadas a dicha producción, y que los atributos están definidos en cada símbolo.
 
-```cs
-public class Node {
-    public Symbol Symbol;
-    public List<Node> Children;
-    public List<Rule> Rules;
+```python
+class Node:
+    def __init__(self):
+        self.symbol: Symbol = Symbol.E
+        self.children: list[Node] = []
+        self.rules: list[Rule] = []
 
-    public void EvaluateSynthesized() {
-        foreach(var node in Children)
-            node.EvaluateSynthesized();
+    def evaluate_synthesized(self):
+        for node in self.children:
+            node.evaluate_synthesized()
 
-        foreach(var rule in Rules)
-            rule.evaluate(Symbol, Children);
-    }
-}
+        for rule in self.rules:
+            rule.evaluate(self.symbol, self.children)
 ```
 
 Veamos entonces otro caso un poco más general, donde también podemos decir de antemano que la gramática es evaluable. Este es el caso cuando todo atributo es, o bien sintetizado, o si es heredado, solo depende de atributos de símbolos que le anteceden en la producción. Es decir, si tenemos una regla $Y_i \cdot a_i = f(X \cdot a, Y_1 \cdot a_1, \ldots, Y_{i-1} \cdot a_{i-1})$. A estas gramáticas las llamaremos **gramáticas l-atributadas** (donde *l* viene de *left*), ya que todo atributo depende solo de atributos que se evalúan antes en el pre-orden. En este caso, también podemos siempre evaluar la gramática haciendo un recorrido en profundidad, aunque es un poco más complicado que para el caso anterior. En cada llamado recursivo, primero evaluaremos los atributos heredados, pues solo dependen de atributos en los hermanos anteriores y el padre. Luego descendemos recursivamente en cada hijo, y al retornar, evaluamos los atributos sintetizados en el nodo actual. Formalizando:
@@ -295,24 +286,23 @@ Veamos entonces otro caso un poco más general, donde también podemos decir de 
 
 Y un ejemplo de cómo evaluar los atributos, suponiendo que el *parser* es capaz de suministrar en par de listas separadas aquellas reglas que sintetizan atributos de las que los heredan. Supongamos que cada nodo recibe además una referencia al nodo padre en el árbol de derivación (para poder acceder a los hermanos). En el nodo raíz simplemente pasaremos `null` como padre:
 
-```cs
-public class Node {
-    public Symbol Symbol;
-    public List<Node> Children;
-    public List<Rule> SyntethicRules;
-    public List<Rule> InheritedRules;
+```python
+class Node:
+    def __init__(self):
+        self.symbol: Symbol = Symbol.E
+        self.children: list[Node] = []
+        self.synthetic_rules: list[Rule] = []
+        self.inherited_rules: list[Rule] = []
 
-    private void EvaluateInherited(Node parent) {
-        foreach(var rule in InheritedRules)
-            rule.evaluate(Symbol, parent, parent.Children);
+    def evaluate_inherited(self, parent: "Node"):
+        for rule in self.inherited_rules:
+            rule.evaluate(self.symbol, parent, parent.children)
 
-        foreach(var node in Children)
-            node.EvaluateInherited(this);
+        for node in self.children:
+            node.evaluate_inherited(self)
 
-        foreach(var rule in SyntheticRules)
-            rule.evaluate(Symbol, Children);
-    }
-}
+        for rule in self.synthetic_rules:
+            rule.evaluate(self.symbol, self.children)
 ```
 
 ## Evaluando atributos durante el proceso de *parsing* descendente

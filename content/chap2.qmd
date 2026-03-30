@@ -1,19 +1,4 @@
----
----
-
-
-# Setup
-
-```{python}
-import sys
-import os
-sys.path.append(os.path.abspath(os.curdir))
-from source.trees import Tree
-from source.diagrams import Pipeline, Lexer
-```
-
-
-# Parsing Descendente (*Top-Down*)
+# Parsing Descendente
 
 Hasta el momento hemos visto el proceso de compilación a grandes razgos, y hemos definido que la primera fase consiste en el análisis sintáctico. Esta fase a su vez la hemos divido en 2 procesos secuenciales: el análisis lexicográfico (*tokenización* o *lexing*), y el análisis sintáctico en sí (*parsing*). En esta sección nos concentraremos en este segundo proceso.
 
@@ -89,150 +74,142 @@ De forma general, tenemos tres tipos de operaciones o situaciones que analizar:
 
 Para cada una de estas situaciones, vamos a tener un conjunto de métodos. Para representar la cadena a reconocer, necesitamos mantener un estado global que indique la parte reconocida de la cadena. Diseñemos una clase para ello:
 
-```cs
-interface IParser {
-    bool Parse(Token[] tokens);
-}
+```python
+class IParser(ABC):
+    def parse(self, tokens: list) -> bool:
+        ...
 
-class RecursiveParser : IParser {
-    Token[] tokens;
-    int nextToken;
-
-    //...
-}
+class RecursiveParser(IParser):
+    def __init__(self):
+        self.tokens = []
+        self.next_token = 0
 ```
 
 Para reconocer un terminal, tendremos un método cuya función es a la vez decidir si se reconoce el terminal, y avanzar en la cadena:
 
-```cs
-bool Match(Token token) {
-    return tokens[nextToken++] == token;
-}
+```python
+def match(self, token):
+    result = self.tokens[self.next_token] == token
+    self.next_token += 1
+    return result
 ```
 
 A cada no-terminal vamos a asociar un método recursivo cuya función es determinar si el no-terminal correspondiente genera una sub-cadena "adecuada" del lenguaje. Por ejemplo, para el caso de la gramática anterior, tenemos los siguientes métodos:
 
-```cs
-bool E() {
-    // Parsea un no-terminal E
-}
+```python
+def e(self) -> bool:
+    # Parsea un no-terminal E
+    ...
 
-bool T() {
-    // Parsea un no-terminal T
-}
+def t(self) -> bool:
+    # Parsea un no-terminal T
+    ...
 ```
 
 La semántica de cada uno de estos métodos es que devuelven `true` si y solo si el no-terminal correspondiente genera una parte de la cadena, comenzando en la posición `nextToken`. Tratemos de escribir el código del método `E`. Para ello, recordemos que el símbolo `E` deriva en 2 producciones: `E -> T` y `E -> T + E`. Por tanto, de forma recursiva podemos decir que `E` genera esta cadena si y solo si la genera a partir de una de estas dos producciones. El primer caso es fácil: `E` genera la cadena a partir de derivar en `T` si y solo si `T` a su vez genera dicha cadena, y ya tenemos un método para eso:
 
-```cs
-bool E1() {
-    // E -> T
-    return T();
-}
+```python
+def e1(self) -> bool:
+    # E -> T
+    return self.t()
 ```
 
 Para el segundo caso, notemos que la producción `E -> T + E` básicamente lo que dice es: necesitamos generar una cadena a partir de `E`, de forma tal que primero se genere una parte con `T`, luego se genere un `+` y luego se genere otra parte con `E`. Dado que ya tenemos todos los métodos necesarios:
 
-```cs
-bool E2() {
-    // E -> T + E
-    return T() && Match(Token.Plus) && E();
-}
+```python
+def e2(self) -> bool:
+    # E -> T + E
+    return self.t() and self.match(Token.Plus) and self.e()
 ```
 
 Aprovechamos el operador `&&` con cortocircuito para podar lo antes posible el intento de generar la cadena, de forma que el primero de estos tres métodos que falle ya nos permite salir de esa rama recursiva. Ahora que tenemos métodos para cada producción, podemos finalmente develar el cuerpo del método `E`:
 
-```cs
-bool E() {
-    int currToken = nextToken;
-    if (E1()) return true;
+```python
+def e(self) -> bool:
+    curr_token = self.next_token
+    if self.e1():
+        return True
 
-    nextToken = currToken;
-    if (E2()) return true;
+    self.next_token = curr_token
+    if self.e2():
+        return True
 
-    return false;
-}
+    return False
 ```
 
 Este método simplemente prueba cada una de las producciones en orden, teniendo cuidado de retornar `nextToken` a su valor original tras cada llamado recursivo fallido. Así mismo, podemos escribir el método asociado al símbolo `T`, basado en los métodos correspondientes a cada producción:
 
-```cs
-bool T1() {
-    // T -> int * T
-    return Match(Token.Int) && Match(Token.Times) && T();
-}
+```python
+def t1(self) -> bool:
+    # T -> int * T
+    return self.match(Token.Int) and self.match(Token.Times) and self.t()
 
-bool T2() {
-    // T -> int
-    return Match(Token.Int);
-}
+def t2(self) -> bool:
+    # T -> int
+    return self.match(Token.Int)
 
-bool T3() {
-    // T -> (E)
-    return Match(Token.Open) && E() && Match(Token.Closed)
-}
+def t3(self) -> bool:
+    # T -> (E)
+    return self.match(Token.Open) and self.e() and self.match(Token.Closed)
 ```
 
 Y el método general para `T` queda así:
 
-```cs
-bool T() {
-    int currToken = nextToken;
-    if (T1()) return true;
+```python
+def t(self) -> bool:
+    curr_token = self.next_token
+    if self.t1():
+        return True
 
-    nextToken = currToken;
-    if (T2()) return true;
+    self.next_token = curr_token
+    if self.t2():
+        return True
 
-    nextToken = currToken;
-    if (T3()) return true;
+    self.next_token = curr_token
+    if self.t3():
+        return True
 
-    return false;
-}
+    return False
 ```
 
 Es posible hacer estos métodos más compactos introduciendo un nuevo método auxiliar:
 
-```cs
-bool Reset(int pos) {
-    nextToken = pos;
-    return true;
-}
+```python
+def reset(self, pos):
+    self.next_token = pos
+    return True
 ```
 
 Este método nos permite reescribir cada método con una sola expresión, haciendo uso del operador `||` con cortocircuito:
 
-```cs
-bool E() {
-    int n = nextToken;
-    return E1() || Reset(n) && E2();
-}
+```python
+def e(self) -> bool:
+    n = self.next_token
+    return self.e1() or self.reset(n) and self.e2()
 
-bool T() {
-    int n = nextToken;
-    return T1() || Reset(n) && T2() || Reset(n) && T3();
-}
+def t(self) -> bool:
+    n = self.next_token
+    return self.t1() or self.reset(n) and self.t2() or self.reset(n) and self.t3()
 ```
 
 Finalmente, para reconocer la cadena completa, solo nos queda garantizar que se hayan consumido todos los *tokens*:
 
-```cs
-bool Parse(Token[] tokens) {
-    this.tokens = tokens;
-    nextToken = 0;
+```python
+def parse(self, tokens: list) -> bool:
+    self.tokens = tokens
+    self.next_token = 0
 
-    return E() && nextToken == tokens.Length;
-}
+    return self.e() and self.next_token == len(tokens)
 ```
 
 Usualmente por comodidad se asume que existe un terminal especial `$` generado directamente por el Lexer al final de toda cadena. Esto se hace para poder generalizar desde el punto de vista teórico, y no tener que especificar siempre si estamos al final de la cadena o no. Si nuestro Lexer produce este token, al que llamaremos `Token.EOF` en el código, entonces podemos reescribir el método anterior de la siguiente forma:
 
-```cs
-bool Parse(Token[] tokens) {
-    this.tokens = tokens;
-    nextToken = 0;
+```python
+def parse(self, tokens: list) -> bool:
+    self.tokens = tokens
+    self.next_token = 0
 
-    return E() && Match(Token.EOF); // <-- Este es el cambio
-}
+    return self.e() and self.match(Token.EOF)  # <-- Este es el cambio
 ```
 
 Esta metodología para crear parsers recursivos descendentes puede ser aplicada fácilmente a cualquier gramática libre del contexto. Sin embargo, no todas las gramáticas pueden ser reconocidas de esta forma. Según la estructura de la gramática, es posible que el parser definido no funcione correctamente.
@@ -245,11 +222,10 @@ Consideremos ahora la siguiente gramática:
 
 Para esta gramática, el parser recursivo descendente queda de la siguiente forma (simplificada):
 
-```cs
-bool S() {
-    int c = nextToken;
-    return S() && Match(Token.A) || Reset(n) && Match(Token.B);
-}
+```python
+def s(self) -> bool:
+    c = self.next_token
+    return self.s() and self.match(Token.A) or self.reset(n) and self.match(Token.B)
 ```
 
 El problema evidente con este parser es que al intentar reconocer el símbolo `S` el algoritmo cae en una recursión infinita. Este tipo de gramáticas se denominan gramáticas con recursión izquierda, que definiremos así:
@@ -387,68 +363,62 @@ La definición de `Follow(X)` básicamente nos dice que si en algún momento el 
 
 Supongamos entonces que tenemos todos estos conjuntos calculados (o potencialmente calculables en cualquier momento). ¿Cómo podemos utilizarlos para guiar la búsqueda del árbol de derivación correcto? Veamos como podría quedar el método recursivo descendente para generar `T` en esta nueva gramática:
 
-```cs
-bool T() {
-    // T -> int Y
-    if (tokens[currToken] == Token.Int)
-        return Match(Token.Int) && Y();
+```python
+def t(self) -> bool:
+    # T -> int Y
+    if self.tokens[self.curr_token] == Token.Int:
+        return self.match(Token.Int) and self.y()
 
-    // T -> ( E )
-    else if (tokens[currToken] == Token.Open)
-        return Match(Token.Open) && E() && Match(Token.Close);
+    # T -> ( E )
+    elif self.tokens[self.curr_token] == Token.Open:
+        return self.match(Token.Open) and self.e() and self.match(Token.Close)
 
-    return false;
-}
+    return False
 ```
 
 Como `T` siempre genera un token, es fácil decidir qué camino escoger. Por otro lado, en la expansión de `X`, es posible que sea necesario escoger `X -> epsilon`. En este caso, el método recursivo sería:
 
-```cs
-bool X() {
-    // X -> + E
-    if (tokens[nextToken] == Token.Plus)
-        return Match(Token.Plus) && E()
+```python
+def x(self) -> bool:
+    # X -> + E
+    if self.tokens[self.next_token] == Token.Plus:
+        return self.match(Token.Plus) and self.e()
 
-    // X -> epsilon
-    else if (Follow("X").Contains(tokens[currToken]))
-        return true;
+    # X -> epsilon
+    elif Token.EOF in self.follow["X"]:
+        return True
 
-    return false;
-}
+    return False
 ```
 
 En el caso de `X -> epsilon`, simplemente retornamos `true` de inmediato y no consumimos el terminal correspondiente.
 
 De forma general, podemos escribir cualquier método recursivo descendente de la siguiente forma (asumimos algunos métodos y clases utilitarios que no presentaremos formalmente):
 
-```cs
-bool Expand(NonTerminal N) {
-    foreach(var p in N.Productions) {
-        if (!p.IsEpsilon && First(p).Contains(tokens[nextToken]))
-            return MatchProduction(p);
+```python
+def expand(self, n: NonTerminal) -> bool:
+    for p in n.productions:
+        if not p.is_epsilon and self.first(p).contains(self.tokens[self.next_token]):
+            return self.match_production(p)
 
-        if (p.IsEpsilon && Follow(N).Contains(tokens[nextToken]))
-            return true;
-    }
+        if p.is_epsilon and self.follow[n].contains(self.tokens[self.next_token]):
+            return True
 
-    return false;
-}
+    return False
 ```
 
 El método `MatchProduction` puede a grandes razgos implementarse de la siguiente forma:
 
-```cs
-bool MatchProduction(Production p) {
-    foreach(var symbol in p.Symbols) {
-        if (symbol.IsTerminal && !Match(symbol as Token))
-            return false;
+```python
+def match_production(self, p: Production) -> bool:
+    for symbol in p.symbols:
+        if symbol.is_terminal and not self.match(symbol):
+            return False
 
-        if (!symbol.IsTerminal && !Expand(symbol as NonTerminal))
-            return false;
-    }
+        if not symbol.is_terminal and not self.expand(symbol):
+            return False
 
-    return true;
-}
+    return True
 ```
 
 En todos estos casos hemos asumido que la primera producción aplicable era la única posible. Para ello deben cumplirse ciertas restricciones entre los conjuntos `First` y `Follow` que formalizaremos a continuación.
@@ -467,82 +437,66 @@ Para poder formalizar este concepto, será conveniente primero encontrar algorit
 
 Las observaciones anteriores nos permiten diseñar un algoritmo para calcular todos los conjuntos `First(X)` para cada no-terminal `X`. Como de forma general pueden existir producciones recursivas, calcularemos todos los conjuntos `First` a la vez, aplicando cada una de las "reglas" anteriores, hasta que no se modifique ninguno de los conjuntos `First`. Nuevamente abusaremos de la imaginación y creatividad para introducir métodos y clases utilitarias sin definirlos de manera formal.
 
-```cs
-Firsts CalculateFirsts(Grammar G) {
-    var Firsts = new Firsts(); // Parecido a un Diccionario
+```python
+def calculate_firsts(g: Grammar) -> Firsts:
+    firsts = Firsts()
 
-    // Calculamos el First de cada terminal
-    foreach(var t in G.Terminals) {
-        Firsts[t] = new FirstSet() { t };
-    }
-    foreach(var T in G.NonTerminals) {
-        Firsts[T] = new FirstSet(); // Parecido a un HashSet
-    }
+    for t in g.terminals:
+        firsts[t] = {t}
+    for T in g.non_terminals:
+        firsts[T] = set()
 
-    bool changed;
+    changed = True
 
-    do {
-        changed = false;
+    while changed:
+        changed = False
 
-        // Vamos por cada producción
-        foreach(var p in G.Productions) {
-            // X -> W
-            var X = p.Left;
-            var W = p.Right;
+        for p in g.productions:
+            X = p.left
+            W = p.right
 
-            if (p.IsEpsilon) { // X -> epsilon
-                changed = Firsts[X].Add(epsilon);
-            }
-            else {
-                bool allEpsilon = true;
+            if p.is_epsilon:
+                if epsilon not in firsts[X]:
+                    firsts[X].add(epsilon)
+                    changed = True
+            else:
+                all_epsilon = True
 
-                foreach(var s in W) {
-                    // Agregamos todo en el First(s)
-                    changed = Firsts[X].AddAll(Firsts[s]);
+                for s in W:
+                    new_symbols = firsts[s] - firsts[X]
+                    if new_symbols:
+                        firsts[X].update(new_symbols)
+                        changed = True
 
-                    // Si s_i deriva en epsilon,
-                    // agregamos también el First(s_i+1)
-                    if (!Firsts[s].Contains(epsilon)) {
-                        allEpsilon = false;
-                        break;
-                    }
-                }
+                    if epsilon not in firsts[s]:
+                        all_epsilon = False
+                        break
 
-                // Si todos los s_i derivan en epsilon
-                // entonces epsilon pertenece al First(X)
-                if (allEpsilon) {
-                    changed = Firsts[X].Add(epsilon);
-                }
-            }
-        }
-    } while (changed);
+                if all_epsilon and epsilon not in firsts[X]:
+                    firsts[X].add(epsilon)
+                    changed = True
 
-    return Firsts;
-}
+    return firsts
 ```
 
 El algoritmo anterior computa todos los conjuntos `First` de todos los terminales y no-terminales a la vez. Hemos supuesto la existencia de estructuras de datos `Firsts` y `FirstSet` con operaciones convenientes para ello. Estas estructuras se implementan fácilmente usando diccionarios y conjuntos. Una vez obtenidos todos los `First` anteriores, podemos calcular fácilmente el `First` de cualquier forma oracional.
 
-```cs
-FirstSet CalculateFirst(Symbol[] p, Firsts firsts) {
-    FirstSet result = new FirstSet();
-    bool allEpsilon = true;
+```python
+def calculate_first(p: list, firsts: Firsts) -> set:
+    result = set()
+    all_epsilon = True
 
-    foreach(var s in p) {
-        result.AddAll(Firsts[s]);
+    for s in p:
+        result.update(firsts[s])
 
-        if (!Firsts[s].Contains(epsilon)) {
-            allEpsilon = false;
-            break;
-        }
-    }
+        if epsilon not in firsts[s]:
+            all_epsilon = False
+            break
 
-    if (allEpsilon) {
-        result.Add(epsilon);
-    }
+    if all_epsilon:
+        result.add(epsilon)
 
-    return result;
-}
+    return result
 ```
 
 Básicamente este nuevo algoritmo consiste en repetir la parte más interna del algoritmo anterior, así que no son necesarias más explicaciones.
@@ -556,43 +510,41 @@ Pasemos entonces a calcular el conjunto `Follow` de cada no-terminal. Para ello,
 
 De la misma forma que en el caso del conjunto `First`, dado que las relaciones entre los `Follow` de cualquier par de no-terminales pueden ser recursivas, diseñaremos un algoritmo que los computa a todos a la misma vez:
 
-```cs
-Follows CalculateFollows(Grammar G, Firsts firsts) {
-    var Follows = new Follows();
+```python
+def calculate_follows(g: Grammar, firsts: Firsts) -> Follows:
+    follows = Follows()
 
-    Follows[S] = new FollowSet() { Token.EOF };
+    follows[g.start] = {Token.EOF}
 
-    foreach(var X in G.NonTerminals) {
-        Follows[X] = new FollowSet();
-    }
+    for X in g.non_terminals:
+        follows[X] = set()
 
-    bool changed;
+    changed = True
 
-    do {
-        changed = false;
+    while changed:
+        changed = False
 
-        foreach(var p in G.Productions) {
-            // X -> W
-            var X = p.First;
-            var W = p.Last;
+        for p in g.productions:
+            X = p.left
+            W = p.right
 
-            for(int i=0; i < W.Length; i++) {
-                var S = W[i];
+            for i, s in enumerate(W):
+                if s.is_terminal:
+                    continue
 
-                if (S.IsTerminal)
-                    continue;
+                first = calculate_first(W[i+1:], firsts)
+                new_symbols = first - {epsilon} - follows[s]
+                if new_symbols:
+                    follows[s].update(new_symbols)
+                    changed = True
 
-                var first = CalculateFirst(W.Sufix(i+1));
-                changed = Follows[S].AddAll(first.Remove(epsilon));
+                if epsilon in first or i == len(W) - 1:
+                    new_symbols = follows[X] - follows[s]
+                    if new_symbols:
+                        follows[s].update(new_symbols)
+                        changed = True
 
-                if (first.Contains(epsilon) || i == W.Length - 1) {
-                    changed = Follows[S].AddAll(Follows[X]);
-                }
-            }
-        }
-
-    } while (changed);
-}
+    return follows
 ```
 
 Una vez tenemos todos los conjuntos `First` y `Follow` calculados, podemos decir formalmente en qué consiste una gramática LL(1). Para ello, construiremos una tabla `T`, donde asociaremos a cada par no-terminal `X` / token `t` una producción (a lo sumo). Dicha producción es la única que tiene sentido aplicar si se debe expandir el no-terminal `X` y el token actual es `t`.
@@ -691,32 +643,28 @@ Una vez obtenida la tabla LL(1) podemos escribir un algoritmo de parsing descend
 
 El símbolo en el tope de la pila representa el terminal o no-terminal a analizar. En caso de ser un terminal, debe coincidir con el token analizado. En caso de ser un no-terminal, se consulta la tabla LL(1) y se ejecuta la producción correspondiente, insertando en la pila (en orden inverso) la forma oracional en que deriva el no-terminal extraído:
 
-```cs
-bool NonRecursiveParse(Grammar G, Token[] tokens) {
-    Stack<Symbol> stack = new Stack<Symbol>() { G.Start };
-    int nextToken = 0;
-    LLTable table = BuildLLTable(G);
+```python
+def non_recursive_parse(self, g: Grammar, tokens: list) -> bool:
+    stack = [g.start]
+    next_token = 0
+    table = build_ll_table(g)
 
-    while (stack.Count > 0 && nextToken < tokens.Length) {
-        var symbol = stack.Pop();
+    while stack and next_token < len(tokens):
+        symbol = stack.pop()
 
-        if (symbol.IsTerminal && tokens[nextToken++] != symbol.Value) {
-            return false;
-        }
-        else if (symbol.IsNonTerminal) {
-            var prod = LLTable[symbol, tokens[nextToken]];
+        if symbol.is_terminal and tokens[next_token] != symbol.value:
+            next_token += 1
+            return False
+        elif symbol.is_non_terminal:
+            prod = table[(symbol, tokens[next_token])]
 
-            if (prod == null)
-                return false;
+            if prod is None:
+                return False
 
-            for(var s in prod.Reverse()) {
-                stack.Push(s);
-            }
-        }
-    }
+            for s in reversed(prod):
+                stack.append(s)
 
-    return stack.Count == 0 && nextToken == tokens.Length;
-}
+    return len(stack) == 0 and next_token == len(tokens)
 ```
 
 En la práctica la mayoría de las gramáticas interesantes no son LL(1). Sin embargo, con suficiente esfuerzo pueden lograrse gramáticas LL(k) para un valor k > 1, que también pueden ser parseadas con técnicas similares. Por otro lado, para gramáticas suficientemente simples (como las expresiones aritméticas) este parser es muy eficiente, y fácil de implementar.

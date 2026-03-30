@@ -1,18 +1,3 @@
----
----
-
-
-# Setup
-
-```{python}
-import sys
-import os
-sys.path.append(os.path.abspath(os.curdir))
-from source.trees import Tree
-from source.diagrams import Pipeline, Lexer
-```
-
-
 # Análisis Semántico
 
 ``` {python}
@@ -306,82 +291,85 @@ Para diseñar el AST de este lenguaje, pensemos en las diferentes funciones sem�
 
 Comencemos entonces por el inicio. De forma general es convieniente diseñar una jerarquía de clases con una raíz `Node` (o de nombre similar) que nos representa cualquier nodo del AST. Agrupar todos los nodos del AST en una jerarquía común nos permite definir funciones abstractas sobre todos los nodos (que usaremos para el chequeo semántico más adelante). Por tanto, comenzamos por ahí:
 
-```cs
-public abstract class Node {
-    //...
-}
+```python
+class Node(ABC):
+    ...
 ```
 
 A diferencia del árbol de derivación, en esta clase `Node` no hemos puesto explícitamente una propiedad `Children` ni nada similar. Esto se debe a que en el AST en principio cada hijo de un nodo tiene una función semántica propia. Por tanto, en vez de tener una lista de hijos general, es preferible en cada subclase defnir exactamente que nodos (y de qué tipo) son los hijos esperados. De modo que no tendremos un "árbol" en el sentido puro como estructura de datos, sino una colección de clases relacionadas entre sí, cuya estructura en memoria será un árbol.
 
 La primera función semántica que necesitamos es aquella que nos represente a nuestro programa. Como hemos visto en la gramática, un programa simplemente es una colección de instrucciones (*statements*), por lo tanto, necesitamos también definir esta función semántica.
 
-```cs
-public class Program {
-    public List<Statement> Statements;
-}
+```python
+class Program:
+    def __init__(self):
+        self.statements: list[Statement] = []
 
-public abstract class Statement {
-    //...
-}
+class Statement(ABC):
+    ...
 ```
 
 Notar que hemos definido a `Program` como una clase concreta, pero a `Statement` como a una clase abstracta. Esto se debe a que tenemos diversos tipos de instrucciones concretas, pero la instrucción "base" en sí no es realmente una función semántica propia. Una regla más o menos común es que cuando un no-terminal deriva en más de una producción, cada una de esas producciones puede corresponder a una función semántica distinta. Sin embargo, en otros casos, un no-terminal deriva en más de una producción por motivos puramente sintácticos, como en el caso de `<stat-list>`, cuya única función es describir una lista de instrucciones. En el AST, no tiene mucho sentido tener un nodo particular para una lista de instrucciones, y por tanto en `Program` tenemos esta lista de forma explícita.
 
 Veamos entonces los tres tipos concretos de instrucciones:
 
-```cs
-public class LetVar : Statement {
-    public string Identifier;
-    public Expression Expr;
-}
+```python
+class LetVar(Statement):
+    def __init__(self):
+        self.identifier: str = ""
+        self.expr: Expression = None
 
-public class DefFunc : Statement {
-    public string Identifier;
-    public List<string> Arguments;
-    public Expression Expr;
-}
+class DefFunc(Statement):
+    def __init__(self):
+        self.identifier: str = ""
+        self.arguments: list[str] = []
+        self.expr: Expression = None
 
-public Print : Statement {
-    public Expression Expr;
-}
+class Print(Statement):
+    def __init__(self):
+        self.expr: Expression = None
 ```
 
 El motivo por el que estos nodos son herederos de `Statement` es justamente para poder definir en `Program` una lista de diferentes tipos de instrucciones. De modo que estamos la herencia solamente para definir estructura, y no para aprovecharnos del polimorfismo (ya que no tenemos comportamiento en los nodos). Esto cambiará más adelante cuando nos interesemos por la verificación semántica.
 
 Vamos a definir la parte de la jerarquía que representa las expresiones en sí. En la gramática tenemos los no-terminales `<expr>`, `<term>`, `<factor>` y `<atom>` que nos sirven para definir la prioridad de los operadores. Sin embargo, desde el punto de vista semántico, todos estos no-terminales juegan el mismo papel. Por ejemplo, las expresiones binarias, desde el punto de vista semántico, son prácticamente idénticas. La única diferencia es el operador concreto a aplicar. De modo que podemos tener **una única clase** de expresión binaria:
 
-```cs
-public enum Operator { Add, Sub, Mult, Div }
+```python
+from enum import Enum
 
-public abstract class Expression : Node {
-    //...
-}
+class Operator(Enum):
+    Add = 0
+    Sub = 1
+    Mult = 2
+    Div = 3
 
-public class BinaryExpr : Expression {
-    public Operator Op;
-    public Expression Left;
-    public Expression Right;
-}
+class Expression(Node, ABC):
+    ...
+
+class BinaryExpr(Expression):
+    def __init__(self):
+        self.op: Operator = Operator.Add
+        self.left: Expression = None
+        self.right: Expression = None
 ```
 
 Este diseño puede parecer a algunos "anti-orientado-a-objetos", pues no estamos definiendo una clase por cada tipo de expresión binaria. La discusión de cuál diseño es mejor es mucho más compleja que lo que podemos abordar en este párrafo. Solamente diremos algo a favor de este enfoque, y es que, al menos de momento, si tuviéramos una clase `MultNode` y una clase `AddNode`, estas serían exactamente iguales. Por lo tanto, como no tenemos comportamiento **ni** estructura distintos en ambas clases, no tiene sentido, al menos de momento, tener una clase por cada tipo de operador. Más adelante revisaremos esta hipótesis y tendremos una discusión más profunda al respecto.
 
 Nos quedan entonces tres tipos de expresiones: constante numérica, variable y llamada a una función. Para cada una de estas tendremos una clase distinta, pues tienen estructura diferente:
 
-```cs
-public class FuncCall : Expression {
-    public string Identifier;
-    public List<Expression> Args;
-}
+```python
+class FuncCall(Expression):
+    def __init__(self):
+        self.identifier: str = ""
+        self.args: list[Expression] = []
 
-public class Variable : Expression {
-    public string Identifier;
-}
+class Variable(Expression):
+    def __init__(self):
+        self.identifier: str = ""
 
-public class Number : Expression {
-    public string Value;
-}
+class Number(Expression):
+    def __init__(self):
+        self.value: str = ""
 ```
 
 Hemos definido la clase `Number` con un valor de tipo `string`, ya que, en principio, no es hasta el chequeo semántico que nos interesa saber el valor concreto del número que este token representa. Por lo tanto, podemos pensar que ni el *lexer* ni el *parser* se interesarán por obtener este valor.
@@ -408,117 +396,116 @@ De manera general, el enfoque que usaremos será el siguiente. Cada regla semán
 
 Por otro lado, notemos que la mayoría de las reglas semánticas nos hablan sobre las definiciones y uso de las variables y funciones. De hecho, por este motivo es justamente que dichas reglas son dependientes del contexto. De modo que, intuitivamente, en cada nodo necesitaremos tener acceso a este "contexto", donde pueden estar definidas las funciones y variables que su usan en dicho nodo. Dado que tenemos todo el AST construido, cabe pensar que dicho contexto se puede calcular en un recorrido sobre el árbol. De hecho, como veremos, en el mismo recorrido que vamos validando las reglas semánticas, iremos construyendo el contexto correspondiente.   Vamos entonces a diseñar una estructura de datos que nos represente dicho contexto. En esta estructura tenemos que almacenar las funciones y variables definidas (en el caso de las funciones con la cantidad de argumentos), y poder consultar en todo momento qué es lo definido. Supongamos entonces que tenemos una implementación de la siguiente **interface**:
 
-```cs
-public interface IContext {
-    bool IsDefined(string variable);
-    bool IsDefined(string function, int args);
-    bool Define(string variable);
-    bool Define(string function, string[] args);
-}
+```python
+class IContext(ABC):
+    @abstractmethod
+    def is_defined(self, variable: str) -> bool:
+        ...
+
+    @abstractmethod
+    def is_defined(self, function: str, args: int) -> bool:
+        ...
+
+    @abstractmethod
+    def define(self, variable: str) -> bool:
+        ...
+
+    @abstractmethod
+    def define(self, function: str, args: list[str]) -> bool:
+        ...
 ```
 
 Agregamos entonces el método siguiente:
 
-```cs
-public abstract class Node {
-    public abstract bool Validate(IContext context);
-}
+```python
+class Node(ABC):
+    @abstractmethod
+    def validate(self, context: IContext) -> bool:
+        ...
 ```
 
 Veamos entonces como se implementa esta validación en los nodos concretos. En el caso de `Program` es muy sencillo, el programa está correcto solo si cada una de las instrucciones que lo componen se valida correctamente:
 
-```cs
-public class Program : Node {
-    public List<Statement> Statements;
+```python
+class Program(Node):
+    def __init__(self):
+        self.statements: list[Statement] = []
 
-    public override bool Validate(IContext context) {
-        foreach(var st in Statements) {
-            if (!st.Validate(context)) {
-                return false;
-            }
+    def validate(self, context: IContext) -> bool:
+        for st in self.statements:
+            if not st.validate(context):
+                return False
 
-            return true;
-        }
-    }
-}
+        return True
 ```
 
 Pasemos entonces a la validación de las expresiones, cuyas regla semántica fundamental es que todos los identificadores usados tienen que haber sido definidos antes. En el caso de las expresiones binarias es muy sencillo:
 
-```cs
-public class BinaryExpr : Expression {
-    public Operator Op;
-    public Expression Left;
-    public Expression Right;
+```python
+class BinaryExpr(Expression):
+    def __init__(self):
+        self.op: Operator = Operator.Add
+        self.left: Expression = None
+        self.right: Expression = None
 
-    public override bool Validate(IContext context) {
-        return Left.Validate(context) && Right.Validate(context);
-    }
-}
+    def validate(self, context: IContext) -> bool:
+        return self.left.validate(context) and self.right.validate(context)
 ```
 
 Ahora, en el caso de las expresiones atómicas es donde realmente sucede lo importante. Comezamos por el caso más sencillo:
 
-```cs
-public class Number : Expression {
-    public string Value;
+```python
+class Number(Expression):
+    def __init__(self):
+        self.value: str = ""
 
-    public override bool Validate(IContext context) {
-        return true;
-    }
-}
+    def validate(self, context: IContext) -> bool:
+        return True
 ```
 
 Veamos entonces el caso del nodo `Variable`. Este nodo nos representa una variable siendo usada como parte de una expresión, por lo tanto, como dice la regla semántica, tiene que haber sido definida antes:
 
-```cs
-public class Variable : Expression {
-    public string Identifier;
+```python
+class Variable(Expression):
+    def __init__(self):
+        self.identifier: str = ""
 
-    public override bool Validate(IContext context) {
-        return context.IsDefined(Identifier);
-    }
-}
+    def validate(self, context: IContext) -> bool:
+        return context.is_defined(self.identifier)
 ```
 
 Por último, para el caso de una función, la validación es muy similar, pero teniendo en cuenta la cantidad de argumentos. Además, dado que una invocación a función define recursivamente un conjunto de expresiones para los valores de cada argumento, es necesario validar cada una:
 
-```cs
-public class FuncCall : Expression {
-    public string Identifier;
-    public List<Expression> Args;
+```python
+class FuncCall(Expression):
+    def __init__(self):
+        self.identifier: str = ""
+        self.args: list[Expression] = []
 
-    public override bool Validate(IContext context) {
-        foreach(var expr in Args) {
-            if (!expr.Validate(context)) {
-                return false;
-            }
-        }
+    def validate(self, context: IContext) -> bool:
+        for expr in self.args:
+            if not expr.validate(context):
+                return False
 
-        return context.IsDefined(Identifier, Args.Count);
-    }
-}
+        return context.is_defined(self.identifier, len(self.args))
 ```
 
 Veamos finalmente la implementación de los nodos `LetVar` y `DefFunc`. Es justamente en estos nodos donde se definen nuevas variables y funciones, por lo que en el momento de validar estos nodos, es donde realmente se calcula este "contexto" del que tanto hemos hablado. El caso de la definición de variable es el más sencillo, así que comenzaremos por ahí:
 
-```cs
-public class LetVar : Statement {
-    public string Identifier;
-    public Expression Expr;
+```python
+class LetVar(Statement):
+    def __init__(self):
+        self.identifier: str = ""
+        self.expr: Expression = None
 
-    public override bool Validate(IContext context) {
-        if (!Expr.Validate(context)) {
-            return false;
-        }
+    def validate(self, context: IContext) -> bool:
+        if not self.expr.validate(context):
+            return False
 
-        if (!context.Define(Identifier)) {
-            return false;
-        }
+        if not context.define(self.identifier):
+            return False
 
-        return true;
-    }
-}
+        return True
 ```
 
 El caso de la definición de función es mucho más interesante. Por un lado es necesario validar que no exista una función con el mismo nombre y la misma cantidad de argumentos, lo que es sencillo. Por otro lado, es necesario validar recursivamente el cuerpo de la función. El problema aquí es que en el cuerpo de la función permitimos no solo usar las variables definidas globalmente, sino además *los argumentos* de la propia función. Es decir, durante la validación del cuerpo de la función, existen unas variables "especiales", que son justamente los argumentos, cuyos nombres sí pueden coincidir con los nombres de variables definidas anteriormente, pero no entre sí.
@@ -531,87 +518,88 @@ Ahora, el otro problema a resolver, es que en el cuerpo de una función sí pued
 
 En el caso actual solamente vamos a tener un ámbito global, y luego un ámbito por cada función; pero en lenguajes más complejos, es posible definir tantos ámbitos anidados como se desee (por ejemplo, en C# cada instrucción **for** crea un nuevo ámbito más interno). De modo que en general podemos pensar en los ámbitos también como una estructura árborea, donde existe un ámbito global, y luego se van creando ámbitos "hijo" según sea necesario. Este patrón de diseño es muy común en la mayoría de los lenguajes de programación existentes, por lo que vale la pena presentarlo aquí. Desde el punto de vista de diseño, simplemente necesitamos adicionar un método a nuestra **interface**:
 
-```cs
-public interface IContext {
-    bool IsDefined(string variable);
-    bool IsDefined(string function, int args);
-    bool Define(string variable);
-    bool Define(string function, string[] args);
+```python
+class IContext(ABC):
+    @abstractmethod
+    def is_defined(self, variable: str) -> bool:
+        ...
 
-    IContext CreateChildContext(); // <- esto es lo nuevo
-}
+    @abstractmethod
+    def is_defined(self, function: str, args: int) -> bool:
+        ...
+
+    @abstractmethod
+    def define(self, variable: str) -> bool:
+        ...
+
+    @abstractmethod
+    def define(self, function: str, args: list[str]) -> bool:
+        ...
+
+    @abstractmethod
+    def create_child_context(self) -> "IContext":
+        ...
 ```
 
 Sin embargo, desde el punto de implementación, ahora los métodos `IsDefined` deben modificarse para buscar no solo en el diccionario de símbolos del ámbito actual, sino recursivamente en el ámbito padre. Aunque esta implementación es sencilla, no es del todo trivial, por lo que vamos a mostrar una posible solución:
 
-```cs
-public class Context : IContext {
-    IContext parent;
-    HashSet<string> variables = new ...
-    Dictionary<string, string[]> functions = new ...
+```python
+class Context(IContext):
+    def __init__(self, parent: "Context" = None):
+        self.parent = parent
+        self.variables: set[str] = set()
+        self.functions: dict[str, list[str]] = {}
 
-    bool IsDefined(string variable) {
-        return variables.Contains(variables) ||
-               (parent != null && parent.IsDefined(variable));
-    }
+    def is_defined(self, variable: str) -> bool:
+        return variable in self.variables or (
+            self.parent is not None and self.parent.is_defined(variable)
+        )
 
-    bool IsDefined(string function, int args) {
-        if (functions.ContainsKey(function) &&
-            functions[function].Length == args) {
-            return true;
-        }
+    def is_defined(self, function: str, args: int) -> bool:
+        if function in self.functions and len(self.functions[function]) == args:
+            return True
+        return self.parent is not None and self.parent.is_defined(function, args)
 
-        return parent != null && parent.IsDefined(function, args);
-    }
+    def define(self, variable: str) -> bool:
+        if variable in self.variables:
+            return False
+        self.variables.add(variable)
+        return True
 
-    bool Define(string variable) {
-        return variables.Add(variable);
-    }
+    def define(self, function: str, args: list[str]) -> bool:
+        if function in self.functions and len(self.functions[function]) == len(args):
+            return False
+        self.functions[function] = args
+        return True
 
-    bool Define(string function, string[] args) {
-        if (functions.ContainsKey(function) &&
-            functions[function].Length == args) {
-            return false;
-        }
-
-        functions[function] = args;
-        return true;
-    }
-
-    IContext CreateChildContext() {
-        return new Context() { parent = this };
-    }
-}
+    def create_child_context(self) -> "Context":
+        return Context(parent=self)
 ```
 
 Nuestra implementación de contexto nos garantiza que no es posible definir la misma variable o la misma función (con igual cantidad de argumentos) en un mismo contexto, pero sí nos permite sobreescribir los símbolos existentes en el contexto padre. Varios autores llaman a esta estructura de datos **tabla de símbolos**, ya que almacena todos los símbolos definidos en el programa. Nosotros le llamamos **contexto**, pues consideramos que es un nombre más general que da la idea de que en esta estructura se almacena la información dependiente del contexto que es útil para cada elemento semántico del programa.
 
 Haciendo uso de esta estructura, podemos entonces finalmente implementar la validación del nodo `DefFunc`:
 
-```cs
-public class DefFunc : Expression {
-    public string Identifier;
-    public List<string> Args;
-    public Expression Body;
+```python
+class DefFunc(Expression):
+    def __init__(self):
+        self.identifier: str = ""
+        self.args: list[str] = []
+        self.body: Expression = None
 
-    public override bool Validate(IContext context) {
-        var innerContext = context.CreateChildContext();
+    def validate(self, context: IContext) -> bool:
+        inner_context = context.create_child_context()
 
-        foreach(var arg in Args) {
-            innerContext.Define(arg);
-        }
+        for arg in self.args:
+            inner_context.define(arg)
 
-        if (!Body.Validate(innerContext)) {
-            return false;
-        }
+        if not self.body.validate(inner_context):
+            return False
 
-        if (!context.Define(Identifier, Args.ToArray())) {
-            return false;
-        }
+        if not context.define(self.identifier, self.args):
+            return False
 
-        return true;
-    }
-}
+        return True
 ```
 
 En este punto, ya tenemos toda la semántica de nuestro lenguaje validada, y solamente quedaría el problema de realmente ejecutar las instrucciones existentes. Siguiendo el mismo enfoque visto hasta ahora, podemos pensar en una solución que vaya recursivamente evaluando cada expresión, y almacenando en una especie de "contexto de ejecución" los valores de las expresiones definidas hasta el momento. Dado que no es posible redefinir variables, es totalmente válido calcular el valor de una variable tan pronto como se define, y almacenarlo. Para el caso de las funciones, lo más conveniente es almacenar directamente la expresión que se refiere al cuerpo de la función, para poder ejecutarla cuando sea necesario. En ese caso, un problema interesante de resolver es qué los argumentos de la función se definen en el nodo `DefFunc`, pero los valores que tendrán realmente solo se conocen en algún nodo `FuncCall`. Por lo tanto, en cada invocación, es necesario poder acceder al nodo `DefFunc` correspondiente para poder asignar los valores concretos que en esa invocación serán usados. Dejamos como sugerencia intentar implementar este mecanismo de evaluación.

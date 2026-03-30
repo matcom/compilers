@@ -1,19 +1,4 @@
----
----
-
-
-# Setup
-
-```{python}
-import sys
-import os
-sys.path.append(os.path.abspath(os.curdir))
-from source.trees import Tree
-from source.diagrams import Pipeline, Lexer
-```
-
-
-# Semántica de Tipos {#semantics}
+# Semántica de Tipos
 
 En la mayoría de los lenguajes de programación modernos existe el concepto de "tipo". De manera informal, diremos que un tipo es una definición de especifica cuáles operaciones son válidas a realizar sobre un objeto particular. Un objeto en este caso puede ser un valor simple (`int` o `bool` en los lenguajes tipo C), o un objeto compuesto en algún lenguaje orientado a objetos. El paradigma **orientado a objetos** ha venido a convertirse en los últimos años en una de las columnas fundamentales del diseño y la investigación de nuevos lenguajes de programación. En este paradigma, cada "valor" que se puede manipulado en un programa es un *objeto*, y los objetos pueden agruparse para definir objetos más complejos. A cada objeto se le asocia un *tipo*, que define las operaciones válidas a realizar sobre dicho objeto.
 
@@ -23,21 +8,21 @@ Una forma usual de clasificar a los lenguajes tipados es la distinción entre ti
 
 En general, la discusión entre si es preferible el tipado estático o dinámico es futil. En muchas ocasiones, es conveniente tener lo antes posible una validación de que la expresión que queremos compilar no tendrá inconsistencias de tipos, y por este motivo surgieron los lenguajes con tipado estático. Por otro lado, es inevitable que existan circunstancias en las que el compilador será incapaz de inferir exactamente el tipo real que tendrá una expresión y nos impedirá realizar alguna operación cuando en realidad dicha operación sería posible. Por ejemplo, si tenemos la siguiente declaración de clases en C#:
 
-```cs
-class A {
-    public void F() { /* ... */ }
-}
+```python
+class A:
+    def f(self):
+        ...
 
-class B : A {
-    public void G() { /* ... */ }
-}
+class B(A):
+    def g(self):
+        ...
 ```
 
 El siguiente fragmento código da error de compilación pues el tipo declarado para la variable `a` es `A`, donde no está definida la operación `G`, aunque sabemos que en caso de ejecutar, no existiría realmente ningún error de inconsistencia de tipos, pues el tipo real del objeto almancenado en `a` es `B`:
 
-```cs
-A a = new B();
-a.G();
+```python
+a: A = B()
+a.g()
 ```
 
 Por analogía, le llamaremos *tipo estático*  al tipo declarado de una variable, atributo, método, o cualquier construcción sintáctica que almacene o produzca un valor, y *tipo dinámico* al tipo asociado a dicho valor durante la ejecución del programa. Es decir, en el caso anterior, `a` es una variable con tipo estático `A`, pero que en tiempo de ejecución almacena un objeto cuyo tipo dinámico es `B`. Más adelante podremos formalizar esta noción.
@@ -56,26 +41,22 @@ En cualquier caso, de forma general existe una relación entre los tipos de una 
 
 De modo que el problema que tenemos que resolver es, para un nodo particular del AST, si el uso de los tipos es consistente. Este proceso en general lo haremos *bottom-up*, ya que la consistencia del uso de tipos en una expresión particular dependerá de los tipos en sus partes componentes. Por lo tanto, en un recorrido en post-orden del AST, iremos computando los tipos asociados a los nodos "hijos", y en el retorno chequearemos en cada "padre" la consistencia y computaremos el tipo del padre. Por ejemplo, si estamos en un nodo `SumExpr` que representa una expresión binaria de suma, podemos decir que este nodo es consistente si y solo sí cada una de las expresiones son a su vez consistentes, y son de tipo `int`, y la expresión en general es de tipo `int` también:
 
-```cs
-class SumExpr : Expression {
-    public Expression Left;
-    public Expression Right;
-    public Type NodeType;
+```python
+class SumExpr(Expression):
+    def __init__(self):
+        self.left: Expression = None
+        self.right: Expression = None
+        self.node_type: Type = None
 
-    public bool CheckTypes() {
-        if (!Left.CheckTypes() || !Right.CheckTypes()) {
-            return false;
-        }
+    def check_types(self) -> bool:
+        if not self.left.check_types() or not self.right.check_types():
+            return False
 
-        if (Left.NodeType != Type.Integer ||
-            Right.NodeType != Type.Integer) {
-            return false;
-        }
+        if self.left.node_type != Type.Integer or self.right.node_type != Type.Integer:
+            return False
 
-        NodeType = Type.Integer;
-        return true;
-    }
-}
+        self.node_type = Type.Integer
+        return True
 ```
 
 De este modo, recursivamente, podemos computar el tipo de todas las expresiones de un lenguaje (todos los posibles nodos de un AST). Vamos a definir a continuación una notación formal para expresar esta noción del chequeo de tipos de forma recursiva. La notación que definiremos tiene la forma de una demostración en el lenguaje de la lógica de predicados. Comienza con una lista de precondiciones lógicas (sobre los tipos de las sub-expresiones), y termina con una conclusión que dice cuál es el tipo de la expresión actual. Por ejemplo, para el caso anterior, podemos escribir:
@@ -108,8 +89,8 @@ Que podemos leer de la siguiente forma: si dado el contexto de objetos $O$, pode
 
 Los contextos de objetos se modifican cuando aparecen expresiones (instrucciones) que introducen nuevos símbolos (e.g. declaraciones de variables). Supongamos entonces que tenemos una expresión de la forma $T x \is e$, que indica que la variable $x$ se define con el tipo $T$ y se inicializa con la expresión $e$. Este es el tipo de instrucción que comunmente vemos en lenguajes tipo C para inicializar una variable recién declarada:
 
-```cs
-int x = 4 + int.Parse(Console.ReadLine());
+```python
+x = 4 + int(input())
 ```
 
 En esta instrucción se introduce un nuevo símbolo en el contexto de objetos, con el nombre $x$, y el tipo $T$. Luego, es necesario verificar que el tipo de la expresión $e$ se conforme al tipo $T$, y luego definir el tipo de retorno de toda la expresión. En el caso particular de C, una instrucción de tipo asignación como esta no puede ser usada como expresión, y por tanto no devuelve valor, así que usaremos el símbolo $\emptyset$ para especificar que no tiene asociado (equivalente a `void`). Para especificar la modificación del contexto de objetos, introduciremos la sintaxis $O[T/x]$ que significa, informalmente, un nuevo contexto de objetos con las mismas definiciones que tenía $O$, pero además adicionando la definición del símbolo $x$ con tipo $T$. Formalmente:
@@ -203,91 +184,137 @@ No vamos a especificar formalmente qué tipos de expresiones son válidas en est
 
 Comencemos por representar los conceptos de tipo, atributo y método:
 
-```cs
-interface IType {
-    string Name { get; }
-    IAtribute[] Attributes { get; }
-    IMethod[] Methods { get; }
-    IAttribute GetAttribute(string name);
-    IMethod GetMethod(string name);
-    bool DefineAttribute(string name, IType type);
-    bool DefineMethod(string name, IType returnType,
-                      string[] arguments, IType[] argumentTypes);
-}
+```python
+class IType(ABC):
+    @property
+    @abstractmethod
+    def name(self) -> str:
+        ...
 
-interface IAttribute {
-    string Name { get; }
-    IType Type { get; }
-}
+    @abstractmethod
+    def attributes(self) -> list[IAttribute]:
+        ...
 
-interface IMethod {
-    string Name { get; }
-    IType ReturnType { get; }
-    IAttribute[] Arguments { get; }
-}
+    @abstractmethod
+    def methods(self) -> list[IMethod]:
+        ...
+
+    @abstractmethod
+    def get_attribute(self, name: str) -> IAttribute:
+        ...
+
+    @abstractmethod
+    def get_method(self, name: str) -> IMethod:
+        ...
+
+    @abstractmethod
+    def define_attribute(self, name: str, attr_type: IType) -> bool:
+        ...
+
+    @abstractmethod
+    def define_method(self, name: str, return_type: IType,
+                      arguments: list[str], argument_types: list[IType]) -> bool:
+        ...
+
+class IAttribute(ABC):
+    @property
+    @abstractmethod
+    def name(self) -> str:
+        ...
+
+    @property
+    @abstractmethod
+    def attr_type(self) -> IType:
+        ...
+
+class IMethod(ABC):
+    @property
+    @abstractmethod
+    def name(self) -> str:
+        ...
+
+    @property
+    @abstractmethod
+    def return_type(self) -> IType:
+        ...
+
+    @abstractmethod
+    def arguments(self) -> list[IAttribute]:
+        ...
 ```
 
  Para representar un contexto podemos usar la siguiente *interface*, similar al contexto que hemos usado anteriormente en la sección *[Validando las reglas semánticas]*, pero modificada para adaptarse las definiciones anteriores:
 
-```cs
-interface IContext {
-    IType GetType(string typeName);
-    IType GetTypeFor(string symbol);
-    IContext CreateChildContext();
-    bool DefineSymbol(string symbol, IType type);
-    IType CreateType(string name)
-}
+```python
+class IContext(ABC):
+    @abstractmethod
+    def get_type(self, type_name: str) -> IType:
+        ...
+
+    @abstractmethod
+    def get_type_for(self, symbol: str) -> IType:
+        ...
+
+    @abstractmethod
+    def create_child_context(self) -> "IContext":
+        ...
+
+    @abstractmethod
+    def define_symbol(self, symbol: str, sym_type: IType) -> bool:
+        ...
+
+    @abstractmethod
+    def create_type(self, name: str) -> IType:
+        ...
 ```
 
 Esta *interface* básicamente nos representa el contexto de objetos. El contexto de métodos realmente lo tenemos modelado como parte de la definición de cada tipo, por lo que no es necesario tener un contexto de métodos global. El propio tipo $C$ nos permitirá acceder al contexto de métodos del tipo actual. Por otro lado, para acceder al contexto de métodos de un tipo específico, basta resolver la instancia de `IType` correspondiente (mediante el método `GetType`).
 
 Vamos a definir entonces un subconjunto de los nodos del AST que nos interesa modelar. Comenzaremos como siempre por una clase base:
 
-```cs
-public abstract class Node {
-
-}
+```python
+class Node(ABC):
+    pass
 ```
 
 Nuestro siguiente nodo es un programa, que se compone de una lista de definiciones de clase:
 
-```cs
-public class Program : Node {
-    public List<ClassDef> Classes;
-}
+```python
+class Program(Node):
+    def __init__(self):
+        self.classes: list[ClassDef] = []
 ```
 
 Cada definición de clase a su vez define un tipo con un nombre y una lista de atributos y métodos:
 
-```cs
-public class ClassDef : Node {
-    public string Name;
-    public List<AttrDef> Attributes;
-    public List<MethodDef> Methods;
-}
+```python
+class ClassDef(Node):
+    def __init__(self):
+        self.name: str = ""
+        self.attributes: list[AttrDef] = []
+        self.methods: list[MethodDef] = []
 ```
 
 Los atributos se definen como un nombre, tipo asociado, y una expresión de inicialización:
 
-```cs
-public class AttrDef : Node {
-    public string Name;
-    public string Type;
-    public Expression Initialization;
-}
+```python
+class AttrDef(Node):
+    def __init__(self):
+        self.name: str = ""
+        self.attr_type: str = ""
+        self.initialization: Expression = None
 ```
 
 Mientras que los métodos se definen como un nombre, una lista de argumentos (nombres y tipos), un tipo de retorno, y un cuerpo que es una expresión:
 
-```cs
-public class MethodDef : Node {
-    public string Name;
-    public string ReturnType;
-    public List<string> ArgNames;
-    public List<string> ArgTypes;
-    public string ReturnType;
-    public Expression Body;
-}
+```python
+class MethodDef(Node):
+    def __init__(self):
+        self.name: str = ""
+        self.return_type: str = ""
+        self.arg_names: list[str] = []
+        self.arg_types: list[str] = []
+        self.body: Expression = None
 ```
 
 Luego nos quedarían todos los nodos de la jerarquía de expresiones, que no mostraremos por simplicidad.
@@ -304,153 +331,133 @@ El problema que tenemos aquí es un caso típico de acoplamiento, que nos lleva 
 
 Comenzaremos por definir la siguiente *interface*:
 
-```cs
-interface IVisitor<TNode> where TNode : Node {
-    void Visit(TNode node);
-}
+```python
+class IVisitor(ABC, Generic[TNode]):
+    def visit(self, node: TNode):
+        ...
 ```
 
 La *interface* `IVisitor<TNode>` nos permitirá abstraer el concepto de procesamiento sobre un nodo. En cada implementación particular, escogeremos qué procesamiento realizar sobre cada tipo de nodo particular, y cómo "caminar" sobre la porción de AST correspondiente. Veamos entonces como implementar la primera pasada, que nos permite recolectar todos los tipos definidos. Este *visitor* solamente se interesa en nodos de tipo `Program` y nodos de tipo `ClassDef`. Su tarea consiste en crear un contexto, y definir en este contexto todos los tipos que se encuentre:
 
-```cs
-public class TypeCollectorVisitor: IVisitor<Program>,
-                                   IVisitor<ClassDef> {
-    public IContext Context;
+```python
+class TypeCollectorVisitor(IVisitor[Program], IVisitor[ClassDef]):
+    def __init__(self):
+        self.context: IContext = None
 
-    public void Visit(Program node) {
-        Context = new // ...
+    def visit(self, node: Program):
+        self.context = Context()
 
-        foreach(var classDef in node.Classes) {
-            this.Visit(classDef);
-        }
-    }
+        for class_def in node.classes:
+            self.visit(class_def)
 
-    public void Visit(ClassDef node) {
-        Context.CreateType(node.Name);
-    }
-}
+    def visit(self, node: ClassDef):
+        self.context.create_type(node.name)
 ```
 
 El llamado `this.Visit(classDef)` resolverá estáticamente la sobrecarga adecuada. Veamos ahora como implementar un *visitor* que construya todo el contexto de métodos y atributos. En este caso, nos interesan además los nodos de tipo `AttrDef` y `MethodDef`:
 
-```cs
-public class TypeBuilderVisitor : IVisitor<Program>,
-                                  IVisitor<ClassDef>,
-                                  IVisitor<AttrDef>,
-                                  IVisitor<MethodDef> {
+```python
+class TypeBuilderVisitor(
+    IVisitor[Program],
+    IVisitor[ClassDef],
+    IVisitor[AttrDef],
+    IVisitor[MethodDef]
+):
+    def __init__(self):
+        self.context: IContext = None
+        self._current_type: IType = None
 
-    public IContext Context;
-    private IType currentType;
+    def visit(self, node: Program):
+        for class_def in node.classes:
+            self.visit(class_def)
 
-    public void Visit(Program node) {
-        foreach(var classDef in node.Classes) {
-            this.Visit(classDef);
-        }
-    }
+    def visit(self, node: ClassDef):
+        self._current_type = self.context.get_type(node.name)
 
-    public void Visit(ClassDef node) {
-        currentType = Context.GetType(node.Name);
+        for attr_def in node.attributes:
+            self.visit(attr_def)
 
-        foreach(var attrDef in node.Attributes) {
-            this.Visit(attrDef);
-        }
-
-        foreach(var methodDef in node.Methods) {
-            this.Visit(methodDef);
-        }
-    }
-
-    // ...
-}
+        for method_def in node.methods:
+            self.visit(method_def)
 ```
 
 Hasta este punto simplemente hemos descendido por las definiciones de tipos hasta llegar a cada definición de atributo o método. En cada paso, nos hemos asegurado además de mantener una referencia al tipo concreto dentro del cual se están realizando las definiciones. Veamos entonces los métodos restantes:
 
-```cs
-public class TypeBuilderVisitor : IVisitor<Program>,
-                                  IVisitor<ClassDef>,
-                                  IVisitor<AttrDef>,
-                                  IVisitor<MethodDef> {
+```python
+class TypeBuilderVisitor(
+    IVisitor[Program],
+    IVisitor[ClassDef],
+    IVisitor[AttrDef],
+    IVisitor[MethodDef]
+):
+    def __init__(self):
+        self.context: IContext = None
+        self._current_type: IType = None
 
-    public IContext Context;
-    private IType currentType;
+    def visit(self, node: AttrDef):
+        attr_type = self.context.get_type(node.attr_type)
+        self._current_type.define_attribute(node.name, attr_type)
 
-    // ...
+    def visit(self, node: MethodDef):
+        return_type = self.context.get_type(node.return_type)
+        arg_types = [self.context.get_type(t) for t in node.arg_types]
 
-    public void Visit(AttrDef node) {
-        IType attrType = Context.GetType(node.Type);
-        currentType.DefineAttribute(node.Name, attrType);
-    }
-
-    public void Visit(MethodDef node) {
-        IType returnType = Context.GetType(node.ReturnType);
-        var argTypes = node.ArgTypes.Select(t => Context.GetType(t));
-
-        currentType.DefineMethod(node.Name, returnType,
-                                 node.ArgNames.ToArray(),
-                                 argTypes.ToArray());
-    }
-}
+        self._current_type.define_method(
+            node.name, return_type,
+            node.arg_names, arg_types
+        )
 ```
 
 Por último, tendremos un `TypeCheckerVisitor` que verificará finalmente la consistencia de tipos en todos los nodos del AST. Este implementará la *interface* `IVisitor<T>` en cada tipo de nodo que sea capaz de chequear, incluidos todos los tipos de expresiones e instrucciones que no hemos definido. A este `TypeCheckerVisitor` le pasaremos el contexto ya construido anteriormente, y lo dejaremos procesar todo el AST. Este *visitor* además de verificar el tipo de todas las expresiones, será el encargado de computar el tipo asociado a cada expresión y almacenarlo en el nodo `Expression`:
 
-```cs
-public abstract class Expression {
-    public IType ComputedType;
-}
+```python
+class Expression(Node, ABC):
+    computed_type: IType = None
 ```
 
 Hemos obviado hasta el momento cualquier consideración de error. Si alguno de los tipos definidos para alguno de los atributos o métodos no es válido, o alguno de los tipos aparece declarado más de una vez, o cualquier otro error semántico es detectado, nuestro verificador lanzará una excepción, o peor, fallará silenciosamente. Para manejar los errores de forma consistente, adicionaremos a los métodos `Visit` un argumento `IErrorLogger` con la *interface* siguiente:
 
-```cs
-public interface IErrorLogger {
-    void LogError(string msg);
-}
+```python
+class IErrorLogger(ABC):
+    @abstractmethod
+    def log_error(self, msg: str):
+        ...
 ```
 
 De modo que ante un error cualquier de chequeo de tipos, simplemente nos remitiremos a este objeto para indicar que ocurrió un error. Una vez detectado el error, la pregunta que queda es ¿qué hacer a continuación? Si detenemos el chequeo entonces nuestro compilador solamente será capaz de detectar un error en cada iteración, pero idealmente quisiéramos indicar la mayor cantidad de errores posibles en cada corrida. Por lo tanto, lo que se sugiere es tomar alguna acción de reparo sensata y continuar la verificacion. Por ejemplo:
 
-```cs
-public class TypeCheckerVisitor : IVisitor<...> {
-    public Context Context;
+```python
+class TypeCheckerVisitor(IVisitor[...]):
+    def __init__(self):
+        self.context: Context = None
 
-    public void Visit(BinaryExpr node, IErrorLogger logger) {
-        this.Visit(node.Left, logger);
-        this.Visit(node.Right, logger);
+    def visit(self, node: BinaryExpr, logger: IErrorLogger):
+        self.visit(node.left, logger)
+        self.visit(node.right, logger)
 
-        if (node.Left.ComputedType != node.Right.ComputedType) {
-            logger.LogError("Type mismatch...");
-            node.ComputedType = null;
-        }
-        else {
-            node.ComputedType = node.Left.ComputedType;
-        }
-    }
-}
+        if node.left.computed_type != node.right.computed_type:
+            logger.log_error("Type mismatch...")
+            node.computed_type = None
+        else:
+            node.computed_type = node.left.computed_type
 ```
 
 Con estas herramientas, podemos adicionar un método en la clase `Program` que realice todas las pasadas correspondientes:
 
-```cs
-public class Program : Node {
-    // ...
+```python
+class Program(Node):
+    def __init__(self):
+        self.classes: list[ClassDef] = []
 
-    public void CheckSemantics(IErrorLogger logger) {
-        var typeCollector = new TypeCollectorVisitor();
-        typeCollector.Visit(this, logger);
+    def check_semantics(self, logger: IErrorLogger):
+        type_collector = TypeCollectorVisitor()
+        type_collector.visit(self)
 
-        var typeBuilder = new TypeBuilderVisitor() {
-            Context = typeCollector.Context
-        };
+        type_builder = TypeBuilderVisitor()
+        type_builder.context = type_collector.context
+        type_builder.visit(self)
 
-        typeBuilder.Visit(this, logger);
-
-        var typeChecker = new TypeCheckerVisitor() {
-            Context = typeBuilder.Context;
-        };
-
-        typeChecker.Visit(this, logger);
-    }
-}
+        type_checker = TypeCheckerVisitor()
+        type_checker.context = type_builder.context
+        type_checker.visit(self, logger)
 ```
