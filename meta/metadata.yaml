@@ -1,0 +1,9 @@
+---
+documentclass: book
+classoption: oneside
+title: Introducción a la Construcción de Compiladores
+author:
+  - Alejandro Piad Morffis
+  - Juan Pablo Consuegra Ayala
+  - Rocío Cruz Linares
+---

@@ -1,0 +1,187 @@
+---
+title: "No todos los lenguajes son regulares"
+format: revealjs
+---
+
+% Límites de los Lenguajes
+% MSc. Alejandro Piad Morffis
+% MatCom, UH (CC BY-SA-NC 4.0)
+
+# No todos los lenguajes son regulares
+
+> Sea $L = \{ a^n b^n \,\, | \,\, n \geq 0 \}$
+
+- ¿Es $L$ regular?
+- ¿Cómo podemos demostrar que no existe un autómata $A$ tal que $L_A = L$?
+
+# Idea intuitiva
+
+- Supongamos que existe $A$.
+- Sea $k = |Q|$ la cantidad de estados de $A$.
+- Analicemos la cadena $a^k$
+- Existe un estado $q_i$ que se usa 2 veces (¿?).
+- Sea $q_i$ este estado, existe un par de prefijos $a^p$ y $a^q$ que ambos terminan en $q_i$.
+- Entonces sean las cadenas $a^p b^p$ y $a^q b^p$ pasan por $q_i$ y terminan en el mismo $q_f$ (¿?)
+- Pero una de los dos no pertenece a $L$.
+- Contradicción, $A$ no puede existir.
+
+# Formalizando
+
+## Lema del bombeo (regular)
+
+Sea $L$ un lenguaje regular, existe un $n$ (que depende de $L$), tal que,
+para toda cadena $\omega$ con $|\omega| \geq n$, $\omega$ se puede escribir como
+$xyz$, tal que:
+
+1. $y \neq \epsilon$
+2. $|xy| \leq n$
+3. Para todo $k$, $xy^kz \in L$
+
+# Usando el lema del bombeo
+
+Quiero demostrar que un lenguaje no es regular.
+
+- Escojo una cadena $\omega$ en función de $n$.
+- Escojo una forma de picar $\omega$ en $xyz$ que _no dependa_ de $n$.
+- Escojo un $k$ tal que $xy^kz$ no esté en $L$.
+
+# Ejemplos
+
+- Cantidad igual de $a$ y $b$.
+- Paréntesis balanceados.
+- $0^n 1^m$ con $n \leq m$.
+
+## Otros lenguajes
+
+- $\omega \in \{a,b\}^*$ con $\#_a \mod \#_b (k)$, para un $k$ arbitrario.
+- $\omega = yxy^R$ con $x,y \in \{0,1\}^*$.
+
+# ¿Qué sucede con los lenguajes libres del contexto?
+
+> Sea $L = \{ a^n b^n c^n \,\, | \,\, n \geq 0 \}$
+
+- ¿Es $L$ libre del contexto?
+- ¿Cómo podemos demostrar que no existe una gramática $G$ tal que $L_G = L$?
+
+# Idea intuitiva
+
+- Supongamos que existe $G$.
+- Sea $m = |N|$.
+- Veamos un árbol de derivación para la cadena $z = a^n b^n c^n$.
+- Escojamos un $n > m$ tal que exista una rama en ese árbol de derivación con longitud mayor que $m$.
+- Entonces hay un no-terminal en esa rama que se repite (¿?).
+- Sea $A_i=A$ y $A_j=A$ las dos veces que se repite ese no-terminal.
+- Dividamos la cadena en 5 partes, como indica la figura.
+
+# Cómo picar la cadena
+
+![](graphics/pumping-cfg.png){ width=70% }\
+
+
+# Seguimos con la idea
+
+- Luego, con el mismo no-terminal $A$, podemos generar $vwx$ o solo $w$.
+- Por tanto, podemos generar también $v^iwx^i$ para todo $i$ (¿?).
+- Solo nos falta decir que $vwx \leq n$ (ya veremos por qué).
+- Por lo tanto, $vwx$ no tiene $a$ o no tiene $c$ (¿?).
+- Supongamos $vwx$ no tiene $c$.
+- Bombeando para $i = 0$ tendremos $a^p b^q c^n$, donde seguro $q < n$.
+
+# Formalizando
+
+## Lema del bombeo (libre del contexto)
+
+Sea $L$ un lenguaje libre del contexto, existe un $n$ (que depende de $L$), tal que,
+para toda cadena $\omega$ con $|\omega| \geq n$, $\omega$ se puede escribir como
+$uvwxy$, tal que:
+
+1. $vx \neq \epsilon$
+2. $|vwx| \leq n$
+3. Para todo $k$, $uv^iwx^iy \in L$
+
+## Ejemplos
+
+- $L = \{0^i 1^j 2^i 3^j\ \,\,|\,\, i \geq 1, j \geq 1\}$
+- $L = \{ a^p \,\,|\,\, p \textrm{ es primo} \}$
+- $L = \{ \omega \omega \,\,|\,\, \omega \in \{0,1\}^* \}$ **(!)**
+- $L = \{ xy \,\,|\,\, x,y \in \{0,1\}^*, x \neq y \}$
+
+# Forma Normal de Chomsky
+
+Para toda gramática $G$ libre del contexto, existe una gramática $G'$ en **Forma Normal de Chomsky**, tal que todas las producciones son de la forma $A \rightarrow BC$ o $A \rightarrow a$.
+
+## La demostración se hace por construcción:
+
+- Eliminar producciones $\epsilon$
+- Eliminar producciones $A \rightarrow B$
+- Eliminar símbolos inútiles:
+    - Identificar símbolos alcanzables
+    - Identificar símbolos generadores
+- Factorizar producciones $A \rightarrow \alpha$ con $|\alpha| > 2$.
+
+> **NOTA** $L_G$ no puede generar $\epsilon$.
+
+# ¿De qué sirve la FNC?
+
+- Todo árbol de derivación tiene 2 hijos (excepto en las hojas).
+- Si $S \rightarrow^* \omega$ y la rama más larga de la derivación tiene $m$ nodos, entonces $|\omega| \leq 2^{m-1}$.
+- Con esto se puede formalizar el lema del bombeo para LC.
+- Escogiendo $n = 2^{|N|}$ obliga a tener dos no-terminales repetidos (¿?).
+- Escogiendo el último $A_j$ para bombear obliga a que $|vwx| \leq n$ (¿?).
+
+# Lenguajes que sí son LC
+
+## Sustitución
+
+Sea $L$ un lenguaje LC sobre el alfabeto $V = \{a_1, \ldots, a_n \}$.
+Sean $L_1, \ldots, L_n$ lenguajes libres del contexto (no necesariamente sobre los mismos alfabetos).
+
+Una sustitución de una cadena $\omega \in L$, $s(\omega)$, se construye:
+
+- Escogemos $\omega_1, \ldots, \omega_n$ de cada lenguaje $L_i$.
+- Sustituímos en $\omega = c_1 \ldots c_k$ cada símbolo $c_j$ por la cadena $\omega_j$.
+
+Sea $s(L)$ el lenguaje resultante de formar todas las sustituciones posibles.
+
+$\Rightarrow$ $s(L)$ es libre del contexto.
+
+# Lenguajes que sí son LC
+
+## Unión: $L_1 \cup L_2$
+
+Sustituir en $L = \{1, 2\}$ con $s(1) = L_1$ y $s(2) = L_2$.
+
+## Concatenación: $L_1 L_2$
+
+Sustituir en $L = \{ 12 \}$ con $s(1) = L_1$ y $s(2) = L_2$.
+
+## Clausura: $L_1^*$
+
+Sustituir en $L = \{ 1 \}^*$ con $s(1) = L_1$.
+
+## Reverso
+
+También, pero no lo vamos a demostrar ;)
+
+# Lenguajes que sí son LC
+
+## Intersección con un LC
+
+- No es en general LC
+
+- **Ejemplo**: $a^n b^n c^n$ es la interseción de $a^n b^n c^k$ y $a^k b^n c^n$.
+
+## Intersección con un lenguaje regular
+
+- Sí es LC, la demostración requiere construir un _autómata de pila_, que no vamos a estudiar.
+
+## Diferencia y complemento
+
+- No son cerrados entre LC, pero sí con un lenguaje regular.
+
+# A modo de resumen
+
+- Los **lenguajes regulares** son cerrados bajo las operaciones unión, concatenación, intersección, diferencia, clausura, complemento y reverso.
+- Los **lenguajes libre del contexto** son cerrados bajo sustitución, unión, concatenación, clausura y reverso.
+- Los **lenguajes libre del contexto** son cerrados bajo intersección y diferencia con un **lenguaje regular**.
+- En general la intersección, diferencia y complemento entre lenguajes libres del contexto no es libre del contexto.

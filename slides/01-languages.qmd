@@ -1,0 +1,197 @@
+---
+title: "Introducción a la Compilación: Lenguajes"
+format: revealjs
+---
+
+# Introducción a la Compilación: Lenguajes
+
+``` {python}
+
+import sys
+import os
+
+sys.path.append(os.path.abspath(os.curdir))
+
+from source.trees import Tree
+```
+
+## ¿Qué es un lenguaje?
+
+. . .
+
+> **Definición**: Un lenguaje $L$ es un conjunto de cadenas sobre un alfabeto $V$.
+
+. . .
+
+### Ejemplos
+
+- $L_1 = \{s \in \{a,b\}^* | \#_a(s) = \#_b(s) \}$
+- $L_2 = \{s \in \{a,b\}^* | \#_a(s) \neq \#_b(s) \}$
+- $L_3 = \{s \in \{0,1\}^* | s\textrm{ es múltiplo de }3 \}$
+- $L_4 = \{s \in \{0,1\}^* | s\textrm{ es un número primo} \}$
+- $L_5 = \{s \in Unicode^* | s\textrm{ es un programa de C\# válido} \}$
+
+## ¿Cómo definir un lenguaje formalmente?
+
+De forma que sea fácil (computacionalmente):
+
+- Decir si una cadena $s$ pertenece o no (**problema de la palabra**).
+- Enumerar todas las cadenas del lenguaje (aún si es infinito).
+
+> ¿Es esto posible para todo lenguaje?
+
+. . .
+
+**Ej:** Sea $L$ el lenguaje de todos los programas de C\# que imprimen `"Hola Mundo"` ;)
+
+## Una definición constructiva de lenguaje
+
+Tomemos el lenguaje $L_1$ e intentemos generar **todas** sus cadenas (recursivamente):
+
+```python
+def generate():
+    yield ""
+
+    for s in generate():
+        yield "a" + s + "b"
+```
+
+A este tipo de lenguajes les llamamos **recursivamente enumerables** o **Turing-computables**.
+
+Podemos definir $L_1$ como el lenguaje de todas las cadenas que salen del método `generate`.
+
+## Formalizando esta idea
+
+**Definición:** Una gramática *libre del contexto* es una tupla $G = <T,N,S,P>$ donde:
+
+- $T$ es un conjunto de símbolos **terminales** (el vocabulario).
+- $N$ es un conjunto de símbolos **no-terminales**.
+- $S \in N$ es el **símbolo inicial**.
+- $P$ es un conjunto de **producciones** de la forma $A \rightarrow \alpha$ donde
+  $A \in N$ y $\alpha \in \{T \times N\}^+$ o $\alpha = \epsilon$.
+
+. . .
+
+**Ejemplo**:
+
+$S \rightarrow a S b | \epsilon$
+
+- ¿Qué lenguaje define esta gramática?
+- ¿Cómo podemos estar seguros (formalmente seguros)?
+
+## ¿Qué lenguaje genera una gramática?
+
+- Una forma oracional es una expresión $\alpha \in \{T \times N\}^+$.
+- Una oración es una expresión $\alpha \in \{T\}^+$, es decir, una cadena.
+- Un forma oracional $\alpha_1$ deriva ($\rightarrow^*$) en otra $\alpha_2$ si existe una secuencia conveniente de reemplazos en $P$ que la transforme.
+
+**Definición:** Decimos que $\omega \in L(G)$ si $S \rightarrow^* \omega$, es decir, si existe
+una secuencia de derivaciones $S \rightarrow \alpha_1 \rightarrow \ldots \alpha_n \rightarrow \omega$.
+
+**Ejemplo:**
+
+- $S \rightarrow a S b$ ($P_1$)
+- $aSb \rightarrow a a S b b$ ($P_1$)
+- $aaSbb \rightarrow a a b b$ ($P_2$)
+- $aabb \in L(G)$
+
+## En forma de árbol
+
+**Definición:** Un árbol de derivación de una cadena $\omega$ es un árbol
+donde:
+
+- Las hojas forman la cadena $\omega$.
+- Los nodos internos son todos no-terminales.
+- La raíz es $S$.
+- Cada nodo visto con sus hijos representa una derivación de un no-terminal es una forma oracional.
+
+``` {python}
+#| output: asis
+
+Tree("S",
+    Tree("a"),
+    Tree("S",
+        Tree("a"),
+        Tree("b")
+        ),
+    Tree("b")
+).print(float=False, width="35%")
+```
+
+## Demostrando el lenguaje que genera una gramática
+
+Para demostrar que $L(G) = L$ necesitamos demostrar $L(G) \subseteq L$ y $L \subseteq L(G)$.
+
+- Toda cadena en $L$ se puede generar con $G$ (dar una secuencia de derivaciones para cualquier cadena).
+- Toda cadena que salga de $G$ pertence al lenguaje $L$ (dar una invariante que se cumpla en todas las formas oracionales).
+
+**No se te olvide ver en pizarra el ejemplo!**
+
+## ¿Para qué sirve todo esto?
+
+Si tenemos una **gramática** para nuestro lenguaje,
+y un algoritmo para obtener un **árbol de derivación**
+de cualquier cadena, tenemos el problema de _parsing_ resuelto!
+
+. . .
+
+### Una gramática de expresiones
+
+$E \rightarrow E + E | E - E | E * E | E / E | (E) | n$
+
+> ¿De cuántas formas distintas puedo generar $n * n + n$?
+
+A estas gramáticas les llamaremos **ambiguas**, evidentemente, queremos gramáticas **no ambiguas** (¿por qué?).
+
+## Formalizando
+
+- Llamaremos **parsing izquierdo** o secuencia de derivaciones extrema izquierda,
+a una secuencia de derivaciones, donde siempre se sustituye primero el no-terminal más a la izquierda.
+- De la misma forma definiremos **parsing derecho**...
+- A cada derivación extrema izquierda (derecha) distinta le corresponde un único **árbol de derivación**.
+
+**Definición:** una gramática es **ambigua** si existe al menos una cadena con dos (o más) derivaciones extrema izquierda (derecha)
+posibles. Si esto no sucede para *ninguna* cadena, la gramática es **no ambigua**.
+
+## El problema de *parsing*
+
+- Dada una gramática $G$, y una cadena $\omega$, el problema fundamental
+que nos interesa será el *parsing*, que consiste en decir si $\omega \in L(G)$,
+y en caso positivo, dar un **árbol de derivación** para $\omega$.
+- Un problema más interesante consiste en, para una gramática $G$,
+obtener un algoritmo que construya este árbol de derivación para toda cadena $\omega$.
+- Al algoritmo más sencillo que se nos puede ocurrir le llamaremos *parsing recursivo descendente*.
+
+## Parsing Recursivo Descendente
+
+- La idea fundamental consiste en construir recursivamente la secuencia de derivaciones,
+eligiendo convenientemente la producción que "tocaría" aplicar.
+- Si la gramática cumple ciertas características (que llamaremos por ahora LL(1)),
+será posible hacer esto sin *backtrack* en $O(|\omega|)$.
+
+**Ejemplo**:
+
+$E \rightarrow T + E | T$
+
+$T \rightarrow F * T | F$
+
+$F \rightarrow (E) | n$
+
+## Un meta-algoritmo de parsing
+
+**Idea general:** Cada no-terminal se convierte en un método recursivo.
+Cada producción es una rama posible.
+
+```python
+def parse_E(tokens):
+    t = parse_T(tokens)
+    if tokens and tokens[0] == '+':
+        tokens.pop(0)
+        e = parse_E(tokens)
+        return t + e
+    else:
+        return t
+```
+
+> Por ahora no podemos formalizar este algoritmo, pero vale la pena
+intentar hacerlo en clase práctica!

@@ -1,0 +1,1283 @@
+---
+title: "Evaluando expresiones"
+format: revealjs
+---
+
+% Representaciones Semánticas
+% MSc. Alejandro Piad Morffis
+% MatCom, UH (CC BY-SA-NC 4.0)
+
+# Evaluando expresiones
+
+``` {python}
+
+import sys
+import os
+
+sys.path.append(os.path.abspath(os.curdir))
+
+from source.trees import Tree
+```
+
+## Y dale con la misma gramática
+
+    E -> T X
+    X -> + T X | - T X | epsilon
+    T -> F Y
+    Y -> * F Y | / F Y | epsilon
+    F -> ( E ) | i
+
+## ¿Cómo evaluar una expresión cualquiera?
+
+**Ej:** `i{3} * ( i{2} + i{5} )`
+
+# ¿Recuerdan el árbol de derivación?
+
+``` {python}
+#| output: asis
+
+Tree("E",
+    Tree("T",
+        Tree("F",
+            Tree("i {3}")),
+        Tree("Y",
+            Tree("*"),
+            Tree("F",
+                Tree("("),
+                Tree("E",
+                    Tree("T",
+                        Tree("F", Tree("i {2}")),
+                        Tree("Y", Tree("epsilon"))),
+                    Tree("X",
+                        Tree("+"),
+                        Tree("T",
+                            Tree("F", Tree("i {5}")),
+                            Tree("Y", Tree("epsilon"))),
+                        Tree("X", Tree("epsilon")))),
+                Tree(")")),
+            Tree("Y",
+                Tree("epsilon")))),
+    Tree("X", Tree('epsilon'))
+).print(float=False, width="100%")
+```
+
+# ¿Qué problemas tenía evaluar esta expresión?
+
+. . .
+
+- LL nos obliga a usar atributos heredados.
+- La operación a realizar depende de la producción aplicada (tengo que recordarla en la pila).
+- Muchas reglas semánticas son solo para "mover" los valores de un lado al otro del árbol.
+
+. . .
+
+## ¿Cuando el lenguaje crezca, cómo evaluaremos...
+
+- invocaciones de funciones?
+- declaración y asignación de variables?
+- ciclos?
+
+> La representación en árbol de derivación es **sintáctica**.
+> Necesitamos una representación **semántica**.
+
+# ¿Cómo podemos simplificar este árbol?
+
+``` {python}
+#| output: asis
+
+Tree("E",
+    Tree("T",
+        Tree("F",
+            Tree("i {3}")),
+        Tree("Y",
+            Tree("*"),
+            Tree("F",
+                Tree("("),
+                Tree("E",
+                    Tree("T",
+                        Tree("F", Tree("i {2}")),
+                        Tree("Y", Tree("epsilon"))),
+                    Tree("X",
+                        Tree("+"),
+                        Tree("T",
+                            Tree("F", Tree("i {5}")),
+                            Tree("Y", Tree("epsilon"))),
+                        Tree("X", Tree("epsilon")))),
+                Tree(")")),
+            Tree("Y",
+                Tree("epsilon")))),
+    Tree("X", Tree('epsilon'))
+).print(float=False, width="100%")
+```
+
+# Paso 1: Eliminar los nodos `epsilon`
+
+``` {python}
+#| output: asis
+
+Tree("E",
+    Tree("T",
+        Tree("F",
+            Tree("i {3}")),
+        Tree("Y",
+            Tree("*"),
+            Tree("F",
+                Tree("("),
+                Tree("E",
+                    Tree("T",
+                        Tree("F", Tree("i {2}")),
+                        Tree("Y")),
+                    Tree("X",
+                        Tree("+"),
+                        Tree("T",
+                            Tree("F", Tree("i {5}")),
+                            Tree("Y")),
+                        Tree("X"))),
+                Tree(")")),
+            Tree("Y",
+        ))),
+    Tree("X")
+).print(float=False, width="100%")
+```
+
+# Paso 2: Eliminar los nodos hoja sobrantes
+
+``` {python}
+#| output: asis
+
+Tree("E",
+    Tree("T",
+        Tree("F",
+            Tree("i {3}")),
+        Tree("Y",
+            Tree("*"),
+            Tree("F",
+                Tree("("),
+                Tree("E",
+                    Tree("T",
+                        Tree("F", Tree("i {2}")),
+                        ),
+                    Tree("X",
+                        Tree("+"),
+                        Tree("T",
+                            Tree("F", Tree("i {5}")),
+                        ))),
+                Tree(")"))))
+).print(float=False, width="100%")
+```
+
+# Paso 3: Eliminar `(` y `)`
+
+``` {python}
+#| output: asis
+
+Tree("E",
+    Tree("T",
+        Tree("F",
+            Tree("i {3}")),
+        Tree("Y",
+            Tree("*"),
+            Tree("F",
+                Tree("E",
+                    Tree("T",
+                        Tree("F", Tree("i {2}")),
+                        ),
+                    Tree("X",
+                        Tree("+"),
+                        Tree("T",
+                            Tree("F", Tree("i {5}")),
+    ))))))
+).print(float=False, width="100%")
+```
+
+# Paso 4: Eliminar los nodos con un solo hijo
+
+``` {python}
+#| output: asis
+
+Tree("E",
+    Tree("T",
+        Tree("i {3}"),
+        Tree("Y",
+            Tree("*"),
+            Tree("F",
+                Tree("E",
+                    Tree("T",
+                        Tree("i {2}")),
+                    Tree("X",
+                        Tree("+"),
+                        Tree("T",
+                            Tree("i {5}")))))))
+).print(float=False, width="100%")
+```
+
+# Paso 4: Eliminar los nodos con un solo hijo
+
+``` {python}
+#| output: asis
+
+Tree("E",
+    Tree("T",
+        Tree("i {3}"),
+        Tree("Y",
+            Tree("*"),
+            Tree("F",
+                Tree("E",
+                    Tree("i {2}"),
+                    Tree("X",
+                        Tree("+"),
+                        Tree("i {5}"))))))
+).print(float=False, width="100%")
+```
+
+# Paso 4: Eliminar los nodos con un solo hijo
+
+``` {python}
+#| output: asis
+
+Tree("E",
+    Tree("i {3}"),
+    Tree("Y",
+        Tree("*"),
+        Tree("E",
+            Tree("i {2}"),
+            Tree("X",
+                Tree("+"),
+                Tree("i {5}"))))
+).print(float=False, width="40%")
+```
+
+# Paso 5: Subir las operaciones
+
+``` {python}
+#| output: asis
+
+Tree("E",
+    Tree("i {3}"),
+    Tree("*",
+        Tree("E",
+            Tree("i {2}"),
+            Tree("+",
+                Tree("i {5}"))))
+).print(float=False, width="30%")
+```
+
+# Paso 5: Subir las operaciones
+
+``` {python}
+#| output: asis
+
+Tree("*",
+    Tree("i {3}"),
+    Tree("+",
+        Tree("i {2}"),
+        Tree("i {5}"))
+).print(float=False, width="30%")
+```
+
+# Finalmente...
+
+## ¿Qué hemos ganado con esta representación?
+
+``` {python}
+#| output: asis
+
+Tree("*",
+    Tree("3"),
+    Tree("+",
+        Tree("2"),
+        Tree("5"))
+).print(float=False, width="30%")
+```
+
+. . .
+
+> Este árbol contiene **toda** la información necesaria para **evaluar**, _y nada más_.
+
+A este tipo de árbol le llamamos _Árbol de Sintaxis Abstracta (AST)_, o árbol semántico.
+
+_NOTA_: Por analogía al árbol de derivación se le llama también _árbol de sintaxis concreta_.
+
+# Definición de AST
+
+## Árbol de Sintaxis Concreta
+
+Define un tipo de nodo por cada tipo de **función sintática** diferente:
+
+- Palabras claves
+- Separadores
+- Operadores
+- Bloques
+- Identificadores
+- ...
+
+Su forma representa la estructura _sintáctica_ del lenguaje.
+
+Se diseña de modo que el lenguaje sea fácil de **parsear** (_leer_).
+
+# Definición de AST
+
+## Árbol de Sintaxis Abstracta
+
+Define un tipo de nodo por cada tipo de **función semántica** diferente:
+
+- Expresiones
+- Ciclos
+- Condicionales
+- Declaraciones
+- Invocaciones
+- ...
+
+Su forma representa la estructura _semántica_ del lenguaje.
+
+Se diseña de modo que el lenguaje sea fácil de **evaluar** (_entender_).
+
+# Un AST es una jerarquía de clases
+
+```python
+class Exp:
+    def eval(self):
+        raise NotImplementedError()
+
+class Sum(Exp):
+    def __init__(self, left, right):
+        self.left = left
+        self.right = right
+    # ...
+
+class Num(Exp):
+    def __init__(self, value):
+        self.value = value
+    # ...
+```
+
+# Evaluar es muy fácil
+
+```python
+class Sum(Exp):
+    # ...
+    def eval(self):
+        return self.left.eval() + self.right.eval()
+
+class Mul(Exp):
+    # ...
+    def eval(self):
+        return self.left.eval() * self.right.eval()
+
+class Num(Exp):
+    # ...
+    def eval(self):
+        return self.value
+```
+
+# ¿Cómo construimos el AST?
+
+. . .
+
+    E -> T X    { X.tmp=T.ast, E.ast=X.ast }
+    X -> + T X  { X1.tmp=Add(X0.tmp,T.ast), X0.ast=X1.ast }
+       | - T X  { X1.tmp=Sub(X0.tmp,T.ast), X0.ast=X1.ast }
+       | eps    { X0.ast=X0.tmp }
+    T -> F Y    { Y.tmp=F.ast, T.ast=Y.ast }
+    Y -> * F Y  { Y1.tmp=Mul(Y0.tmp,F.ast), Y0.ast=Y1.ast }
+       | / F Y  { Y1.tmp=Div(Y0.tmp,F.ast), Y0.ast=Y1.ast }
+       | eps    { Y0.ast=Y0.tmp }
+    F -> ( E )  { F.ast=E.ast }
+       | i      { F.ast=Num(i.val) }
+
+# Veamoslo en tiempo real {.t}
+
+    |i{3} * ( i{2} + i{5} )
+
+    E [ast=.]
+
+# Veamoslo en tiempo real {.t}
+
+    |i{3} * ( i{2} + i{5} )
+
+    T [ast=.]                               E -> T X
+    X [ast=. tmp=.]                         E -> T X
+    E [ast=.]
+
+# Veamoslo en tiempo real {.t}
+
+    |i{3} * ( i{2} + i{5} )
+
+    F [ast=.]                               T -> F Y
+    Y [ast=. tmp=.]                         T -> F Y
+    T [ast=.]                               E -> T X
+    X [ast=. tmp=.]                         E -> T X
+    E [ast=.]
+
+# Veamoslo en tiempo real {.t}
+
+    |i{3} * ( i{2} + i{5} )
+
+    i [val=.]                               F -> i
+    F [ast=.]                               T -> F Y
+    Y [ast=. tmp=.]                         T -> F Y
+    T [ast=.]                               E -> T X
+    X [ast=. tmp=.]                         E -> T X
+    E [ast=.]
+
+# Veamoslo en tiempo real {.t}
+
+     i{3}|* ( i{2} + i{5} )
+
+    i [val=3]                               F -> i
+    F [ast=.]                               T -> F Y
+    Y [ast=. tmp=.]                         T -> F Y
+    T [ast=.]                               E -> T X
+    X [ast=. tmp=.]                         E -> T X
+    E [ast=.]
+
+# Veamoslo en tiempo real {.t}
+
+     i{3}|* ( i{2} + i{5} )
+
+    i [val=3]                               F -> i
+    F [ast=Num(3)]                          T -> F Y
+    Y [ast=. tmp=.]                         T -> F Y
+    T [ast=.]                               E -> T X
+    X [ast=. tmp=.]                         E -> T X
+    E [ast=.]
+
+# Veamoslo en tiempo real {.t}
+
+     i{3}|* ( i{2} + i{5} )
+
+    F [ast=Num(3)]                          T -> F Y
+    Y [ast=. tmp=.]                         T -> F Y
+    T [ast=.]                               E -> T X
+    X [ast=. tmp=.]                         E -> T X
+    E [ast=.]
+
+# Veamoslo en tiempo real {.t}
+
+     i{3}|* ( i{2} + i{5} )
+
+    F [ast=Num(3)]                          T -> F Y
+    Y [ast=. tmp=Num(3)]                    T -> F Y
+    T [ast=.]                               E -> T X
+    X [ast=. tmp=.]                         E -> T X
+    E [ast=.]
+
+# Veamoslo en tiempo real {.t}
+
+     i{3}|* ( i{2} + i{5} )
+
+    Y [ast=. tmp=Num(3)]                    T -> F Y
+    T [ast=.]                               E -> T X
+    X [ast=. tmp=.]                         E -> T X
+    E [ast=.]
+
+# Veamoslo en tiempo real {.t}
+
+     i{3}|* ( i{2} + i{5} )
+
+    * []                                    Y -> * F Y
+    F [ast=.]                               Y -> * F Y
+    Y [ast=. tmp=.]                         Y -> * F Y
+    Y [ast=. tmp=Num(3)]                    T -> F Y
+    T [ast=.]                               E -> T X
+    X [ast=. tmp=.]                         E -> T X
+    E [ast=.]
+
+# Veamoslo en tiempo real {.t}
+
+     i{3} *|( i{2} + i{5} )
+
+    * []                                    Y -> * F Y
+    F [ast=.]                               Y -> * F Y
+    Y [ast=. tmp=.]                         Y -> * F Y
+    Y [ast=. tmp=Num(3)]                    T -> F Y
+    T [ast=.]                               E -> T X
+    X [ast=. tmp=.]                         E -> T X
+    E [ast=.]
+
+# Veamoslo en tiempo real {.t}
+
+     i{3} *|( i{2} + i{5} )
+
+    F [ast=.]                               Y -> * F Y
+    Y [ast=. tmp=.]                         Y -> * F Y
+    Y [ast=. tmp=Num(3)]                    T -> F Y
+    T [ast=.]                               E -> T X
+    X [ast=. tmp=.]                         E -> T X
+    E [ast=.]
+
+# Veamoslo en tiempo real {.t}
+
+     i{3} *|( i{2} + i{5} )
+
+    ( []                                    F -> ( E )
+    E [ast=.]                               F -> ( E )
+    ) []                                    F -> ( E )
+    F [ast=.]                               Y -> * F Y
+    Y [ast=. tmp=.]                         Y -> * F Y
+    Y [ast=. tmp=Num(3)]                    T -> F Y
+    T [ast=.]                               E -> T X
+    X [ast=. tmp=.]                         E -> T X
+    E [ast=.]
+
+# Veamoslo en tiempo real {.t}
+
+     i{3} * (|i{2} + i{5} )
+
+    ( []                                    F -> ( E )
+    E [ast=.]                               F -> ( E )
+    ) []                                    F -> ( E )
+    F [ast=.]                               Y -> * F Y
+    Y [ast=. tmp=.]                         Y -> * F Y
+    Y [ast=. tmp=Num(3)]                    T -> F Y
+    T [ast=.]                               E -> T X
+    X [ast=. tmp=.]                         E -> T X
+    E [ast=.]
+
+# Veamoslo en tiempo real {.t}
+
+     i{3} * (|i{2} + i{5} )
+
+    E [ast=.]                               F -> ( E )
+    ) []                                    F -> ( E )
+    F [ast=.]                               Y -> * F Y
+    Y [ast=. tmp=.]                         Y -> * F Y
+    Y [ast=. tmp=Num(3)]                    T -> F Y
+    T [ast=.]                               E -> T X
+    X [ast=. tmp=.]                         E -> T X
+    E [ast=.]
+
+# Veamoslo en tiempo real {.t}
+
+     i{3} * (|i{2} + i{5} )
+
+    T [ast=.]                               E -> T X
+    X [ast=. tmp=.]                         E -> T X
+    E [ast=.]                               F -> ( E )
+    ) []                                    F -> ( E )
+    F [ast=.]                               Y -> * F Y
+    Y [ast=. tmp=.]                         Y -> * F Y
+    Y [ast=. tmp=Num(3)]                    T -> F Y
+    T [ast=.]                               E -> T X
+    X [ast=. tmp=.]                         E -> T X
+    E [ast=.]
+
+# Veamoslo en tiempo real {.t}
+
+     i{3} * (|i{2} + i{5} )
+
+    F [ast=.]                               T -> F Y
+    Y [ast=. tmp=.]                         T -> F Y
+    T [ast=.]                               E -> T X
+    X [ast=. tmp=.]                         E -> T X
+    E [ast=.]                               F -> ( E )
+    ) []                                    F -> ( E )
+    F [ast=.]                               Y -> * F Y
+    Y [ast=. tmp=.]                         Y -> * F Y
+    Y [ast=. tmp=Num(3)]                    T -> F Y
+    T [ast=.]                               E -> T X
+    X [ast=. tmp=.]                         E -> T X
+    E [ast=.]
+
+# Veamoslo en tiempo real {.t}
+
+     i{3} * (|i{2} + i{5} )
+
+    i [val=.]                               F -> i
+    F [ast=.]                               T -> F Y
+    Y [ast=. tmp=.]                         T -> F Y
+    T [ast=.]                               E -> T X
+    X [ast=. tmp=.]                         E -> T X
+    E [ast=.]                               F -> ( E )
+    ) []                                    F -> ( E )
+    F [ast=.]                               Y -> * F Y
+    Y [ast=. tmp=.]                         Y -> * F Y
+    Y [ast=. tmp=Num(3)]                    T -> F Y
+    T [ast=.]                               E -> T X
+    X [ast=. tmp=.]                         E -> T X
+    E [ast=.]
+
+# Veamoslo en tiempo real {.t}
+
+     i{3} * ( i{2}|+ i{5} )
+
+    i [val=2]                               F -> i
+    F [ast=.]                               T -> F Y
+    Y [ast=. tmp=.]                         T -> F Y
+    T [ast=.]                               E -> T X
+    X [ast=. tmp=.]                         E -> T X
+    E [ast=.]                               F -> ( E )
+    ) []                                    F -> ( E )
+    F [ast=.]                               Y -> * F Y
+    Y [ast=. tmp=.]                         Y -> * F Y
+    Y [ast=. tmp=Num(3)]                    T -> F Y
+    T [ast=.]                               E -> T X
+    X [ast=. tmp=.]                         E -> T X
+    E [ast=.]
+
+# Veamoslo en tiempo real {.t}
+
+     i{3} * ( i{2}|+ i{5} )
+
+    i [val=2]                               F -> i
+    F [ast=Num(2)]                          T -> F Y
+    Y [ast=. tmp=.]                         T -> F Y
+    T [ast=.]                               E -> T X
+    X [ast=. tmp=.]                         E -> T X
+    E [ast=.]                               F -> ( E )
+    ) []                                    F -> ( E )
+    F [ast=.]                               Y -> * F Y
+    Y [ast=. tmp=.]                         Y -> * F Y
+    Y [ast=. tmp=Num(3)]                    T -> F Y
+    T [ast=.]                               E -> T X
+    X [ast=. tmp=.]                         E -> T X
+    E [ast=.]
+
+# Veamoslo en tiempo real {.t}
+
+     i{3} * ( i{2}|+ i{5} )
+
+    F [ast=Num(2)]                          T -> F Y
+    Y [ast=. tmp=.]                         T -> F Y
+    T [ast=.]                               E -> T X
+    X [ast=. tmp=.]                         E -> T X
+    E [ast=.]                               F -> ( E )
+    ) []                                    F -> ( E )
+    F [ast=.]                               Y -> * F Y
+    Y [ast=. tmp=.]                         Y -> * F Y
+    Y [ast=. tmp=Num(3)]                    T -> F Y
+    T [ast=.]                               E -> T X
+    X [ast=. tmp=.]                         E -> T X
+    E [ast=.]
+
+# Veamoslo en tiempo real {.t}
+
+     i{3} * ( i{2}|+ i{5} )
+
+    F [ast=Num(2)]                          T -> F Y
+    Y [ast=. tmp=Num(2)]                    T -> F Y
+    T [ast=.]                               E -> T X
+    X [ast=. tmp=.]                         E -> T X
+    E [ast=.]                               F -> ( E )
+    ) []                                    F -> ( E )
+    F [ast=.]                               Y -> * F Y
+    Y [ast=. tmp=.]                         Y -> * F Y
+    Y [ast=. tmp=Num(3)]                    T -> F Y
+    T [ast=.]                               E -> T X
+    X [ast=. tmp=.]                         E -> T X
+    E [ast=.]
+
+# Veamoslo en tiempo real {.t}
+
+     i{3} * ( i{2}|+ i{5} )
+
+    Y [ast=. tmp=Num(2)]                    T -> F Y
+    T [ast=.]                               E -> T X
+    X [ast=. tmp=.]                         E -> T X
+    E [ast=.]                               F -> ( E )
+    ) []                                    F -> ( E )
+    F [ast=.]                               Y -> * F Y
+    Y [ast=. tmp=.]                         Y -> * F Y
+    Y [ast=. tmp=Num(3)]                    T -> F Y
+    T [ast=.]                               E -> T X
+    X [ast=. tmp=.]                         E -> T X
+    E [ast=.]
+
+# Veamoslo en tiempo real {.t}
+
+     i{3} * ( i{2}|+ i{5} )
+
+    Y [ast=Num(2) tmp=Num(2)]               T -> F Y
+    T [ast=.]                               E -> T X
+    X [ast=. tmp=.]                         E -> T X
+    E [ast=.]                               F -> ( E )
+    ) []                                    F -> ( E )
+    F [ast=.]                               Y -> * F Y
+    Y [ast=. tmp=.]                         Y -> * F Y
+    Y [ast=. tmp=Num(3)]                    T -> F Y
+    T [ast=.]                               E -> T X
+    X [ast=. tmp=.]                         E -> T X
+    E [ast=.]
+
+# Veamoslo en tiempo real {.t}
+
+     i{3} * ( i{2}|+ i{5} )
+
+    Y [ast=Num(2) tmp=Num(2)]               T -> F Y
+    T [ast=Num(2)]                          E -> T X
+    X [ast=. tmp=.]                         E -> T X
+    E [ast=.]                               F -> ( E )
+    ) []                                    F -> ( E )
+    F [ast=.]                               Y -> * F Y
+    Y [ast=. tmp=.]                         Y -> * F Y
+    Y [ast=. tmp=Num(3)]                    T -> F Y
+    T [ast=.]                               E -> T X
+    X [ast=. tmp=.]                         E -> T X
+    E [ast=.]
+
+# Veamoslo en tiempo real {.t}
+
+     i{3} * ( i{2}|+ i{5} )
+
+    T [ast=Num(2)]                          E -> T X
+    X [ast=. tmp=.]                         E -> T X
+    E [ast=.]                               F -> ( E )
+    ) []                                    F -> ( E )
+    F [ast=.]                               Y -> * F Y
+    Y [ast=. tmp=.]                         Y -> * F Y
+    Y [ast=. tmp=Num(3)]                    T -> F Y
+    T [ast=.]                               E -> T X
+    X [ast=. tmp=.]                         E -> T X
+    E [ast=.]
+
+# Veamoslo en tiempo real {.t}
+
+     i{3} * ( i{2}|+ i{5} )
+
+    T [ast=Num(2)]                          E -> T X
+    X [ast=. tmp=Num(2)]                    E -> T X
+    E [ast=.]                               F -> ( E )
+    ) []                                    F -> ( E )
+    F [ast=.]                               Y -> * F Y
+    Y [ast=. tmp=.]                         Y -> * F Y
+    Y [ast=. tmp=Num(3)]                    T -> F Y
+    T [ast=.]                               E -> T X
+    X [ast=. tmp=.]                         E -> T X
+    E [ast=.]
+
+# Veamoslo en tiempo real {.t}
+
+     i{3} * ( i{2}|+ i{5} )
+
+    X [ast=. tmp=Num(2)]                    E -> T X
+    E [ast=.]                               F -> ( E )
+    ) []                                    F -> ( E )
+    F [ast=.]                               Y -> * F Y
+    Y [ast=. tmp=.]                         Y -> * F Y
+    Y [ast=. tmp=Num(3)]                    T -> F Y
+    T [ast=.]                               E -> T X
+    X [ast=. tmp=.]                         E -> T X
+    E [ast=.]
+
+# Veamoslo en tiempo real {.t}
+
+     i{3} * ( i{2}|+ i{5} )
+
+    + []                                    X -> + T X
+    T [ast=.]                               X -> + T X
+    X [ast=. tmp=.]                         X -> + T X
+    X [ast=. tmp=Num(2)]                    E -> T X
+    E [ast=.]                               F -> ( E )
+    ) []                                    F -> ( E )
+    F [ast=.]                               Y -> * F Y
+    Y [ast=. tmp=.]                         Y -> * F Y
+    Y [ast=. tmp=Num(3)]                    T -> F Y
+    T [ast=.]                               E -> T X
+    X [ast=. tmp=.]                         E -> T X
+    E [ast=.]
+
+# Veamoslo en tiempo real {.t}
+
+     i{3} * ( i{2} +|i{5} )
+
+    + []                                    X -> + T X
+    T [ast=.]                               X -> + T X
+    X [ast=. tmp=.]                         X -> + T X
+    X [ast=. tmp=Num(2)]                    E -> T X
+    E [ast=.]                               F -> ( E )
+    ) []                                    F -> ( E )
+    F [ast=.]                               Y -> * F Y
+    Y [ast=. tmp=.]                         Y -> * F Y
+    Y [ast=. tmp=Num(3)]                    T -> F Y
+    T [ast=.]                               E -> T X
+    X [ast=. tmp=.]                         E -> T X
+    E [ast=.]
+
+# Veamoslo en tiempo real {.t}
+
+     i{3} * ( i{2} +|i{5} )
+
+    T [ast=.]                               X -> + T X
+    X [ast=. tmp=.]                         X -> + T X
+    X [ast=. tmp=Num(2)]                    E -> T X
+    E [ast=.]                               F -> ( E )
+    ) []                                    F -> ( E )
+    F [ast=.]                               Y -> * F Y
+    Y [ast=. tmp=.]                         Y -> * F Y
+    Y [ast=. tmp=Num(3)]                    T -> F Y
+    T [ast=.]                               E -> T X
+    X [ast=. tmp=.]                         E -> T X
+    E [ast=.]
+
+# Veamoslo en tiempo real {.t}
+
+     i{3} * ( i{2} +|i{5} )
+
+    F [ast=.]                               T -> F Y
+    Y [ast=. tmp=.]                         T -> F Y
+    T [ast=.]                               X -> + T X
+    X [ast=. tmp=.]                         X -> + T X
+    X [ast=. tmp=Num(2)]                    E -> T X
+    E [ast=.]                               F -> ( E )
+    ) []                                    F -> ( E )
+    F [ast=.]                               Y -> * F Y
+    Y [ast=. tmp=.]                         Y -> * F Y
+    Y [ast=. tmp=Num(3)]                    T -> F Y
+    T [ast=.]                               E -> T X
+    X [ast=. tmp=.]                         E -> T X
+    E [ast=.]
+
+# Veamoslo en tiempo real {.t}
+
+     i{3} * ( i{2} +|i{5} )
+
+    i [val=.]                               F -> i
+    F [ast=.]                               T -> F Y
+    Y [ast=. tmp=.]                         T -> F Y
+    T [ast=.]                               X -> + T X
+    X [ast=. tmp=.]                         X -> + T X
+    X [ast=. tmp=Num(2)]                    E -> T X
+    E [ast=.]                               F -> ( E )
+    ) []                                    F -> ( E )
+    F [ast=.]                               Y -> * F Y
+    Y [ast=. tmp=.]                         Y -> * F Y
+    Y [ast=. tmp=Num(3)]                    T -> F Y
+    T [ast=.]                               E -> T X
+    X [ast=. tmp=.]                         E -> T X
+    E [ast=.]
+
+# Veamoslo en tiempo real {.t}
+
+     i{3} * ( i{2} + i{5}|)
+
+    i [val=5]                               F -> i
+    F [ast=.]                               T -> F Y
+    Y [ast=. tmp=.]                         T -> F Y
+    T [ast=.]                               X -> + T X
+    X [ast=. tmp=.]                         X -> + T X
+    X [ast=. tmp=Num(2)]                    E -> T X
+    E [ast=.]                               F -> ( E )
+    ) []                                    F -> ( E )
+    F [ast=.]                               Y -> * F Y
+    Y [ast=. tmp=.]                         Y -> * F Y
+    Y [ast=. tmp=Num(3)]                    T -> F Y
+    T [ast=.]                               E -> T X
+    X [ast=. tmp=.]                         E -> T X
+    E [ast=.]
+
+# Veamoslo en tiempo real {.t}
+
+     i{3} * ( i{2} + i{5}|)
+
+    i [val=5]                               F -> i
+    F [ast=Num(5)]                          T -> F Y
+    Y [ast=. tmp=.]                         T -> F Y
+    T [ast=.]                               X -> + T X
+    X [ast=. tmp=.]                         X -> + T X
+    X [ast=. tmp=Num(2)]                    E -> T X
+    E [ast=.]                               F -> ( E )
+    ) []                                    F -> ( E )
+    F [ast=.]                               Y -> * F Y
+    Y [ast=. tmp=.]                         Y -> * F Y
+    Y [ast=. tmp=Num(3)]                    T -> F Y
+    T [ast=.]                               E -> T X
+    X [ast=. tmp=.]                         E -> T X
+    E [ast=.]
+
+# Veamoslo en tiempo real {.t}
+
+     i{3} * ( i{2} + i{5}|)
+
+    F [ast=Num(5)]                          T -> F Y
+    Y [ast=. tmp=.]                         T -> F Y
+    T [ast=.]                               X -> + T X
+    X [ast=. tmp=.]                         X -> + T X
+    X [ast=. tmp=Num(2)]                    E -> T X
+    E [ast=.]                               F -> ( E )
+    ) []                                    F -> ( E )
+    F [ast=.]                               Y -> * F Y
+    Y [ast=. tmp=.]                         Y -> * F Y
+    Y [ast=. tmp=Num(3)]                    T -> F Y
+    T [ast=.]                               E -> T X
+    X [ast=. tmp=.]                         E -> T X
+    E [ast=.]
+
+# Veamoslo en tiempo real {.t}
+
+     i{3} * ( i{2} + i{5}|)
+
+    F [ast=Num(5)]                          T -> F Y
+    Y [ast=. tmp=Num(5)]                    T -> F Y
+    T [ast=.]                               X -> + T X
+    X [ast=. tmp=.]                         X -> + T X
+    X [ast=. tmp=Num(2)]                    E -> T X
+    E [ast=.]                               F -> ( E )
+    ) []                                    F -> ( E )
+    F [ast=.]                               Y -> * F Y
+    Y [ast=. tmp=.]                         Y -> * F Y
+    Y [ast=. tmp=Num(3)]                    T -> F Y
+    T [ast=.]                               E -> T X
+    X [ast=. tmp=.]                         E -> T X
+    E [ast=.]
+
+# Veamoslo en tiempo real {.t}
+
+     i{3} * ( i{2} + i{5}|)
+
+    Y [ast=. tmp=Num(5)]                    T -> F Y
+    T [ast=.]                               X -> + T X
+    X [ast=. tmp=.]                         X -> + T X
+    X [ast=. tmp=Num(2)]                    E -> T X
+    E [ast=.]                               F -> ( E )
+    ) []                                    F -> ( E )
+    F [ast=.]                               Y -> * F Y
+    Y [ast=. tmp=.]                         Y -> * F Y
+    Y [ast=. tmp=Num(3)]                    T -> F Y
+    T [ast=.]                               E -> T X
+    X [ast=. tmp=.]                         E -> T X
+    E [ast=.]
+
+# Veamoslo en tiempo real {.t}
+
+     i{3} * ( i{2} + i{5}|)
+
+    Y [ast=Num(5) tmp=Num(5)]               T -> F Y
+    T [ast=.]                               X -> + T X
+    X [ast=. tmp=.]                         X -> + T X
+    X [ast=. tmp=Num(2)]                    E -> T X
+    E [ast=.]                               F -> ( E )
+    ) []                                    F -> ( E )
+    F [ast=.]                               Y -> * F Y
+    Y [ast=. tmp=.]                         Y -> * F Y
+    Y [ast=. tmp=Num(3)]                    T -> F Y
+    T [ast=.]                               E -> T X
+    X [ast=. tmp=.]                         E -> T X
+    E [ast=.]
+
+# Veamoslo en tiempo real {.t}
+
+     i{3} * ( i{2} + i{5}|)
+
+    Y [ast=Num(5) tmp=Num(5)]               T -> F Y
+    T [ast=Num(5)]                          X -> + T X
+    X [ast=. tmp=.]                         X -> + T X
+    X [ast=. tmp=Num(2)]                    E -> T X
+    E [ast=.]                               F -> ( E )
+    ) []                                    F -> ( E )
+    F [ast=.]                               Y -> * F Y
+    Y [ast=. tmp=.]                         Y -> * F Y
+    Y [ast=. tmp=Num(3)]                    T -> F Y
+    T [ast=.]                               E -> T X
+    X [ast=. tmp=.]                         E -> T X
+    E [ast=.]
+
+# Veamoslo en tiempo real {.t}
+
+     i{3} * ( i{2} + i{5}|)
+
+    T [ast=Num(5)]                          X -> + T X
+    X [ast=. tmp=.]                         X -> + T X
+    X [ast=. tmp=Num(2)]                    E -> T X
+    E [ast=.]                               F -> ( E )
+    ) []                                    F -> ( E )
+    F [ast=.]                               Y -> * F Y
+    Y [ast=. tmp=.]                         Y -> * F Y
+    Y [ast=. tmp=Num(3)]                    T -> F Y
+    T [ast=.]                               E -> T X
+    X [ast=. tmp=.]                         E -> T X
+    E [ast=.]
+
+# Veamoslo en tiempo real {.t}
+
+     i{3} * ( i{2} + i{5}|)
+
+    T [ast=Num(5)]                          X -> + T X
+    X [ast=. tmp=Num(5)]                    X -> + T X
+    X [ast=. tmp=Num(2)]                    E -> T X
+    E [ast=.]                               F -> ( E )
+    ) []                                    F -> ( E )
+    F [ast=.]                               Y -> * F Y
+    Y [ast=. tmp=.]                         Y -> * F Y
+    Y [ast=. tmp=Num(3)]                    T -> F Y
+    T [ast=.]                               E -> T X
+    X [ast=. tmp=.]                         E -> T X
+    E [ast=.]
+
+# Veamoslo en tiempo real {.t}
+
+     i{3} * ( i{2} + i{5}|)
+
+    X [ast=. tmp=Num(5)]                    X -> + T X
+    X [ast=. tmp=Num(2)]                    E -> T X
+    E [ast=.]                               F -> ( E )
+    ) []                                    F -> ( E )
+    F [ast=.]                               Y -> * F Y
+    Y [ast=. tmp=.]                         Y -> * F Y
+    Y [ast=. tmp=Num(3)]                    T -> F Y
+    T [ast=.]                               E -> T X
+    X [ast=. tmp=.]                         E -> T X
+    E [ast=.]
+
+# Veamoslo en tiempo real {.t}
+
+     i{3} * ( i{2} + i{5}|)
+
+    X [ast=Num(5) tmp=Num(5)]               X -> + T X
+    X [ast=. tmp=Num(2)]                    E -> T X
+    E [ast=.]                               F -> ( E )
+    ) []                                    F -> ( E )
+    F [ast=.]                               Y -> * F Y
+    Y [ast=. tmp=.]                         Y -> * F Y
+    Y [ast=. tmp=Num(3)]                    T -> F Y
+    T [ast=.]                               E -> T X
+    X [ast=. tmp=.]                         E -> T X
+    E [ast=.]
+
+# Veamoslo en tiempo real {.t}
+
+     i{3} * ( i{2} + i{5}|)
+
+    X [ast=Num(5) tmp=Num(5)]               X -> + T X
+    X [ast=Add(Num(2),Num(5)) tmp=Num(2)]   E -> T X
+    E [ast=.]                               F -> ( E )
+    ) []                                    F -> ( E )
+    F [ast=.]                               Y -> * F Y
+    Y [ast=. tmp=.]                         Y -> * F Y
+    Y [ast=. tmp=Num(3)]                    T -> F Y
+    T [ast=.]                               E -> T X
+    X [ast=. tmp=.]                         E -> T X
+    E [ast=.]
+
+# Veamoslo en tiempo real {.t}
+
+     i{3} * ( i{2} + i{5}|)
+
+    X [ast=Add(Num(2),Num(5)) tmp=Num(2)]   E -> T X
+    E [ast=.]                               F -> ( E )
+    ) []                                    F -> ( E )
+    F [ast=.]                               Y -> * F Y
+    Y [ast=. tmp=.]                         Y -> * F Y
+    Y [ast=. tmp=Num(3)]                    T -> F Y
+    T [ast=.]                               E -> T X
+    X [ast=. tmp=.]                         E -> T X
+    E [ast=.]
+
+# Veamoslo en tiempo real {.t}
+
+     i{3} * ( i{2} + i{5}|)
+
+    X [ast=Add(Num(2),Num(5)) tmp=Num(2)]   E -> T X
+    E [ast=Add(Num(2),Num(5))]              F -> ( E )
+    ) []                                    F -> ( E )
+    F [ast=.]                               Y -> * F Y
+    Y [ast=. tmp=.]                         Y -> * F Y
+    Y [ast=. tmp=Num(3)]                    T -> F Y
+    T [ast=.]                               E -> T X
+    X [ast=. tmp=.]                         E -> T X
+    E [ast=.]
+
+# Veamoslo en tiempo real {.t}
+
+     i{3} * ( i{2} + i{5}|)
+
+    E [ast=Add(Num(2),Num(5))]              F -> ( E )
+    ) []                                    F -> ( E )
+    F [ast=.]                               Y -> * F Y
+    Y [ast=. tmp=.]                         Y -> * F Y
+    Y [ast=. tmp=Num(3)]                    T -> F Y
+    T [ast=.]                               E -> T X
+    X [ast=. tmp=.]                         E -> T X
+    E [ast=.]
+
+# Veamoslo en tiempo real {.t}
+
+     i{3} * ( i{2} + i{5}|)
+
+    E [ast=Add(Num(2),Num(5))]              F -> ( E )
+    ) []                                    F -> ( E )
+    F [ast=Add(Num(2),Num(5))]             Y -> * F Y
+    Y [ast=. tmp=.]                         Y -> * F Y
+    Y [ast=. tmp=Num(3)]                    T -> F Y
+    T [ast=.]                               E -> T X
+    X [ast=. tmp=.]                         E -> T X
+    E [ast=.]
+
+# Veamoslo en tiempo real {.t}
+
+     i{3} * ( i{2} + i{5}|)
+
+    ) []                                    F -> ( E )
+    F [ast=Add(Num(2),Num(5))]             Y -> * F Y
+    Y [ast=. tmp=.]                         Y -> * F Y
+    Y [ast=. tmp=Num(3)]                    T -> F Y
+    T [ast=.]                               E -> T X
+    X [ast=. tmp=.]                         E -> T X
+    E [ast=.]
+
+# Veamoslo en tiempo real {.t}
+
+     i{3} * ( i{2} + i{5} )|
+
+    ) []                                    F -> ( E )
+    F [ast=Add(Num(2),Num(5))]             Y -> * F Y
+    Y [ast=. tmp=.]                         Y -> * F Y
+    Y [ast=. tmp=Num(3)]                    T -> F Y
+    T [ast=.]                               E -> T X
+    X [ast=. tmp=.]                         E -> T X
+    E [ast=.]
+
+# Veamoslo en tiempo real {.t}
+
+     i{3} * ( i{2} + i{5} )|
+
+    F [ast=Add(Num(2),Num(5))]             Y -> * F Y
+    Y [ast=. tmp=.]                         Y -> * F Y
+    Y [ast=. tmp=Num(3)]                    T -> F Y
+    T [ast=.]                               E -> T X
+    X [ast=. tmp=.]                         E -> T X
+    E [ast=.]
+
+# Veamoslo en tiempo real {.t}
+
+     i{3} * ( i{2} + i{5} )|
+
+    F [ast=Add(Num(2),Num(5))]             Y -> * F Y
+    Y [ast=. tmp=Add(Num(2),Num(5))]       Y -> * F Y
+    Y [ast=. tmp=Num(3)]                    T -> F Y
+    T [ast=.]                               E -> T X
+    X [ast=. tmp=.]                         E -> T X
+    E [ast=.]
+
+# Veamoslo en tiempo real {.t}
+
+     i{3} * ( i{2} + i{5} )|
+
+    Y [ast=. tmp=Add(Num(2),Num(5))]       Y -> * F Y
+    Y [ast=. tmp=Num(3)]                    T -> F Y
+    T [ast=.]                               E -> T X
+    X [ast=. tmp=.]                         E -> T X
+    E [ast=.]
+
+# Veamoslo en tiempo real {.t}
+
+     i{3} * ( i{2} + i{5} )|
+
+    Y [ast=Add(Num(2),Num(5)) tmp=...]      Y -> * F Y
+    Y [ast=. tmp=Num(3)]                    T -> F Y
+    T [ast=.]                               E -> T X
+    X [ast=. tmp=.]                         E -> T X
+    E [ast=.]
+
+# Veamoslo en tiempo real {.t}
+
+     i{3} * ( i{2} + i{5} )|
+
+    Y [ast=Add(Num(2),Num(5)) tmp=...]      Y -> * F Y
+    Y [ast=Mul(Num(3),Add(Num(2),Num(5)))]  T -> F Y
+    T [ast=.]                               E -> T X
+    X [ast=. tmp=.]                         E -> T X
+    E [ast=.]
+
+# Veamoslo en tiempo real {.t}
+
+     i{3} * ( i{2} + i{5} )|
+
+    Y [ast=Mul(Num(3),Add(Num(2),Num(5)))]  T -> F Y
+    T [ast=.]                               E -> T X
+    X [ast=. tmp=.]                         E -> T X
+    E [ast=.]
+
+# Veamoslo en tiempo real {.t}
+
+     i{3} * ( i{2} + i{5} )|
+
+    Y [ast=Mul(Num(3),Add(Num(2),Num(5)))]  T -> F Y
+    T [ast=Mul(Num(3),Add(Num(2),Num(5)))]  E -> T X
+    X [ast=. tmp=.]                         E -> T X
+    E [ast=.]
+
+# Veamoslo en tiempo real {.t}
+
+     i{3} * ( i{2} + i{5} )|
+
+    T [ast=Mul(Num(3),Add(Num(2),Num(5)))]  E -> T X
+    X [ast=. tmp=.]                         E -> T X
+    E [ast=.]
+
+# Veamoslo en tiempo real {.t}
+
+     i{3} * ( i{2} + i{5} )|
+
+    T [ast=Mul(Num(3),Add(Num(2),Num(5)))]  E -> T X
+    X [tmp=Mul(Num(3),Add(Num(2),Num(5)))]  E -> T X
+    E [ast=.]
+
+# Veamoslo en tiempo real {.t}
+
+     i{3} * ( i{2} + i{5} )|
+
+    X [tmp=Mul(Num(3),Add(Num(2),Num(5)))]  E -> T X
+    E [ast=.]
+
+# Veamoslo en tiempo real {.t}
+
+     i{3} * ( i{2} + i{5} )|
+
+    X [ast=Mul(Num(3),Add(Num(2),Num(5)))]  E -> T X
+    E [ast=.]
+
+# Veamoslo en tiempo real {.t}
+
+     i{3} * ( i{2} + i{5} )|
+
+    X [ast=Mul(Num(3),Add(Num(2),Num(5)))]  E -> T X
+    E [ast=Mul(Num(3),Add(Num(2),Num(5)))]
+
+# Veamoslo en tiempo real {.t}
+
+     i{3} * ( i{2} + i{5} )|
+
+    E [ast=Mul(Num(3),Add(Num(2),Num(5)))]
+
+## ¡¡ Terminado de parsear y el AST ya está listo !!
+
+Podemos definir entonces el proceso de **parsing** como el mecanismo
+para obtener un **AST** de una cadena.
+
+# ¿Para qué queremos un AST?
+
+. . .
+
+Porque nos hemos liberado de la representación sintáctica,
+ahora podemos:
+
+- Interpretar directamente el AST
+- Verificar la validez de las expresiones
+- Detectar tantos errores como sea posible
+- Compilar a un lenguaje más eficiente de evaluar
+- Optimizar expresiones y transformar código
+- Transpilar a otro lenguaje de alto nivel
+
+> Diseñar buenas gramáticas es una **ciencia**, pero diseñar buenos **AST** es un arte.
+
+# ¿Cuántos AST distintos tengo?
+
+. . .
+
+En principio, tantos **AST** como representaciones semánticas distintas tenga mi proceso de compilación.
+En el compilar de COOL:
+
+- Un primer **AST** para verificar consistencia de tipos.
+- Un segundo **AST** en lenguaje intermedio (con posibles optimizaciones).
+- Un tercer **AST** en MIPS.
+
+Podemos ver el proceso de compilación como:
+
+    código -> AST -> ... -> AST -> código
+
+Al final es una traducción de un lenguaje a otro,
+pasando por representaciones intermedias convenientes.
+
+# ¿Donde estamos?
+
+\ ![](../graphics/mountain.svg){ width=100% }

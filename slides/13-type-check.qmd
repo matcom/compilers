@@ -1,0 +1,619 @@
+---
+title: "Tipos"
+format: revealjs
+---
+
+% Semántica de Tipos
+% MSc. Alejandro Piad Morffis
+% MatCom, UH (CC BY-SA-NC 4.0)
+
+# Tipos
+
+    x.f()
+
+Es válida si:
+
+* `x` está definido en el contexto
+* `f` está definido en el contexto
+* El **tipo** de `x` *soporta* la operación `f`
+
+## Un tipo es una descripción de qué operaciones son válidas para un símbolo
+
+## Todos los lenguajes modernos tienen el concepto de tipo
+
+
+# Tipado dinámico vs Tipado estático
+
+## Tipo dinámico
+
+Es el tipo *asociado* a un valor en tiempo de ejecución
+
+## Tipo estático
+
+Es el tipo *declarado* para un símbolo en tiempo de compilación
+
+## La discusión entre tipado dinámico vs tipado estático es superflua ;)
+
+
+# Chequeo de tipos
+
+## Idealmente queremos que el tipo estático coincida con el dinámico
+
+```cs
+class A {
+    public void F() { /* ... */ }
+}
+
+class B : A {
+    public void G() { /* ... */ }
+}
+```
+
+## Pero no siempre el compilador puede detectarlo correctamente
+
+```cs
+A a = new B();
+a.G();
+```
+
+
+# Verificador de tipos
+
+Un verificador de tipos es un algoritmo que nos dice si el uso de los tipos en el AST es consistente.
+
+## Algunas tareas
+
+* Verificar que los tipos declarados sean compatibles con los valores almacenados en cada variable
+* Inferir el tipo de una expresión arbitraria
+* Identificar el tipo de un símbolo en un contexto concreto (*espacio de nombres*)
+
+
+# Encapsulamiento
+
+    x.f()
+
+La ejecución de una operación puede ser válida en algunos contextos:
+
+* Si la visibilidad de `f` es privada, solo dentro de la clase
+* Si la visibilidad de `f` es pública, también fuera de la clase
+* Otros lenguajes incluyen más niveles de granularidad
+
+
+# Herencia
+
+En la mayoría de los lenguajes orientados a objetos existe el concepto de **herencia**
+
+## Características de la herencia
+
+Si `B` hereda de `A` entonces:
+
+* Las operaciones válidas con `A` son válidas con `B`
+* `B` puede incluir nuevas operaciones
+* `B` puede *sobrescribir* algunas operaciones de `A` sujeto a ciertas restricciones (*principio de substitución de Liskov*)
+
+## La discusión entre herencia simple y herencia múltiple también es superflua ;)
+
+# Polimorfismo
+
+    x.f()
+
+* Si `x` es de tipo `B` dinámico, pero tipo `A` estático, y
+* existe más de una implementación de `f` entre `A` y `B`, entonces
+
+¿cuál es la implementación concreta de `f` a ejecutar?
+
+## Más adelante veremos como resolver esto (en **generación de código**)
+
+
+# Conformidad de tipos
+
+Definamos una función para hablar de tipos *compatibles*:
+
+## Relación de conformidad $B \leq A$
+
+`B` se conforma a `A` si:
+
+* `B` hereda de `A`
+* `B` hereda de `C` y `C` se conforma a `A`
+
+
+# Verificando tipos
+
+Queremos un verificador que sea consistente:
+
+* Si el uso de tipos es inconsistente, da error
+* Si el uso de tipos *pudiera* ser inconsistente, da error
+* Si no da error, entonces **seguro** que el uso de tipos es correcto
+
+. . .
+
+## En general ningún verificador de tipos serio es ni siquiera consistente (¿qué pasa con el *casting*?)
+
+
+# Verificando tipos
+
+```cs
+class SumExpr : Expression {
+    public Expression Left, Right;
+    public Type NodeType;
+
+    public bool CheckTypes() {
+        if (!Left.CheckTypes() || !Right.CheckTypes()) {
+            return false;
+        }
+
+        if (Left.NodeType != Type.Integer ||
+            Right.NodeType != Type.Integer) {
+            return false;
+        }
+
+        NodeType = Type.Integer;
+        return true;
+    }
+}
+```
+
+
+# Verificando tipos
+
+Vamos a definir un lenguaje formal para declarar la semántica de tipos:
+
+$$
+\begin{array}{l}
+e_1 : Integer \\
+e_2 : Integer \\
+\hline
+\vdash e_1 + e_2 : Integer
+\end{array}
+$$
+
+. . .
+
+Se lee como:
+
+> si $e_1$ es una expresión de tipo $Integer$ y $e_2$ es una expresión de tipo $Integer$, entonces se deduce que la expresión $e_1 + e_2$ es de tipo $Integer$.
+
+
+# Contexto de objetos
+
+La verificación de tipos de hace *bottom-up*
+
+Pero las variables se declaran **antes** de usarse
+
+. . .
+
+## Vamos a introducir un **contexto de objetos** $O(x) = T$
+
+$$
+\begin{array}{l}
+O \vdash e_1 : Integer \\
+O \vdash e_2 : Integer \\
+\hline
+O \vdash e_1 + e_2 : Integer
+\end{array}
+$$
+
+Decimos $O \vdash e_1 : Integer$ y no $O(e_1) = Integer$ !!
+
+
+# Modificando el contexto de objetos
+
+La introducción de nuevas variables modifica el contexto:
+
+```cs
+int x = 4 + int.Parse(Console.ReadLine());
+```
+
+. . .
+
+Decimos $O[T/x]$ para expresar que se adiciona $x$ con tipo $T$
+
+$$
+O[T/x](c) = \left\{ \begin{array}{ll} T & c = x \\ O(c) & c \neq x \end{array} \right.
+$$
+
+. . .
+
+## Semántica de la declaración de variables
+
+$$
+\begin{array}{l}
+O \vdash e : T' \\
+T' \leq T \\
+\hline
+O[T/x] \vdash T x \leftarrow e : \emptyset
+\end{array}
+$$
+
+
+# Contexto de métodos
+
+$$M(T,f) = \left\{ T_1, \ldots, T_{n+1} \right\}$$
+
+> El método $f$ definido en el tipo $T$ (o definido en algún tipo $T'$ tal que $T \leq T'$), tiene $n$ argumentos de tipo $T_1, \ldots, T_n$, y tipo de retorno $T_{n+1}$
+
+## El contexto de métodos **no se modifica**, se construye al principio en un recorrido inicial por el AST
+
+
+# Invocación de métodos
+
+## Dinámicos
+
+$$
+\begin{array}{l}
+O \vdash x : T \\
+M(T,f) = \left\{ T_1, \ldots, T_{n+1} \right\} \\
+O \vdash e_i : T_i' \,\,\, \forall i = 1 \ldots n \\
+T_i' \leq T \,\,\, \forall i = 1 \ldots n \\
+\hline
+O,M \vdash x \cdot f(e_1, \ldots, e_n) : T_{n+1}
+\end{array}
+$$
+
+## Estáticos
+
+$$
+\begin{array}{l}
+M(T,f) = \left\{ T_1, \ldots, T_{n+1} \right\} \\
+O \vdash e_i : T_i' \,\,\, \forall i = 1 \ldots n \\
+T_i' \leq T \,\,\, \forall i = 1 \ldots n \\
+\hline
+O,M \vdash T \cdot f(e_1, \ldots, e_n) : T_{n+1}
+\end{array}
+$$
+
+
+# Declaración de métodos
+
+* Vamos a introducir además en la notación a $C$, el tipo actual dónde se ejecuta el código.
+
+* Además, $O_C$ es el contexto dentro de la clase $C$, donde están definidos los atributos visibles de $C$ (campos)
+
+* `self` es el símbolo que identifica a la instancia actual
+
+## Podemos entonces definir la declaración de métodos
+
+$$
+\begin{array}{l}
+M(C,f) = \{ T_1, \ldots, T_n, T \} \\
+O_C[T_1/x_1,\ldots,T_n/x_n,C/self] \vdash e : T' \\
+T' \leq T \\
+\hline
+O_C,M,C \vdash f(x_1 : T_1, \ldots, x_n : T_n) : T \{ e \}
+\end{array}
+$$
+
+
+# Implementando un verificador de tipos
+
+
+Definamos un lenguaje OO simple:
+
+* Un programa consiste en una lista de definiciones de clases.
+* Todas las clases se definen en el mismo espacio de nombres global.
+* Cada clase tiene atributos y métodos.
+* Los atributos tienen un tipo asociado.
+* Los métodos tienen un tipo de retorno (que puede ser `void`), y una lista de argumentos.
+* Todos los atributos son privados y todos los métodos son publicos.
+* Existe herencia simple.
+* Un método se puede sobrescribir sí y solo sí se mantiene exactamente la misma definición para los tipos de retorno y de los argumentos.
+* No existen sobrecargas de métodos ni de operadores.
+* El cuerpo de todo método es una expresión.
+
+
+# Clases para los tipos, métodos y atributos
+
+```cs
+interface IType {
+    string Name { get; }
+    IAtribute[] Attributes { get; }
+    IMethod[] Methods { get; }
+    IAttribute GetAttribute(string name);
+    IMethod GetMethod(string name);
+    bool DefineAttribute(string name, IType type);
+    bool DefineMethod(string name, IType returnType,
+                      string[] arguments, IType[] argumentTypes);
+}
+```
+
+
+# Clases para los tipos, métodos y atributos
+
+
+```cs
+interface IAttribute {
+    string Name { get; }
+    IType Type { get; }
+}
+
+interface IMethod {
+    string Name { get; }
+    IType ReturnType { get; }
+    IAttribute[] Arguments { get; }
+}
+```
+
+
+# Contexto
+
+```cs
+interface IContext {
+    IType GetType(string typeName);
+    IType GetTypeFor(string symbol);
+    IContext CreateChildContext();
+    bool DefineSymbol(string symbol, IType type);
+    IType CreateType(string name)
+}
+```
+
+## ¡El contexto de métodos está definido en cada tipo!
+
+
+# Fragmento del AST
+
+
+```cs
+public abstract class Node { }
+
+
+public class Program : Node {
+    public List<ClassDef> Classes;
+}
+
+public class ClassDef : Node {
+    public string Name;
+    public List<AttrDef> Attributes;
+    public List<MethodDef> Methods;
+}
+```
+
+
+# Fragmento del AST
+
+```cs
+public class AttrDef : Node {
+    public string Name;
+    public string Type;
+    public Expression Initialization;
+}
+
+public class MethodDef : Node {
+    public string Name;
+    public string ReturnType;
+    public List<string> ArgNames;
+    public List<string> ArgTypes;
+    public string ReturnType;
+    public Expression Body;
+}
+```
+
+## Quedan todos los nodos de expresiones... ;)
+
+
+# Verificación de tipos en el AST
+
+* Primera pasada para obtener los tipos
+* Segunda pasada para obtener los métodos y atributos
+* Tercera pasada para verificar la semántica de tipos
+* ...
+* Pasadas adicionales por cada contexto que depende del anterior
+
+. . .
+
+## ¿Ven algún problema?
+
+> * ¿Cuántos métodos recursivos pongo en el AST?
+> * ¿Qué pasa cuando aparece un nuevo nodo?
+> * ¿Qué pasa cuando aparece un nuevo procesamiento?
+
+. . .
+
+## Hay un problema claro de acoplamiento
+
+
+# Presentando el **Patrón Visitor**
+
+Desacoplemos el AST de los posibles recorridos:
+
+```cs
+interface IVisitor<TNode> where TNode : Node {
+    void Visit(TNode node);
+}
+```
+
+Esta *interface* define el procesamiento sobre un nodo.
+
+
+## Veamos algunos usos
+
+
+# `TypeCollector`
+
+```cs
+public class TypeCollectorVisitor: IVisitor<Program>,
+                                   IVisitor<ClassDef> {
+    public IContext Context;
+
+    public void Visit(Program node) {
+        Context = new // ...
+
+        foreach(var classDef in node.Classes) {
+            this.Visit(classDef);
+        }
+    }
+
+    public void Visit(ClassDef node) {
+        Context.CreateType(node.Name);
+    }
+}
+```
+
+
+# `TypeBuilder`
+
+```cs
+public class TypeBuilderVisitor : IVisitor<...> {
+    public IContext Context;
+    private IType currentType;
+
+    public void Visit(Program node) {
+        foreach(var classDef in node.Classes)
+            this.Visit(classDef);
+    }
+
+    public void Visit(ClassDef node) {
+        currentType = Context.GetType(node.Name);
+
+        foreach(var attrDef in node.Attributes)
+            this.Visit(attrDef);
+
+        foreach(var methodDef in node.Methods)
+            this.Visit(methodDef);
+    }
+
+    // ...
+}
+```
+
+
+# `TypeBuilder`
+
+```cs
+public class TypeBuilderVisitor : IVisitor<Program>,
+                                  IVisitor<ClassDef>,
+                                  IVisitor<AttrDef>,
+                                  IVisitor<MethodDef> {
+
+    public IContext Context;
+    private IType currentType;
+
+    // ...
+
+    public void Visit(AttrDef node) {
+        IType attrType = Context.GetType(node.Type);
+        currentType.DefineAttribute(node.Name, attrType);
+    }
+}
+```
+
+
+# `TypeBuilder`
+
+```cs
+public class TypeBuilderVisitor : IVisitor<...> {
+    // ...
+
+    public void Visit(MethodDef node) {
+        IType returnType = Context.GetType(
+                               node.ReturnType);
+
+        var argTypes = node.ArgTypes.Select(
+                           t => Context.GetType(t));
+
+        currentType.DefineMethod(node.Name, returnType,
+                                 node.ArgNames.ToArray(),
+                                 argTypes.ToArray());
+    }
+}
+```
+
+
+# Una pausa para hablar de los errores
+
+## Si ocurre un error, no podemos simplemente parar
+
+* Reportar el error,
+* Tomar una **decisión sensata** de correción,
+* Seguir recorriendo
+
+## ¿Qué es una decisión sensata?
+
+Más adelante atacaremos esta cuestión
+
+
+# `TypeChecker`
+
+```cs
+public class TypeCheckerVisitor : IVisitor<...> {
+    public Context Context;
+
+    public void Visit(BinaryExpr node, IErrorLogger log) {
+        this.Visit(node.Left, log);
+        this.Visit(node.Right, log);
+
+        if (node.Left.ComputedType !=
+            node.Right.ComputedType) {
+            log.LogError("Type mismatch...");
+            node.ComputedType = null;
+        }
+        else
+            node.ComputedType = node.Left.ComputedType;
+    }
+}
+```
+
+
+# Volviendo a los errores
+
+## ¿Qué tipo le damos a una expresión con error?
+
+* ¿`Object`?
+* ¿Cuántos errores más causaremos en la subida por el AST?
+
+```cs
+int x = 4 + int.Parse(Console.ReadLine);
+```
+
+. . .
+
+## Mejor es darle un tipo especial `Any` tal que $Any \leq T$ para todo $T$
+
+* Los errores no se propagan hacia arriba
+* La jerarquía de tipos se complica (deja de ser un árbol)
+
+
+# Volviendo al AST
+
+
+```cs
+public class Program : Node {
+    // ...
+
+    public void CheckSemantics(IErrorLogger logger) {
+        var typeCollector = new TypeCollectorVisitor();
+        typeCollector.Visit(this, logger);
+
+        var typeBuilder = new TypeBuilderVisitor() {
+            Context = typeCollector.Context };
+
+        typeBuilder.Visit(this, logger);
+
+        var typeChecker = new TypeCheckerVisitor() {
+            Context = typeBuilder.Context; };
+
+        typeChecker.Visit(this, logger);
+    }
+}
+```
+
+
+# The road so far
+
+## Hemos terminado con el Análisis Semántico
+
+¿Cómo luce el camino hasta ahora?
+
+* Diseñar un lenguaje (cómo quiero escribirlo)
+* Diseñar la gramática (por favor que sea LALR)
+* Diseñar el AST (reglas semánticas en la gramática)
+* Implementar los *visitor* de chequeo semántico
+* Estamos listos para la generacion de código
+
+. . .
+
+## Próximamente
+
+* Máquinas virtuales
+* Códigos de máquina (pila y 3 direcciones)
+* *Visitors* para generar código
+* Algunas optimizaciones

@@ -1,0 +1,29 @@
+---
+title: "Analizador Léxico"
+format: revealjs
+---
+
+% Construyendo un Lexer
+% MSc. Alejandro Piad Morffis
+% MatCom, UH (CC BY-SA-NC 4.0)
+
+- Convertir una RE en un autómata
+    - Autómata de la unión
+    - Autómata de la concatenación
+    - Autómata de la clausura
+    - Gramática atributada
+    - Cuándo compilar y cuándo simular
+- Minimización de autómatas
+    - Estados distinguibles
+    - Algoritmo
+- Hacer un Lexer
+    - Construir el meta-autómata (NFA)
+    - Algoritmo de tokenización
+    - Prioridad de las expresiones
+    - Problema de tokenizar en $n^2$
+    - Convertir a DFA
+    - Eliminar el estado muerto
+- Manejo de errores
+    - Tokens de error
+    - Producciones de error
+    - Estados de error en el parser
