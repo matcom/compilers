@@ -1,0 +1,3 @@
+[submodule "vendor/tesserax"]
+	path = vendor/tesserax
+	url = https://github.com/apiad/tesserax.git

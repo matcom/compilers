@@ -1,28 +1,14 @@
----
----
-
-
-# Setup
-
-```{python}
-import sys
-import os
-sys.path.append(os.path.abspath(os.curdir))
-from source.trees import Tree
-from source.diagrams import Pipeline, Lexer
-```
-
-
 # El lenguaje HULK
 
 ``` {python}
-
+#| echo: false
 import sys
 import os
-
-sys.path.append(os.path.abspath(os.curdir))
-
-from source.diagrams import Pipeline
+_root = os.path.abspath(os.path.join(".."))
+sys.path.insert(0, _root)
+from tesserax import Canvas
+from source.tesserax_components import Pipeline
+pipeline = Pipeline
 ```
 
 En este capítulo definimos el lenguaje **HULK** (_Havana University Language for Kompilers_), un lenguaje de programación didáctico diseñado para este curso.
@@ -1654,15 +1640,17 @@ Para la fase de generación de código, recomendamos que se utilice un lenguaje 
 De modo que existen al menos 4 tareas del compilador que pueden implementarse en paralelo, estableciendo como interfaces de comunicación 2 ASTs, 1 para **HULK** y uno para **CIL**. Las tareas opcionales de inferencia de tipos y optimización de código también ser incluidas en este esquema de forma no disruptiva. Esto queda resumido en la siguiente gráfica:
 
 ``` {python}
-#| output: asis
-
-Pipeline(['HULK', 'AST-HULK', 'AST-CIL', 'MIPS'], [
-    (0, 1, 'Parser\nLexer'),
-    (1, 1, 'Semántica\nInferencia'),
-    (1, 2, 'Generación'),
-    (2, 2, 'Optimización'),
-    (2, 3, 'Generación')
-]).print(width="100%", float=False)
+#| echo: false
+with Canvas() as canvas:
+    pipeline(['HULK', 'AST-HULK', 'AST-CIL', 'MIPS'], [
+        (0, 1, 'Parser\\nLexer'),
+        (1, 1, 'Semántica\\nInferencia'),
+        (1, 2, 'Generación'),
+        (2, 2, 'Optimización'),
+        (2, 3, 'Generación')
+    ])
+canvas.fit(padding=20)
+canvas.display()
 ```
 
 ### Flujo de trabajo

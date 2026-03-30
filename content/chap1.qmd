@@ -1,28 +1,14 @@
----
----
-
-
-# Setup
-
-```{python}
-import sys
-import os
-sys.path.append(os.path.abspath(os.curdir))
-from source.trees import Tree
-from source.diagrams import Pipeline, Lexer
-```
-
-
 # Análisis Lexicográfico
 
 ``` {python}
-
+#| echo: false
 import sys
 import os
-
-sys.path.append(os.path.abspath(os.curdir))
-
-from source.automata import Automaton
+_root = os.path.abspath(os.path.join(".."))
+sys.path.insert(0, _root)
+from tesserax import Canvas
+from source.tesserax_components import Automaton
+automaton = Automaton
 ```
 
 En este capítulo vamos a atacar el problema de implementar un *lexer*, y todos los elementos teóricos que nos ayudarán en esta tarea, y que nos servirán además para resolver problemas independientes pero relacionados con esta fase. Vamos a comenzar definiendo formalmente el problema que queremos resolver, y luego veremos como desarrollar una teoría que nos permita atacar su solución. Para ello:
@@ -143,16 +129,18 @@ Por ejemplo, si tenemos el siguiente autómata $A=<Q,q_0,V,F,f>$, donde:
 Podemos representar gráficamente el autómata anterior con el siguiente gráfico:
 
 ``` {python}
-#| output: asis
-
-Automaton('q0', ['q2'], {
-    ('q0', 'a'): 'q1',
-    ('q0', 'b'): 'q0',
-    ('q1', 'a'): 'q2',
-    ('q1', 'b'): 'q0',
-    ('q2', 'a'): 'q2',
-    ('q2', 'b'): 'q0',
-}).print(float=False, width="50%")
+#| echo: false
+with Canvas() as canvas:
+    automaton('q0', ['q2'], {
+        ('q0', 'a'): 'q1',
+        ('q0', 'b'): 'q0',
+        ('q1', 'a'): 'q2',
+        ('q1', 'b'): 'q0',
+        ('q2', 'a'): 'q2',
+        ('q2', 'b'): 'q0',
+    })
+canvas.fit(padding=20)
+canvas.display()
 ```
 
 En este gráfico queda completamente representado el autómata, sin necesidad de especificar el resto, pues de la función de transición se pueden inferir los estados y el alfabeto, y se toma el convenio de que el estado $q_0$ siempre es el estado inicial.
@@ -188,11 +176,13 @@ Pasemos entonces a describir algunos ejemplos de lenguajes regulares, que nos da
 El más simple de todos los lenguajes que podemos definir sobre un alfabeto $V$ es justamente $V^*$, el lenguaje de todas las cadenas que se pueden construir con los símbolos de $V$. A este lenguaje le llamamos *universo*. Para construir un autómata para este lenguaje, simplemente necesitamos un estado que será a la vez inicial y final, y una transición para cada símbolo del alfabeto desde este estado hacia el propio estado. Por ejemplo, si $V = \{ a, b, c \}$, tenemos el siguiente autómata:
 
 ``` {python}
-#| output: asis
-
-Automaton('q0', ['q0'], {
-    ('q0', 'a b c'): 'q0'
-}).print(width="20%", float=False)
+#| echo: false
+with Canvas() as canvas:
+    automaton('q0', ['q0'], {
+        ('q0', 'a b c'): 'q0'
+    })
+canvas.fit(padding=20)
+canvas.display()
 ```
 
 Con esta idea podemos demostrar nuestro primer teorema en la teoría de lenguajes formales:
@@ -204,25 +194,24 @@ La demostración se realiza por construcción. Sea $V = \{ a_1, \ldots, a_n \}$ 
 Yendo al extremo contrario, vamos a definir el lenguaje que contiene exactamente las palabras claves **if**, **then**, **else**, **fi**. Para este lenguaje también es fácil definir un autómata. Creamos dos estados, uno inicial y uno final, y por cada palabra del lenguaje creamos un camino entre el estado inicial y final con un estado intermedio para cada símbolo de la palabra correspondiente (menos el último, claro):
 
 ``` {python}
-#| output: asis
-
-Automaton('q0', ['q02', 'q06', 'q10', 'q12'], {
-    ('q0',  'i'): 'q01',
-    ('q01', 'f'): 'q02',
-
-    ('q0',  't'): 'q03',
-    ('q03', 'h'): 'q04',
-    ('q04', 'e'): 'q05',
-    ('q05', 'n'): 'q06',
-
-    ('q0',  'e'): 'q07',
-    ('q07', 'l'): 'q08',
-    ('q08', 's'): 'q09',
-    ('q09', 'e'): 'q10',
-
-    ('q0' , 'f'): 'q11',
-    ('q11', 'i'): 'q12',
-}).print(width="80%", float=False)
+#| echo: false
+with Canvas() as canvas:
+    automaton('q0', ['q02', 'q06', 'q10', 'q12'], {
+        ('q0', 'i'): 'q01',
+        ('q01', 'f'): 'q02',
+        ('q0', 't'): 'q03',
+        ('q03', 'h'): 'q04',
+        ('q04', 'e'): 'q05',
+        ('q05', 'n'): 'q06',
+        ('q0', 'e'): 'q07',
+        ('q07', 'l'): 'q08',
+        ('q08', 's'): 'q09',
+        ('q09', 'e'): 'q10',
+        ('q0', 'f'): 'q11',
+        ('q11', 'i'): 'q12',
+    })
+canvas.fit(padding=20)
+canvas.display()
 ```
 
 Este autómata nos da una idea para demostrar nuestro segundo teorema:
@@ -272,20 +261,21 @@ Parece que no hemos hecho mucho, pero hemos logrado garantizar que nuestro méto
 En este ejemplo, tenemos entonces 5 posibles estados, desde $q_0$ hasta $q_4$. Para determinar las transiciones, veremos cómo cambian los valores en nuestro método. En todo momento, si tenemos un valor `count_a = qi`, en la siguiente iteración o bien `count_a = qi` o de lo contrario `count_a = qi + 1`, y esto solo ocurre si el símbolo recién "visto" es $a$. Esto nos dice entonces que tenemos entre los estados $q_i$ y $q_{i+1}$ siempre una transición con $a$, *excepto* en $q_4$, pues en ese caso no se cumple la condición `count_a <= 3`. Solo nos queda definir el estado final, y en este ejemplo no puede estar más claro, pues la línea `return count_a == 3` nos dice exactamente qué estado (valor de `count_a`) corresponde a un valor `True`. De modo que tenemos nuestro autómata:
 
 ``` {python}
-#| output: asis
-
-Automaton('q0', ['q3'], {
-    ('q0', 'a'): 'q1',
-    ('q1', 'a'): 'q2',
-    ('q2', 'a'): 'q3',
-    ('q3', 'a'): 'q4',
-
-    ('q0', 'b'): 'q0',
-    ('q1', 'b'): 'q1',
-    ('q2', 'b'): 'q2',
-    ('q3', 'b'): 'q3',
-    ('q4', 'b'): 'q4',
-}).print(float=False, width="70%")
+#| echo: false
+with Canvas() as canvas:
+    automaton('q0', ['q3'], {
+        ('q0', 'a'): 'q1',
+        ('q1', 'a'): 'q2',
+        ('q2', 'a'): 'q3',
+        ('q3', 'a'): 'q4',
+        ('q0', 'b'): 'q0',
+        ('q1', 'b'): 'q1',
+        ('q2', 'b'): 'q2',
+        ('q3', 'b'): 'q3',
+        ('q4', 'b'): 'q4',
+    })
+canvas.fit(padding=20)
+canvas.display()
 ```
 
 Lo que hemos hecho es un ejemplo de lo que informalmente llamamos "programar con autómatas". La idea fundamental radica en pensar en una solución algorítmica al problema de reconocer una cadena de cierto lenguaje $L$, y luego extraer de esta solución un autómata. Para que funcione, informalmente, la solución algorítmica debe cumplir:
