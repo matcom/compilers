@@ -1,6 +1,6 @@
 # Compilers Course - Quarto Build System
 
-.PHONY: all book book-html book-pdf slides slides-pdf slides-html publish publish-book publish-slides clean
+.PHONY: all book book-html book-pdf slides slides-pdf slides-html publish clean
 
 # Book targets
 book: book-html book-pdf
@@ -20,14 +20,9 @@ slides-html:
 slides-pdf:
 	cd slides && for f in *.qmd; do uv run quarto render "$$f" --to pdf; done
 
-# Publish targets
-publish: publish-book publish-slides
-
-publish-book:
+# Publish to GitHub Pages
+publish:
 	cd content && uv run quarto publish gh-pages
-
-publish-slides:
-	cd slides && uv run quarto publish gh-pages
 
 # All
 all: book slides
