@@ -1,0 +1,108 @@
+---
+title: "Árbol de Sintaxis Abstracta"
+format: beamer
+---
+
+## Árbol de Sintaxis Abstracta
+
+- AST vs árbol de derivación
+- Diseño del AST
+- Nodos del AST
+- Ejemplos en HULK
+
+## Árbol de Derivación
+
+```
+E -> T + E -> int + E -> int + T
+   -> int + int * T -> int + int * int
+```
+
+Mucha información sintáctica innecesaria.
+
+## AST
+
+Representa solo la semántica:
+
+- Elimina nodos innecesarios
+- Elimina producciones de un solo hijo
+- Mantiene jerarquía de operaciones
+
+## Ejemplo: AST
+
+```
+    *
+   / \
+  +   int(5)
+ / \
+int(3) int(2)
+```
+
+Representa: `(3 + 2) * 5`
+
+## Diseño del AST
+
+Nodos según función semántica:
+
+- Number: constantes
+- BinaryExpr: operaciones binarias
+- Variable: referencias
+- FuncCall: llamadas a función
+
+## Nodos para HULK
+
+```python
+class Number(Expression):
+    value: str
+
+class Variable(Expression):
+    name: str
+
+class BinaryExpr(Expression):
+    op: Operator
+    left: Expression
+    right: Expression
+
+class FuncCall(Expression):
+    name: str
+    args: list[Expression]
+
+class LetIn(Expression):
+    variable: str
+    init: Expression
+    body: Expression
+```
+
+## AST para Expresiones
+
+```
+let x = 5 in x + 1
+```
+
+```
+LetIn("x", Number(5), BinaryExpr(+, Variable("x"), Number(1)))
+```
+
+## Construcción del AST
+
+Recorrido post-order del árbol de derivación:
+
+```python
+def ast(node):
+    match node:
+        case BinOp(left, "+", right):
+            return BinaryExpr(+, ast(left), ast(right))
+        case Num(n):
+            return Number(n)
+```
+
+## Ventajas del AST
+
+- Estructura más simple
+- Facilita análisis semántico
+- Base para generación de código
+
+## Resumen
+
+- AST representa semántica, no sintaxis
+- Nodos según función semántica
+- Fácil de recorrer y transformar

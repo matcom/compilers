@@ -1,0 +1,192 @@
+---
+title: "Gramáticas Libres de Contexto"
+format: beamer
+---
+
+## Gramáticas Libres de Contexto
+
+- Definición formal
+- Notación BNF
+- Derivaciones
+- Árboles de derivación
+- Ambigüedad
+- Factorización
+- Eliminación de recursión izquierda
+- Gramáticas LL y LR
+
+## Definición Formal
+
+Una **gramática libre del contexto (CFG)** es una tupla $G = (V, T, P, S)$:
+
+- $V$: conjunto de variables (no-terminales)
+- $T$: conjunto de terminales
+- $P$: conjunto de producciones
+- $S$: símbolo inicial
+
+## Notación BNF
+
+```
+<expr> ::= <expr> + <term> | <term>
+<term> ::= <term> * <factor> | <factor>
+<factor> ::= ( <expr> ) | <number>
+```
+
+## Producciones
+
+Una producción tiene la forma:
+
+$$A \rightarrow \alpha$$
+
+Donde $A \in V$ y $\alpha \in (V \cup T)^*$
+
+## Derivaciones
+
+Una derivación es una secuencia de aplicaciones de producciones:
+
+$$S \Rightarrow^* \omega$$
+
+Si en cada paso se reemplaza el no-terminal más a la izquierda, es una **derivación izquierda**.
+
+## Derivación Izquierda
+
+```
+E => T + E
+  => T + T + E
+  => int + T + E
+  => int + int + T
+  => int + int + int
+```
+
+## Derivación Derecha
+
+```
+E => T + E
+  => T + T
+  => T + T * T
+  => T + T * int
+  => T + int * int
+  => int + int * int
+```
+
+## Árbol de Derivación
+
+```
+       E
+      /|\
+     / | \
+    T  +  E
+    |     |
+   int   T
+         |
+        /|\
+       / | \
+      T  *  T
+      |     |
+     int  int
+```
+
+## Ambigüedad
+
+Una gramática es **ambigua** si existe una cadena con dos árboles de derivación distintos.
+
+## Ejemplo de Ambigüedad
+
+```
+E ::= E + E | E * E | (E) | int
+
+Cadena: int + int + int
+
+¿Agrupación: (int + int) + int o int + (int + int)?
+```
+
+## Ambigüedad en if-else
+
+```
+stmt ::= if ( expr ) stmt
+       | if ( expr ) stmt else stmt
+       | ...
+
+if (a) if (b) x = 1 else y = 2
+```
+
+## Factorización
+
+Transformar gramática ambigua en no ambigua:
+
+```
+# Antes (ambigua)
+if-stmt ::= if ( expr ) stmt | if ( expr ) stmt else stmt
+
+# Después (factorizada)
+if-stmt ::= if ( expr ) stmt [else stmt]
+```
+
+## Recursión Izquierda
+
+Una gramática tiene recursión izquierda si existe $A \Rightarrow^+ A\alpha$.
+
+## Eliminación de Recursión Izquierda
+
+```
+# Antes
+A ::= A a | b
+
+# Después
+A ::= b A'
+A' ::= a A' | ε
+```
+
+## Recursión Indirecta
+
+```
+A ::= B a | c
+B ::= A b | d
+
+# Transformar a recursión directa
+A ::= A b a | d a | c
+```
+
+## Gramáticas LL(1)
+
+- **L**: lectura de izquierda a derecha (left-to-right)
+- **L**: derivación más a la izquierda (leftmost)
+- **(1)**: un símbolo de lookahead
+
+## Características LL(1)
+
+- No tienen ambigüedad
+- No tienen recursión izquierda
+- Están factorizadas
+
+## Construcción de Parser LL(1)
+
+1. Eliminar ambigüedad
+2. Eliminar recursión izquierda
+3. Factorizar
+4. Calcular First y Follow
+5. Construir tabla de parsing
+
+## Ejemplo LL(1)
+
+```
+S ::= a S b | ε
+
+First(S) = {a, ε}
+Follow(S) = {$, b}
+```
+
+## Comparación LL vs LR
+
+| Característica | LL | LR |
+|----------------|-----|-----|
+| Poder expresivo | Menor | Mayor |
+| Complejidad | Simple | Moderada |
+| Errores | Difíciles | Buenos |
+
+## Resumen
+
+- CFG describen la sintaxis de lenguajes
+- Derivaciones generan cadenas
+- Ambigüedad es problemática
+- Factorización y recursión izquierda se pueden eliminar
+- Gramáticas LL(1) son predecibles

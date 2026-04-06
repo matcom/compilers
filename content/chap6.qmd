@@ -87,7 +87,7 @@ $$
 
 Que podemos leer de la siguiente forma: si dado el contexto de objetos $O$, podemos deducir (recursivamente) que el tipo de $e_1$ es $Integer$ (e igual para $e_2$), entonces en este mismo contexto de objetos podemos deducir que el tipo de $e_1 + e_2$ es $Integer$. Es importante notar que hemos dicho $O \vdash e : T$, y no $O(e) = T$, pues $e$ es una expresión en el sentido general, y $O$ solamente está definido para símbolos (variables, atributos, etc.). Por tanto, $O \vdash e : T$ nos indica que es necesario chequear el tipo de $e$ recursivamente en el contexto $O$ para computar el tipo que tiene la expresión.
 
-Los contextos de objetos se modifican cuando aparecen expresiones (instrucciones) que introducen nuevos símbolos (e.g. declaraciones de variables). Supongamos entonces que tenemos una expresión de la forma $T x \is e$, que indica que la variable $x$ se define con el tipo $T$ y se inicializa con la expresión $e$. Este es el tipo de instrucción que comunmente vemos en lenguajes tipo C para inicializar una variable recién declarada:
+Los contextos de objetos se modifican cuando aparecen expresiones (instrucciones) que introducen nuevos símbolos (e.g. declaraciones de variables). Supongamos entonces que tenemos una expresión de la forma $T \; x \; := \; e$, que indica que la variable $x$ se define con el tipo $T$ y se inicializa con la expresión $e$. Este es el tipo de instrucción que comunmente vemos en lenguajes tipo C para inicializar una variable recién declarada:
 
 ```python
 x = 4 + int(input())
@@ -106,7 +106,7 @@ $$
 O \vdash e : T' \\
 T' \leq T \\
 \hline
-O[T/x] \vdash T x \is e : \emptyset
+O[T/x] \vdash T \; x \; := \; e : \emptyset
 \end{array}
 $$
 

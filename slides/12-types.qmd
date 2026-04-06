@@ -1,0 +1,106 @@
+---
+title: "Sistema de Tipos"
+format: beamer
+---
+
+## Sistema de Tipos
+
+- Qué es un tipo
+- Verificación de tipos
+- Sistema de tipos de HULK
+- Inferencia de tipos
+
+## Qué es un Tipo
+
+Un tipo describe:
+
+- Valores posibles
+- Operaciones válidas
+- Representación en memoria
+
+## Tipos Básicos en HULK
+
+```python
+Number  # enteros y reales
+Boolean # true/false
+String  # secuencias de caracteres
+Object  # referencia a objetos
+```
+
+## Sistema de Tipos
+
+Reglas que definen:
+
+- Compatibilidad de tipos
+- Conversiones implícitas
+- Sobrecarga de operadores
+
+## Verificación de Tipos
+
+Verificar que operaciones se aplican a tipos correctos:
+
+```python
+# Correcto
+x + y  # Number + Number -> Number
+
+# Error
+x + "hola"  # TypeError
+```
+
+## Reglas de Tipo
+
+| Operación | Operandos | Resultado |
+|-----------|-----------|-----------|
+| + - * / | Number, Number | Number |
+| == != | Number, Number | Boolean |
+| and or | Boolean, Boolean | Boolean |
+
+## Polimorfismo
+
+En HULK:
+
+```python
+function id(x): x { x }
+# id(Number) -> Number
+# id(String) -> String
+```
+
+## Herencia y Tipos
+
+```hulk
+class Animal
+class Dog inherits Animal
+
+function feed(a: Animal): Animal => ...
+feed(Dog())  # OK: Dog es Animal
+```
+
+## Verificación en el Parser
+
+```python
+class TypeChecker(Visitor):
+    def visit_BinaryExpr(self, node):
+        left_type = self.visit(node.left)
+        right_type = self.visit(node.right)
+        
+        if not compatible(node.op, left_type, right_type):
+            error(f"Type mismatch: {left_type} {node.op} {right_type}")
+        
+        return result_type(node.op, left_type, right_type)
+```
+
+## Errores de Tipo
+
+```python
+# En HULK:
+let x: Number = "hola"  # Error
+x = y + 1               # Error: String + Number
+print("hola" * 2)       # Error: no * para String
+```
+
+## Resumen
+
+- Tipos describen valores y operaciones
+- Verificación garantiza uso correcto
+- HULK tiene tipos básicos y herencia
+- Errores de tipo se detectan en compilación

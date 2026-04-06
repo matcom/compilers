@@ -1,0 +1,264 @@
+---
+title: "Donde estamos?"
+format: beamer
+---
+
+# Donde estamos?
+
+
+
+# ¿Qué es código de máquina?
+
+Código (casi) directamente ejecutable en un dispositivo de cómputo.
+
+### Memoria
+
+- Acceso directo a la memoria
+- Registros
+- Pila
+- Heap
+
+### Instrucciones
+
+- Mover datos entre direcciones de memoria y/o registros
+- Pedir memoria al sistema operativo (?)
+- Instrucciones aritméticas básicas
+- JMP
+- CALL / RET
+- Interrupciones del SO
+
+# Problemas a resolver
+
+Todo aquello que no resuelve el código CIL
+
+- Cuándo mover datos de la memoria principal a los registros para evaluar las operaciones aritméticas
+- Dónde está el valor de un atributo de una instancia de un tipo determinado
+- Cuál es el método concreto que debe ejecutarse en una invocación polimórfica
+- Cuándo reservar nueva memoria para crear un objeto y cómo organizarla
+- Cuándo liberar memoria que ya no está en uso ni podrá ser usada más adelante
+
+
+
+*Y todo esto de manera relativamente eficiente...*
+
+# Variables y registros
+
+Todas las operaciones aritméticas se realizan entre registros.
+
+¿Qué registros utilizar para hacer la menor cantidad de movimientos?
+
+
+
+## Solución simple
+
+Por cada instrucción aritmética de 3 direcciones:
+
+- Mover los operadores de la memoria principal a dos registros `$R1` y `$R2`
+- Ejecutar la operación en un tercer registro `$R3`
+- Mover el resultado de `$R3` a la memoria principal
+
+
+
+¿Cuán buena es esta estrategia?
+
+# Variables y registros
+
+## Ventajas de la estrategia simple
+
+- Fácil de implementar
+- Consumo de memoria predecible
+
+## Desventajas
+
+- Máximo desperdicio de memoria
+
+
+
+¿Cuán probable es que el resultado recién calculado sea un valor intermedio que solo será usado immediatamente?
+
+
+
+¿Es posible minimizar la cantidad de movimientos de memoria?
+
+# Optimización de registros
+
+De manera general es un problema de optimización NP-Hard, pero se puede aproximar con heurísticas.
+
+
+
+## Ideas fundamentales
+
+- Determinar por cada variable local en CIL los instantes en que es utilizada.
+- Al inicio del método, asignar un registro nuevo a cada variable hasta que se acaben.
+- Si una variable no es utilizada nunca más, marcar el registro como libre.
+- Si no hay registros libres, generar un código de movimiento a RAM para la variable que más lejos en el futuro será utilizada
+
+# Organización de objetos en memoria
+
+¿Qué almacenar en un objeto para que sean O(1) todas las operaciones sobre el mismo?
+
+- El tipo dinámico
+- El valor de cada atributo
+
+¿Cómo se determina el tipo dinámico?
+
+- La operación `ALLOCATE` lo define explícitamente
+
+¿Cómo se identifican los atributos?
+
+- Recordar que en CIL todos los identificadores son, en última instancia, números...
+
+# Invocación de métodos virtuales
+
+¿Cómo se traduce un llamado `VCALL object method`?
+
+- `object` se interpreta como una referencia a una dirección de memoria
+- En `[object + 0]` se almacena el tipo dinámico del objeto, `type`
+- `type` se interpreta como una referencia a una fila en la tabla de métodos virtuales
+- `method` se interpreta como una columna en esta tabla
+
+# Tabla de métodos virtuales
+
+Es un array de la forma:
+
+```
+T0          T1       T2
+F0 F1 F2 F3 F0 F1 F2 F0 F1 ...
+```
+
+En realidad es un array continuo en memoria, donde el valor `Ti` apunta al inicio de la sección de métodos virtuales del tipo correspondiente.
+
+Cada entrada en la tabla es un número que apunta a la dirección del inicio de una funión (a la que se puede hacer `CALL`)
+
+*Recordar que el chequeo semántico garantiza la consistencia de los llamados.*
+
+# Gestión de memoria
+
+En general hay dos estrategias de gestión de memoria:
+
+- **Manual** donde el programador reserva y libera memoria
+- **Automática** donde el programador reserva la memoria, y se libera cuando no hace falta
+
+En ambos casos es necesario gestionar cómo se organiza la memoria.
+
+- Al sistema operativo se le pide memoria generalmente en forma de páginas de tamaño fijo (e.j., 128 KB), mucho mayores que el objeto típico que se crea
+- Un `ALLOCATE` puede no requerir pedir memoria si la última página pedida no está del todo ocupada
+- Un `FREE` (sea manual o automático) dejará un hueco de memoria sin usar que debe ser reaprovechado
+
+# Gestión de memoria
+
+La estrategia más simple es usar una cola enlazada de bloques vacíos.
+
+- Dividir la memoria en bloques del tamaño del objeto más pequeño (e.j., el tamaño de `object` en C#)
+- Al inicio de cada bloque vacío el primer valor apunta al siguiente bloque vacío
+- El segundo valor dice el tamaño contiguo de memoria vacía que tiene este bloque
+- En un lugar estático de la memoria se apunta al primer bloque vacío (si existe)
+
+Al pedir memoria (`ALLOCATE T`):
+
+- Caminar por los bloques vacíos buscando el primero con tamaño `>= sizeof(T)`
+
+# Gestión de memoria
+
+## Ventajas de la estrategia simple
+
+- Fácil de implementar
+- Se aprovecha la memoria utilizada
+
+## Desventajas
+
+- El costo de `ALLOCATE` puede ser O(N)
+
+## Posibles soluciones
+
+- Tener múltiplas colas con tamaños diferentes (e.j., `sizeof(object)`, `2 * sizeof(object)`, `4*sizeof(object)`, ...)
+
+- Compactar la memoria cada cierto tiempo (requiere un segundo direccionamiento virtual por cada referencia)
+
+# Gestión automática de memoria
+
+¿Cómo determinar cuándo hacer `FREE` a un objeto?
+
+En general, cuando ninguna variable alcanzable en el código "vivo" apunte a un objeto, ya puede ser liberado (¿por qué?)
+
+## Estrategias
+
+- Conteo de referencias
+- Marcado y barrido
+
+
+
+## Conteo de referencias
+
+
+
+- Almacenar en cada objeto un contador de referencias entrantes
+- Cuando el contador llegue a cero, es seguro liberar el objeto (¿por qué?)
+- ¿Qué sucede con los ciclos?
+
+# Gestión automática de memoria
+
+## Marcado y barrido
+
+Cada cierto tiempo, hacer un barrido de la memoria caminando por las referencias existentes, determinando los objetos "vivos"
+
+
+
+- Por cada método en la pila, todas las variables locales que apunten a objetos están vivas
+- Por cada objeto vivo, todos los atributos que apunten a otros objetos están vivos
+- Al terminar el BFS, todos los objetos no marcados pueden ser liberados
+
+## Este método es el más popular aunque tiene desventajas
+
+
+
+- Puede ser muy ineficiente
+- Requiere más información en runtime (flag de marcado, saber si una referencia es al heap, ...)
+
+# Entornos de ejecución
+
+Generar código eficiente para una arquitectura concreta es difícil, porque en tiempo de compilación puede no saberse la arquitectura.
+
+## Posibles soluciones
+
+- Máquinas virtuales
+- Compilación Just-In-Time
+
+## Máquina virtual
+
+Es entorno de ejecución virtual (simulador) que abstrae de la arquitectura concreta.
+
+- Java Virtual Machine
+- .NET CLR
+- El intérprete de Python (?)
+
+# Entornos de ejecución
+
+## Just-In-Time vs Ahead-Of-Time
+
+La compilación tradicional es AOT, todo lo que hemos visto en el curso.
+
+
+
+En la compilación JIT:
+
+- El código intermedio de cada método se almacena en el ejecutable.
+
+- Al ejecutar el programa, solamente cuando se va a invocar un método, entonces se compila (y se cachea) teniendo en cuenta los detalles de la arquitectura concreta.
+
+- Generalmente se usa una combinación de VM + JIT para manejar las partes más complejas (e.j., excepciones)
+
+# Algunas conclusiones
+
+- La generación de código de máquina es un proceso tedioso, pero no requiere de ideas geniales
+- Al tener un lenguaje intermedio sensato, podemos desacoplar la generación de código de cómo evolucione el lenguaje origen
+- Un lenguaje de máquina abstracto permite desacoplar la optimización para cada arquitectura concreta de la generación de código general
+- Un intérprete de árbol o máquina virtual de alto nivel permite iterar rápidamente sobre el lenguaje origen para añadir características experimentales
+
+
+
+*Recordar que un compilador es un sistema computacional complejo y toda la ingeniería de software aplica*
+
+# Y ahora sí terminamos... ¡Feliz navidad!
+
+

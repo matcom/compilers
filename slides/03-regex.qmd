@@ -1,0 +1,711 @@
+---
+title: "Volvamos al problema original"
+format: beamer
+---
+
+# Volvamos al problema original
+
+Para parsear el texto de entrada:
+
+    let x=read() in 2*(x+5)
+
+El primer paso es convertir a una secuencia de tokens:
+
+    let x = read ( ) in 2 * ( x + 5 )
+
+# ¿Qué son los tokens?
+
+
+
+```python
+class Token:
+    def __init__(self, line, column, type, lexeme):
+        self.line = line
+        self.column = column
+        self.type = type
+        self.lexeme = lexeme
+
+>>> tokenize("let x=read() in 2*(x+5)")
+[
+    Token(line=1,column=1,type="let",lexeme="let"),
+    # ...
+    Token(line=1,column=5,type="id",lexeme="x"),
+    # ...
+    Token(line=1,column=16,type="number",lexeme="2"),
+    # ...
+]
+
+
+
+#
+```
+
+# ¿Por qué tokenizar?
+
+
+
+Para simplicar la gramática:
+
+- Normalizar los literales, identificadores, etc.
+- Eliminar los espacios en blanco innecesarios.
+- Eliminar los comentarios.
+- Reemplazar caracteres especiales.
+- Lidiar con los detalles del _encoding_.
+- Detectar errores léxicos (e.j. `string` incompletos).
+
+# Haciendo un tokenizador
+
+
+
+¿Podemos hacer una gramática LL para los tokens?
+
+    digit   -> '0' | '1' |...| '9'
+    number  -> digit | digit number
+    char    -> 'a' | ... | 'z' | 'A' | ...
+    alpha   -> char alpha | num alpha | epsilon
+    id      -> char alpha
+    ...
+    lparen  -> '('
+    rparen  -> ')'
+    oper    -> '*' | '/' | '-' | '+'
+    ...
+    let     -> 'l' 'e' 't'
+    ...
+    ws      -> ' ' | '\t' | '\n'
+    comment -> ...
+
+
+# ¿Qué problemas tiene este enfoque?
+
+
+
+- ¿Cuántos tokens tienen prefijos comunes?
+- ¿Qué tamaño tendrá el árbol de derivación?
+- ¿Cómo son las reglas semánticas de cada token?
+- ¿Cómo logro el comportamiento _greedy_?
+- ¿Podemos resolverlo con _menos_ que LL?
+
+# Tokenizando a mano
+
+    Input:  |l e t  x = r e a d ( )  i n  2 * ( x + 5 )
+    Token:
+    Output:
+
+# Tokenizando a mano
+
+    Input:   l|e t  x = r e a d ( )  i n  2 * ( x + 5 )
+    Token:   l
+    Output:
+
+# Tokenizando a mano
+
+    Input:   l e|t  x = r e a d ( )  i n  2 * ( x + 5 )
+    Token:   le
+    Output:
+
+# Tokenizando a mano
+
+    Input:   l e t| x = r e a d ( )  i n  2 * ( x + 5 )
+    Token:   let
+    Output:
+
+# Tokenizando a mano
+
+    Input:   l e t |x = r e a d ( )  i n  2 * ( x + 5 )
+    Token:
+    Output:  let
+
+# Tokenizando a mano
+
+    Input:   l e t  x|= r e a d ( )  i n  2 * ( x + 5 )
+    Token:   x
+    Output:  let
+
+# Tokenizando a mano
+
+    Input:   l e t  x =|r e a d ( )  i n  2 * ( x + 5 )
+    Token:   =
+    Output:  let x
+
+# Tokenizando a mano
+
+    Input:   l e t  x = r|e a d ( )  i n  2 * ( x + 5 )
+    Token:   r
+    Output:  let x =
+
+# Tokenizando a mano
+
+    Input:   l e t  x = r e|a d ( )  i n  2 * ( x + 5 )
+    Token:   re
+    Output:  let x =
+
+# Tokenizando a mano
+
+    Input:   l e t  x = r e a|d ( )  i n  2 * ( x + 5 )
+    Token:   rea
+    Output:  let x =
+
+# Tokenizando a mano
+
+    Input:   l e t  x = r e a d|( )  i n  2 * ( x + 5 )
+    Token:   read
+    Output:  let x =
+
+# Tokenizando a mano
+
+    Input:   l e t  x = r e a d (|)  i n  2 * ( x + 5 )
+    Token:   (
+    Output:  let x = read
+
+# Tokenizando a mano
+
+    Input:   l e t  x = r e a d ( )| i n  2 * ( x + 5 )
+    Token:   )
+    Output:  let x = read (
+
+# Tokenizando a mano
+
+    Input:   l e t  x = r e a d ( ) |i n  2 * ( x + 5 )
+    Token:
+    Output:  let x = read ( )
+
+# Tokenizando a mano
+
+    Input:   l e t  x = r e a d ( )  i|n  2 * ( x + 5 )
+    Token:   i
+    Output:  let x = read ( )
+
+# Tokenizando a mano
+
+    Input:   l e t  x = r e a d ( )  i n| 2 * ( x + 5 )
+    Token:   in
+    Output:  let x = read ( )
+
+# Tokenizando a mano
+
+    Input:   l e t  x = r e a d ( )  i n |2 * ( x + 5 )
+    Token:
+    Output:  let x = read ( ) in
+
+# Tokenizando a mano
+
+    Input:   l e t  x = r e a d ( )  i n  2|* ( x + 5 )
+    Token:   2
+    Output:  let x = read ( ) in
+
+# Tokenizando a mano
+
+    Input:   l e t  x = r e a d ( )  i n  2 *|( x + 5 )
+    Token:   *
+    Output:  let x = read ( ) in 2
+
+# Tokenizando a mano
+
+    Input:   l e t  x = r e a d ( )  i n  2 * (|x + 5 )
+    Token:   (
+    Output:  let x = read ( ) in 2 *
+
+# Tokenizando a mano
+
+    Input:   l e t  x = r e a d ( )  i n  2 * ( x|+ 5 )
+    Token:   x
+    Output:  let x = read ( ) in 2 * (
+
+# Tokenizando a mano
+
+    Input:   l e t  x = r e a d ( )  i n  2 * ( x +|5 )
+    Token:   +
+    Output:  let x = read ( ) in 2 * ( x
+
+# Tokenizando a mano
+
+    Input:   l e t  x = r e a d ( )  i n  2 * ( x + 5|)
+    Token:   5
+    Output:  let x = read ( ) in 2 * ( x +
+
+# Tokenizando a mano
+
+    Input:   l e t  x = r e a d ( )  i n  2 * ( x + 5 )|
+    Token:   )
+    Output:  let x = read ( ) in 2 * ( x + 5
+
+# Tokenizando a mano
+
+    Input:   l e t  x = r e a d ( )  i n  2 * ( x + 5 )|
+    Token:
+    Output:  let x = read ( ) in 2 * ( x + 5 )
+
+# Haciendo un tokenizador v2.0
+
+
+
+```python
+def tokenize(input):
+    state = 0
+    curr = ""
+    for c in input:
+        if state == 0:    # None
+            if c.isalpha():
+                curr += c
+                state = 1 # id | keyword
+            elif c.isdigit():
+                curr += c
+                state = 2 # constante
+            # ...
+        if state == 1:    # id | keyword
+            if c.isspace() or c in oper:
+                if curr == 'let':
+                    yield Token(type='let', ...)
+                    # ...
+```
+
+# Automatizando este proceso
+
+Tendremos 2 componentes fundamentales:
+
+- Una componente _declarativa_, de "alto nivel" para definir cómo lucen sintácticamente los tokens.
+
+- Una componente _procedural_, de "bajo nivel" que reconocerá automáticamente los tokens.
+
+Y como ya es usual, diseñaremos un mecanismo para convertir de "alto nivel" a "bajo nivel".
+
+# Expresiones regulares
+
+Una expresión regular es una definición recursiva de un lenguaje:
+
+- $a$ es la expresión regular para $L(a) = \{ a \}$
+- $\epsilon$ es la expresión regular para $L(\epsilon) = \{ \epsilon \}$
+
+Si $s$ y $r$ son expresiones regulares, entonces:
+
+- **Unión**: $(s)|(r)$ es la expresión regular para el lenguaje $L(s) \bigcup L(r)$.
+- **Concatenación**: $(s)(r)$ es la expresión regular para el lenguaje $L(s)L(r)$.
+- **Clausura**: $(s)*$ es la expresión regular para el lenguaje $L(s)* = \bigcup_{k=0}^\infty L(s)^k$.
+
+Un lenguaje definido de esta forma, le llamaremos **lenguaje regular**.
+Más adelante caracterizaremos formalmente a estos lenguajes.
+
+# Ejemplos
+
+> - $(a|b)*$
+> - $aa(a|b)*$
+> - $(a|b)*bb$
+> - $a*(baa*)*(b|\epsilon)$
+> - $(1|2|3|4|5|6|7|8|9)(0|1|2|3|4|5|6|7|8|9)*$
+
+# Expresiones regulares extendidas
+
+Sin cambiar la definición, podemos adicionar algunos operadores cómodos:
+
+- **Opciones:** $[abc]$ será equivalente a $(a|b|c)$.
+- **Rango:** $[a-z]$ (o cualquier otro rango sensible) será equivalente por $(a|b|...|z)$.
+- **Cero o una vez:** $(s)?$ será equivalente a $(s)|\epsilon$.
+- **Clausura positiva:** $(s)+$ será equivalente a $(s)(s)*$.
+
+Además diremos que $*$ y $+$ tienen la mayor prioridad, y $|$ la menor y asocia a la izquierda.
+
+**NOTA:** Al adicionar estos operadores no hemos cambiado la definición (ni el poder expresivo), luego toda demostración formal la podemos realizar solo con la definición original si es más cómodo.
+
+# El lenguaje de los tokens
+
+Ahora podemos definir el lenguaje de los tokens más fácilmente:
+
+$$
+\begin{array}{r@{\,\,\rightarrow\,\,}l}
+id     & [a-zA-Z][a-zA-Z0-9]* 
+num    & [1-9][0-9]*(.[0-9]+)? 
+oper   & [*/+-] 
+lparen & \backslash( 
+rparen & \backslash) 
+equals & = 
+let    & \textrm{let} 
+in     & \textrm{in} 
+\end{array}
+$$
+
+# Demostrando equivalencias entre lenguajes
+
+Si tenemos una expresión regular $r$ y un lenguaje $L$, ¿cómo demostrar que $L(r) = L$?
+
+- $L(r) \subseteq L$: simulando la expresión regular, demostrar que sólo reconoce cadenas correctas.
+- $L \subseteq L(r)$: dar una forma de construir cada cadena de $L$.
+- Apoyarse en cada sub-expresión $s$ de $r$, que genera un sub-lenguaje $L(s)$, y construir recursivamente $L$ aplicando las propiedades.
+
+### Ejemplo:
+
+- $a*(baa*)*(b|\epsilon)$
+
+# Gramáticas regulares
+
+Una **gramática regular** es una gramática $G=<T,N,P,S>$ donde todas las producciones tienen la forma:
+
+- $A \,\, \rightarrow \,\, a B$
+- $A \,\, \rightarrow \,\, a$
+- $A \,\, \rightarrow \,\, \epsilon$
+
+Siendo $a \in T$ un terminal y $A,B \in N$ no-terminales.
+
+### Ejemplo
+
+$$
+\begin{array}{r@{\,\,\rightarrow\,\,}l}
+S & a S \,\,|\,\, bA \,\,|\,\, \epsilon 
+A & aS 
+\end{array}
+$$
+
+# Algunos comentarios
+
+Las expresiones regulares son la navaja suiza del procesamiento de texto:
+
+- Buscar y reemplazar en archivos.
+- Validar entradas en formularios.
+- Extraer patrones en lenguaje casi natural.
+- Syntax-highlight en editores de texto.
+- ...
+
+# ¿Qué necesitamos para reconocer una expresión regular?
+
+- Un **mecanismo reconocedor** (de bajo nivel)
+- Que se obtenga automáticamente de una (_meta_) expresión regular
+- Que permita distinguir cada token de entre los componentes
+- Que sea resistente a errores
+
+# Construyendo un reconocer de lenguajes regulares
+
+Cadenas sobre $\left\{a,b\right\}$ con una cantidad par de $a$.
+
+```python
+def match(s):
+    count = 0
+
+    for c in s:
+        if c == 'a':
+            count += 1
+
+    return count % 2 == 0
+```
+
+¿Cómo reducir a una cantidad _finita_ la memoria utilizada?
+
+# Construyendo un reconocer de lenguajes regulares
+
+Cadenas sobre $\left\{a,b\right\}$ con una cantidad par de $a$.
+
+```python
+def match(s):
+    parity = 0
+
+    for c in s:
+        if c == 'a':
+            parity = (parity + 1) % 2
+
+    return parity == 0
+```
+
+¿Cómo definir el cambio de estado de forma más simple?
+
+# Construyendo un reconocer de lenguajes regulares
+
+Cadenas sobre $\left\{a,b\right\}$ con una cantidad par de $a$.
+
+```python
+def match(s):
+    parity = 0
+
+    for c in s:
+        if c == 'a':
+            if parity == 0:
+                parity = 1
+            else:
+                parity = 0
+
+    return parity == 0
+```
+
+# Una máquina de estado equivalente
+
+Le llamaremos **Automáta Finito Determinista**
+
+{ width=80% }
+
+- Solo puede avanzar en la cadena
+- Reconoce si y solo si termina en un estado final
+- Si se "traba" no reconoce
+
+# Autómatas Finitos Deterministas (DFA)
+
+## Formalizando
+
+Un DFA es un quíntuplo $A=<Q,q_0,V,F,f>$ donde:
+
+- $Q$ es un conjunto _finito_ de estados ($Q = \left\{ q_0, \ldots, q_n \right\}$).
+- $q_0 \in Q$ es el estado inicial.
+- $V$ es un conjunto finito de símbolos que pueden aparecer en la cinta.
+- $F \subseteq Q$ es un subconjunto de estados que denominaremos *estados finales*.
+- $f: Q \times V \to Q$ es una *función de transición*.
+
+# Lenguaje de un DFA
+
+## Definiremos $\mathrm{L}(A)$
+
+Sea $A$ un autómata, $w$ una cadena, $\mathrm{Q} = <q^0, q^1, ..., q^{|w|}>$ una secuencia
+de $|w|+1$ estados de $Q$, donde:
+
+- $q^{0} = q_0$
+- $q^{i+1} = f(q^{i}, w_i)$
+
+Diremos que $A$ reconoce $w$, $w \in \mathrm{L}(A)$, si y solo si:
+
+$$q^{|w|} \in F$$
+
+Notar que $\mathrm{Q}$ _es único_ para una cadena $w$ cualquiera. Es por esto que el autómata es **determinista**.
+
+# Lenguajes regulares {.t}
+
+## Definición
+
+Un lenguaje $L$ es regular si y solo si existe un DFA tal que $\mathrm{L}(A) = L$.
+
+## Veamos algunos ejemplos:
+
+- Lenguaje universo $L = \left\{a,b,c\right\}*$
+
+{ width=25% }
+
+# Lenguajes regulares {.t}
+
+## Definición
+
+Un lenguaje $L$ es regular si y solo si existe un DFA tal que $\mathrm{L}(A) = L$.
+
+## Veamos algunos ejemplos:
+
+- Lenguaje finito $L = \left\{let, if, else\right\}$
+
+
+
+
+{ width=80% }
+
+# Añadiendo no-determinismo
+
+Sea $L$ el lenguaje de las cadenas sobre $\left\{a,b\right\}$ que tienen una $a$ en la antepenúltima posición.
+
+## Hagamos un autómata (paso a paso)
+
+
+
+{ width=80% }
+
+¿Qué pasa si la cadena empieza con muchas $b$?
+
+# Añadiendo no-determinismo
+
+Sea $L$ el lenguaje de las cadenas sobre $\left\{a,b\right\}$ que tienen una $a$ en la antepenúltima posición.
+
+## Hagamos un autómata (paso a paso)
+
+{ width=80% }
+
+¿Qué pasa si la cadena empieza con muchas $a$?
+
+# Añadiendo no-determinismo
+
+Sea $L$ el lenguaje de las cadenas sobre $\left\{a,b\right\}$ que tienen una $a$ en la antepenúltima posición.
+
+## Hagamos un autómata (paso a paso)
+
+{ width=80% }
+
+Nos quedó un autómata **no-determinista** (hay más de un camino posible).
+
+# Autómata Finito No-Determinista
+
+## Formalizando
+
+Un NFA es un quíntuplo $A=<Q,q_0,V,F,f>$ donde:
+
+- $Q$ es un conjunto _finito_ de estados ($Q = \left\{ q_0, \ldots, q_n \right\}$).
+- $q_0 \in Q$ es el estado inicial.
+- $V$ es un conjunto finito de símbolos que pueden aparecer en la cinta.
+- $F \subseteq Q$ es un subconjunto de estados que denominaremos *estados finales*.
+- $f: Q \times V \bigcup \left\{ \epsilon \right\} \to 2^Q$ es una *función de transición*.
+
+**NOTA:** La diferencia es la función de transición, que permite saltar a más de un estado,
+y hacer $\epsilon$-transiciones (sin leer de la cinta).
+
+# Lenguaje de un NFA
+
+## Definiremos $\mathrm{L}(A)$
+
+Sea $A$ un autómata, $w$ una cadena, $\mathrm{Q} = <q^0, q^1, ..., q^{k}>$ una secuencia
+de $k \geq |w|+1$ estados de $Q$, donde:
+
+- $q^{0} = q_0$
+- $q^{i+j+1} = f(q^{i}, w_i)$, o
+- $q^{i+j+1} = f(q^{i}, \epsilon)$ con $j \geq 0$.
+
+Diremos que $A$ reconoce $w$, $w \in \mathrm{L}(A)$, si y solo si, existe $\mathrm{Q}$ tal que:
+
+$$q^{k} \in F$$
+
+Notar que $\mathrm{Q}$ _no es único_ para una cadena $w$ cualquiera. Es por esto que el autómata es **no-determinista**.
+
+# ¿Es bueno el no-determinismo?
+
+- Permite reconocer lenguajes más fácilmente (¿por qué?).
+- Es más complicado de evaluar computacionalmente (¿por qué?).
+
+
+
+## Surgen entonces algunas preguntas
+
+- ¿Son **más poderosos** los autómatas no-deterministas?
+- ¿Existen lenguajes que un NFA puede reconocer, pero ningún DFA puede?
+- O son los lenguajes reconocibles por los NFA también regulares?
+
+# Convirtiendo un NFA a un DFA
+
+## Definamos primero
+
+Sea $Q' \subseteq Q$ un subconjunto de estados:
+
+- $Goto(Q',c) = \left\{ q_j \in Q \,\, | \,\, q_i \in Q', \,\, q_j \in f(q_i,c) \right\}$
+- $\epsilon Closure(Q') = \left\{ q_j \in Q \,\, | \,\, q_i \in \epsilon Closure(Q'), \,\, q_j \in f(q_i,\epsilon) \right\}$
+
+
+
+## Idea del algoritmo
+
+- Los estados del nuevo DFA serán $Q' \subseteq Q$, cada estado es un elemento $Q' \in 2^Q$.
+- Entre un par de estados $Q_i, Q_j$ hay una transición con $c$, si y solo si, $Q_j = \epsilon Closure (Goto (Q_j, c))$.
+- El estado inicial es $Q_0 = \epsilon Closure(q_0)$.
+- Los estados finales son aquellos $Q'$ que contienen un $q_i \in F$.
+
+# Sea el NFA siguiente {.t}
+
+{ width=60% }
+
+## Hagamos el DFA (paso a paso)
+
+- El estado inicial es $Q_0 = \epsilon Closure(q_0) = \{q_0, q_1\}$
+
+{ width=20% }
+
+# Sea el NFA siguiente {.t}
+
+{ width=60% }
+
+## Hagamos el DFA (paso a paso)
+
+- $Goto(\{ q_0,q_1 \},a) = \{q_0, q_2\}$
+- $\epsilon Closure (\{q_0, q_2\}) = \{q_0, q_1, q_2\}$
+
+{ width=40% }
+
+# Sea el NFA siguiente {.t}
+
+{ width=60% }
+
+## Hagamos el DFA (paso a paso)
+
+- $Goto(\{ q_0,q_1 \},b) = \{q_0\}$
+- $\epsilon Closure (\{q_0\}) = \{q_0, q_1\}$
+
+{ width=40% }
+
+# Sea el NFA siguiente {.t}
+
+{ width=60% }
+
+## Hagamos el DFA (paso a paso)
+
+- $Goto(\{ q_0,q_1,q2 \},a) = \{q_0, q_2, q_3\}$
+- $\epsilon Closure (\{q_0, q_2, q_3\}) = \{q_0, q_1, q_2, q_3\}$
+
+{ width=60% }
+
+# Sea el NFA siguiente {.t}
+
+{ width=60% }
+
+## Hagamos el DFA (paso a paso)
+
+- $Goto(\{ q_0,q_1,q2 \},b) = \{q_0, q_3\}$
+- $\epsilon Closure (\{q_0, q_3\}) = \{q_0, q_1, q_3\}$
+
+{ width=60% }
+
+# Sea el NFA siguiente {.t}
+
+{ width=60% }
+
+## Hagamos el DFA (paso a paso)
+
+- $Goto(\{ q_0,q_1,q2,q3 \},a) = \{q_0, q_2, q_3\}$
+- $\epsilon Closure (\{q_0, q_2, q_3\}) = \{q_0, q_1, q_2, q_3\}$
+
+
+{ width=60% }
+
+# Sea el NFA siguiente {.t}
+
+{ width=60% }
+
+## Hagamos el DFA (paso a paso)
+
+- $Goto(\{ q_0,q_1,q2,q3 \},b) = \{q_0,q_3\}$
+- $\epsilon Closure (\{q0,q_3\}) = \{q0,q_1,q_3\}$
+
+
+{ width=80% }
+
+# Sea el NFA siguiente {.t}
+
+{ width=60% }
+
+## Hagamos el DFA (paso a paso)
+
+- $Goto(\{ q_0,q_1,q3 \},a) = \{q_0,q_2\}$
+- $\epsilon Closure (\{q0,q_2\}) = \{q0,q_1,q_2\}$
+
+{ width=80% }
+
+# Sea el NFA siguiente {.t}
+
+{ width=60% }
+
+## Hagamos el DFA (paso a paso)
+
+- $Goto(\{ q_0,q_1,q3 \},b) = \{q_0\}$
+- $\epsilon Closure (\{q0\}) = \{q0,q_1\}$
+
+{ width=80% }
+
+# Sea el NFA siguiente {.t}
+
+{ width=60% }
+
+## Finalmente
+
+- Los estados finales son $\{q0,q1,q2,q3\}$ y $\{q0,q1,q3\}$
+
+{ width=80% }
+
+# Consideraciones finales (por ahora)
+
+## El no-determinismo en lenguajes regulares no es un problema
+
+- Se puede convertir a un DFA (aunque con una cantidad exponencial de estados)
+- Se puede evaluar en tiempo lineal en la cadena (sin realizar la conversión completa)
+- Brinda un poder expresivo que será útil para reconocer expresiones regulares
+
+
+
+## Para demostrar que un lenguaje es regular
+
+- Definir un autómata (determinista o no)
+- Demostrar que el autómata reconoce el lenguaje
+    - Para toda cadena de $L$ hay una secuencia $\mathrm{Q}$ que termina en $F$.
+    - Toda secuencia $\mathrm{Q}$ que termina en $F$ reconoce una cadena de $L$.

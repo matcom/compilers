@@ -1,0 +1,348 @@
+---
+title: "¿Qué es parsear?"
+format: beamer
+---
+
+# ¿Qué es parsear?
+
+
+
+## Construir una derivación (extrema izquierda, p.ej.) para una cadena de entrada.
+
+
+
+## ¿De cuántas formas podemos construir una derivación?
+
+
+
+- Top-down (desde `S` hacia la cadena).
+- Bottom-up (desde la cadena hacia `S`).
+
+\
+
+Ambas formas dan surgimiento a los dos paradigmas fundamentales de parsing.
+
+# ¿Qué queremos en un parser para que sea útil?
+
+> - Que el algoritmo de parsing salga automáticamente de la gramática.
+> - Que el costo del parsing sea $O(|w|)$ para todo $w$.
+> - Y que si alguna de estas dos condiciones no se puede garantizar para una gramática concreta $G$, sea posible saberlo a partir de la definición de la gramática.
+
+# Construyendo un parser descendente
+
+## ¿Cuál es la manera más fácil de llegar de `S` a una derivación extrema izquierda para una cadena arbitraria `w`?
+
+
+
+
+
+Construyendo recursivamente todas las derivaciones.
+
+- Como la gramática es libre del contexto, toda forma oracional en la derivación es de igual o mayor longitud que la precedente.
+- Por lo tanto, cuando una forma oracional tenga longitud mayor que $|w|$ ya podemos parar por esa rama.
+
+
+
+Este algoritmo es el colmo de ineficiente, pero funciona (casi) siempre.
+
+¡Lo que nos queda es mejorarlo! ¿Cómo?
+
+
+
+
+
+**¡Escogiendo la rama adecuada a bajar por la recursión!**
+
+
+# Construyendo un parser descendente
+
+Recordemos la gramática de expresiones "natural".
+
+```
+E -> E + E
+   | E - E
+   | E * E
+   | E / E
+   | ( E )
+   | i
+```
+
+¿Qué problema fundamental tiene esta gramática?
+
+
+
+**No modela la precedencia de los operadores.**
+
+# Precedencia de operadores
+
+Resolvemos la precedencia poniendo un no-terminal por cada "nivel de precedencia".
+
+```
+E -> T + E
+   | T - E
+   | T
+T -> F * T
+   | F / T
+   | F
+F -> ( E )
+   | i
+```
+
+¿Y ahora qué problema tiene?
+
+
+
+**Asocia "incorrectamente" hacia la derecha.**
+
+# Asociatividad
+
+¿Por qué no cambiar entonces las producciones para asociar "correctamente"?
+
+```
+E -> E + T
+   | E - T
+   | T
+T -> T * F
+   | T / F
+   | F
+F -> ( E )
+   | i
+```
+
+¿Esta sí?
+
+
+
+**Recursión infinita si tratas de parsear descendente.**
+
+# Eliminando la recursión izquieda
+
+**Definición:** Una gramática libre del contexto $G=<S,N,T,P>$ se dice recursiva izquierda si y solo si $S \rightarrow^* Sw$ (donde $w \in \{N \cup T \}^*$ es una forma oracional).
+
+## Ejemplo (recursión directa):
+
+```
+S -> Sa | b
+```
+
+## ¿Se puede arreglar?
+
+
+
+```
+S -> bX
+X -> aX | epsilon
+```
+
+# ¿Cómo queda la gramática de expresiones?
+
+```
+E -> T X
+X -> + T X
+   | - T X
+   | epsilon
+T -> F Y
+Y -> * F Y
+   | / F Y
+   | epsilon
+F -> ( E )
+   | i
+```
+
+¿Sigue mantienendo la asociatividad "correcta"?
+
+# Otra forma de llegar a lo mismo
+
+```
+E -> T + E
+   | T - E
+   | T
+T -> F * T
+   | F / T
+   | F
+F -> ( E )
+   | i
+```
+
+¿Qué *otro* problema tiene al parsear?
+
+
+
+**Ambigüedad para escoger la siguiente producción.**
+
+# Factorización a la izquierda
+
+**Definición:** Diremos que una gramática $G=<S,N,T,P>$ está *factorizada a la izquierda* si para todo par
+de producciones $A \rightarrow \theta_i w_i$ y $A \rightarrow \theta_j w_j$ se cumple $\theta_i \neq \theta_j$
+($\theta_i, \theta_j \in N \cup T$).
+
+```
+S -> cA | cB
+A -> aA | a
+B -> bB | b
+```
+
+
+```
+S -> cX
+X -> A  | B
+A -> aY
+Y -> A | epsilon
+B -> bZ
+Z -> B | epsilon
+```
+
+# Volviendo a la gramática de expresiones
+
+```
+E -> T X
+X -> + E
+   | - E
+   | epsilon
+T -> F Y
+Y -> * T
+   | / T
+   | epsilon
+F -> ( E )
+   | i
+```
+
+Y luego es solo un pasito para llegar a la misma gramática...
+
+# Vamos a parsear
+
+Por vagancia, usemos una gramática más sencilla...
+
+```
+E -> T X
+X -> + T X | epsilon
+T -> F Y
+Y -> * F Y | epsilon
+F -> ( E ) | i
+```
+
+
+Y veamos cómo queda el _parse_ de:
+
+```
+w = i * ( i + i )
+```
+
+#
+
+```
+| E                               E -> T X
+| T X                             T -> F Y
+| F Y X                           F -> i
+i | Y X                           Y -> * F Y
+i * | F Y X                       F -> ( E )
+i * ( | E ) Y X                   E -> T X
+i * ( | T X ) Y X                 X -> F Y
+i * ( | F Y X ) Y X               F -> i
+i * ( i | Y X ) Y X               Y -> epsilon
+i * ( i | X ) Y X                 X -> + T X
+i * ( i + | T X ) Y X             T -> F Y
+i * ( i + | F Y X ) Y X           F -> i
+i * ( i + i | Y X ) Y X           Y -> epsilon
+i * ( i + i | X ) Y X             X -> epsilon
+i * ( i + i ) | Y X               Y -> epsilon
+i * ( i + i ) | X                 X -> epsilon
+i * ( i + i )
+```
+
+# ¿Qué hemos hecho en cada paso?
+
+* Saber si alguna de las producciones de $X$ puede derivar en una forma oracional cuyo primer símbolo sea el terminal que toca generar.
+* Si $X \rightarrow \epsilon$, saber si esta derivación puede potencialmente redundar en que "lo que sea que venga detrás" de $X$ genere el terminal que toca.
+
+> Tratemos de definir formalmente estas ideas.
+
+# First y Follow
+
+**Definición**: Sea $G=<S,N,T,P>$ una gramática libre del contexto, $\alpha \in \{ N \cup T \}^*$ una forma oracional, y $x \in T$ un terminal. Decimos que $x \in First(\alpha)$ si y solo si $\alpha \rightarrow^* x\beta$ (donde $\beta \in \{ N \cup T \}^*$ es otra forma oracional).
+
+
+
+\
+
+**Definición**: Sea $G=<S,N,T,P>$ una gramática libre del contexto, $X \in N$ un no-terminal, y $x \in T$ un terminal. Decimos que $x \in Follow(X)$ si y solo si $S \rightarrow^* \alpha X x \beta$ (donde $\alpha, \beta \in \{ N \cup T \}^*$ son formas oracionales cualesquiera).
+
+# ¿Para qué nos sirve esto?
+
+Intuitivamente, los conjuntos `First` y `Follow` nos permiten decidir qué producción escoger. **¿Cómo?**
+
+
+
+- $X \rightarrow W$ es una producción posible si y solo si el próximo token `t` pertenece al $First(W)$.
+- $X \rightarrow \epsilon$ es una producción posible si y solo si el próximo token `t` pertenece al $Follow(X)$.
+
+
+
+Informalmente, llamaremos a una gramática, `LL(1)` si estos conjuntos nos permiten escoger **siempre**.
+
+**LL(1)**: _**L**eft-to-right **L**eftmost-derivation Lookahead **1**_
+
+# Calculando el `First`
+
+* Si $X \rightarrow W1 | W2 | \ldots | Wn$ entonces por definición, $First(X) = \cup First(W_i)$.
+* Si $X \rightarrow^* \epsilon$ entonces $\epsilon \in First(X)$.
+* Si $W = xZ$ donde $x$ es un terminal, $W$ y $Z$ son formas oracionales, entonces trivialmente $First(W) = { x }$.
+* Si $W = YZ$ donde $Y$ es un no-terminal, $W$ y $Z$ son formas oracionales, entonces $First(Y) \subseteq First(W)$.
+* Si $W = YZ$ y $Y \rightarrow^* \epsilon$ entonces $First(Z) \subseteq First(W)$.
+
+**¡A calcular todos los `First`!**
+
+# Calculando el `Follow`
+
+* $\$$ pertenece al $Follow(S)$.
+* Por definición $\epsilon$ nunca pertenece al $Follow(X)$ para todo $X$.
+* Si $X \rightarrow WAZ$ siendo $W$ y $Z$ formas oracionales, y $A$ un no-terminal cualquiera, entonces $First(Z) - { \epsilon } \subseteq Follow(A)$.
+* Si $X \rightarrow WAZ$ y $Z \rightarrow^* \epsilon$ (o igualmente $\epsilon$ está en el $First(Z)$), entonces $Follow(X) \subseteq Follow(A)$.
+
+**¡A calcular todos los `Follow`!**
+
+# Construyendo la tabla LL(1)
+
+\newcommand{\ep}{\ensuremath{\epsilon}}
+
+Para toda producción $X \rightarrow W$, para todo token $t$, ponemos en la tabla en $T[X,t] = X \rightarrow W$ si se cumple una de las siguientes condiciones:
+
+1. $t \in First(W)$
+2. $\epsilon \in First(W)$ y $t \in Follow(X)$
+
+
+
+        i      \+      \*       (       )       $
+ --- ------- -------- ------- ------- ------- -------
+  E    T X                      T X
+  T    F Y                      F Y
+  F     i                      ( E )
+  X           \+ T X                   \ep     \ep
+  Y            \ep    \* F Y           \ep     \ep
+ --- ------- -------- ------- ------- ------- -------
+
+**¿Probamos a parsear de nuevo?**
+
+# Finalmente...
+
+**Definición:** Sea $G=<S,N,T,P>$ una gramática libre del contexto. $G$ es LL(1) si y solo si para todo no-terminal $X \in N$, tal que $X \rightarrow W_1 | W_2 | ... | W_n$ se cumple que:
+
+* $First(Wi) \bigcap First(Wj) = \emptyset \,\, \forall i \neq j$
+* $\epsilon \in First(Wi) => First(Wj) \bigcap Follow(X) = \emptyset \,\, \forall j \neq i$
+
+Intuitivamente, estas condiciones son equivalentes a que en la tabla LL(1) hay a lo sumo una producción en cada celda.
+
+*¿Qué sucede si me queda más de una producción en alguna celda?*
+
+# Algunas conclusiones parciales
+
+> * Este es el primer tipo de _parser_ **de verdad**, usado en la práctica, que se puede implementar a mano.
+> * Pero... al tener un algoritmo de construcción de _parser_, ya no hay que hacerlo a mano.
+> * Aunque la mayoría de las gramáticas interesantes no son LL(1), con un poco de esfuerzo casi siempre se pueden transformar.
+> * De todas formas, las gramáticas LL(1) son bastante feas...
+> * Si una gramática es ambigua, no es LL(1) (y el algoritmo dice dónde).
+> * Si una gramática no es LL(1), no tiene por qué ser ambigua (hay _parsers_ más potentes).
+
+
+
+**Pregunta interesante:** ¿Existen lenguajes no ambiguos para los que no existe *ninguna* gramática LL(1)?

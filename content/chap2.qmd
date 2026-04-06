@@ -351,7 +351,7 @@ Si para las preguntas anteriores obtenemos una sola producción como respuesta, 
 
 Llamaremos `First(W)` al conjunto de todos los terminales que pueden ser generados por `W` como primer elemento (siendo `W` una forma oracional cualquiera, no solamente un no-terminal). Formalmente:
 
-> **Definición**: Sea $G=<S,N,T,P>$ una gramática libre del contexto, $W \in { N \cup T }^*$ una forma oracional, y $x \in T$ un terminal. Decimos que $x \in First(W)$ si y solo si $W \prs xZ$ (donde $Z \in \{ N \cup T \}^*$ es otra forma oracional).
+> **Definición**: Sea $G=<S,N,T,P>$ una gramática libre del contexto, $W \in { N \cup T }^*$ una forma oracional, y $x \in T$ un terminal. Decimos que $x \in First(W)$ si y solo si $W \rightarrow^* xZ$ (donde $Z \in \{ N \cup T \}^*$ es otra forma oracional).
 
 Este concepto captura formalmente la noción de "comenzar por". De forma intuitiva, si logramos computar el conjunto `First(W)` para todas las producciones `X -> W` de nuestra gramática, y cada uno de estos conjuntos de las producciones del mismo símbolo son disjuntos dos a dos, entonces podremos decir inequívocamente qué producción aplicar para generar el terminal que toca (o cuando no es posible generarlo). Notemos que fue necesario definir `First(W)` no solo para un no-terminal, sino para una forma oracional en general, pues necesitamos computarlo en toda parte derecha de una producción.
 
@@ -429,11 +429,11 @@ Llamaremos gramáticas LL(1) justamente a aquellas gramáticas para las cuales e
 
 Para poder formalizar este concepto, será conveniente primero encontrar algoritmos explícitos para computar los conjuntos `First` y `Follow`. Comencemos por el `First` ;). Veamos primero algunos hechos interesantes que se cumplen en este conjunto, y luego veremos cómo se diseña un algoritmo para su cómputo. No presentaremos demostración para estos hechos, pues la mayoría son intuitivos.
 
-* Si $X \pr W1 | W2 | \ldots | Wn$ entonces por definición, $First(X) = \cup First(W_i)$.
-* Si $X \prs \ep$ entonces $\ep \in First(X)$.
+* Si $X \rightarrow W1 | W2 | \ldots | Wn$ entonces por definición, $First(X) = \cup First(W_i)$.
+* Si $X \rightarrow^* \epsilon$ entonces $\epsilon \in First(X)$.
 * Si $W = xZ$ donde $x$ es un terminal, entonces trivialmente $First(W) = { x }$.
 * Si $W = YZ$ donde $Y$ es un no-terminal y $Z$ una forma oracional, entonces $First(Y) \subseteq First(W)$.
-* Si $W = YZ$ y $Y \prs \ep$ entonces $First(Z) \subseteq First(W)$.
+* Si $W = YZ$ y $Y \rightarrow^* \epsilon$ entonces $First(Z) \subseteq First(W)$.
 
 Las observaciones anteriores nos permiten diseñar un algoritmo para calcular todos los conjuntos `First(X)` para cada no-terminal `X`. Como de forma general pueden existir producciones recursivas, calcularemos todos los conjuntos `First` a la vez, aplicando cada una de las "reglas" anteriores, hasta que no se modifique ninguno de los conjuntos `First`. Nuevamente abusaremos de la imaginación y creatividad para introducir métodos y clases utilitarias sin definirlos de manera formal.
 
@@ -601,41 +601,36 @@ Calculemos finalmente los `Follow` de cada no-terminal:
 
 Ahora podemos llenar la tabla LL(1). Comencemos por la fila correspondiente a `E`. Para ello analizamos la producción `E -> T X`. Por la regla (1) podemos decir que esta producción se aplica solo para los terminales `(` y `int`.
 
-       int     \+      \*       (       )       $
- --- ------- ------- ------- ------- ------- -------
-  E    T X                     T X
- --- ------- ------- ------- ------- ------- -------
+|     | int | + | * | ( | ) | $ |
+|-----|-----|---|---|---|---|---|
+| **E** | T X | | | T X | | |
 
 Veamos entonces la fila asociada a `T`. La producción `T -> int Y` solamente se aplica para el token `int` mientas que la producción `T -> (E)` se aplica solamente para `(`.
 
-       int     \+      \*       (       )       $
- --- ------- ------- ------- ------- ------- -------
-  T   int Y                   ( E )
- --- ------- ------- ------- ------- ------- -------
+|     | int | + | * | ( | ) | $ |
+|-----|-----|---|---|---|---|---|
+| **T** | int Y | | | (E) | | |
 
 Ahora veamos las producciones de `X`. Para `X -> + E` la única entrada importante es con el token `+`. Por otro lado, la producción `X -> epsilon` se aplica en todos los tokens que pertenezcan al `Follow(X)`, es decir, `$` y `)`.
 
-       int     \+      \*       (       )       $
- --- ------- ------- ------- ------- ------- -------
-  X           \+ E                     \ep     \ep
- --- ------- ------- ------- ------- ------- -------
+|     | int | + | * | ( | ) | $ |
+|-----|-----|---|---|---|---|---|
+| **X** | | +E | | | $\epsilon$ | $\epsilon$ |
 
-Finalmente para el no-terminal `Y`, la producción `Y -> * T` es trivial, y la producción `Y -> \epilon` se aplica para `+`, `$` y `)`.
+Finalmente para el no-terminal `Y`, la producción `Y -> * T` es trivial, y la producción `Y -> $\epsilon$` se aplica para `+`, `$` y `)`.
 
-       int     \+      \*       (       )       $
- --- ------- ------- ------- ------- ------- -------
-  Y            \ep    \* T             \ep     \ep
- --- ------- ------- ------- ------- ------- -------
+|     | int | + | * | ( | ) | $ |
+|-----|-----|---|---|---|---|---|
+| **Y** | | $\epsilon$ | *T | | $\epsilon$ | $\epsilon$ |
 
 Finalmente, nos queda la tabla completa. Dado que no encontrarmos conflictos al construirla, podemos concluir que la gramática es LL(1):
 
-       int     \+      \*       (       )       $
- --- ------- ------- ------- ------- ------- -------
-  E    T X                     T X
-  T   int Y                   ( E )
-  X           \+ E                     \ep     \ep
-  Y            \ep    \* T             \ep     \ep
- --- ------- ------- ------- ------- ------- -------
+|     | int | + | * | ( | ) | $ |
+|-----|-----|---|---|---|---|---|
+| **E** | T X | | | T X | | |
+| **T** | int Y | | | (E) | | |
+| **X** | | +E | | | $\epsilon$ | $\epsilon$ |
+| **Y** | | $\epsilon$ | *T | | $\epsilon$ | $\epsilon$ |
 
 ## Parsing Descendente No Recursivo
 

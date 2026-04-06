@@ -1,18 +1,3 @@
----
----
-
-
-# Setup
-
-```{python}
-import sys
-import os
-sys.path.append(os.path.abspath(os.curdir))
-from source.trees import Tree
-from source.diagrams import Pipeline, Lexer
-```
-
-
 # Generación de Código
 
 ## Código de 3 Direcciones Orientado o Objetos (CIL)

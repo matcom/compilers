@@ -7,6 +7,7 @@ book:
     - Alejandro Piad Morffis
     - Juan Pablo Consuegra Ayala
     - Rocío Cruz Linares
+    - Gabriel Hernández Rodríguez
   chapters:
     - index.qmd
     - chap1.qmd
@@ -29,7 +30,8 @@ format:
     classoption: [oneside]
     geometry:
       - margin=1in
-    include-in-header: ../meta/header.tex
+    pdf-engine: pdflatex
 
 execute:
-  enabled: false
+  enabled: true
+  freeze: true

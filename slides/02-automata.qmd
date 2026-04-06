@@ -1,0 +1,677 @@
+---
+title: "Autómatas Finitos"
+format: revealjs
+---
+
+% Autómatas Regulares
+% MSc. Alejandro Piad Morffis
+% MatCom, UH (CC BY-SA-NC 4.0)
+
+``` {python}
+#| echo: false
+import sys
+import os
+_root = os.path.abspath(os.path.join(".."))
+sys.path.insert(0, _root)
+from tesserax import Canvas
+from source.tesserax_components import Automaton
+automaton = Automaton
+```
+
+# Anteriormente...
+
+- Queremos reconocer una secuencia de tokens
+- Cada token puede ser descrito por una **expresión regular**
+- Una (_meta_) expresión regular se puede construir combinando todos los tokens
+
+## Necesitamos
+
+- Un **mecanismo reconocedor** (de bajo nivel)
+- Que se obtenga automáticamente de una (_meta_) expresión regular
+- Que permita distinguir cada token de entre los componentes
+- Que sea resistente a errores
+
+# Construyendo un reconocer de lenguajes regulares
+
+> Cadenas sobre $\left\{a,b\right\}$ con una cantidad par de $a$.
+
+```python
+def match(s):
+    count = 0
+
+    for c in s:
+        if c == 'a':
+            count += 1
+
+    return count % 2 == 0
+```
+
+> ¿Cómo reducir a una cantidad _finita_ la memoria utilizada?
+
+# Construyendo un reconocer de lenguajes regulares
+
+> Cadenas sobre $\left\{a,b\right\}$ con una cantidad par de $a$.
+
+```python
+def match(s):
+    parity = 0
+
+    for c in s:
+        if c == 'a':
+            parity = (parity + 1) % 2
+
+    return parity == 0
+```
+
+> ¿Cómo definir el cambio de estado de forma más simple?
+
+# Construyendo un reconocer de lenguajes regulares
+
+> Cadenas sobre $\left\{a,b\right\}$ con una cantidad par de $a$.
+
+```python
+def match(s):
+    parity = 0
+
+    for c in s:
+        if c == 'a':
+            if parity == 0:
+                parity = 1
+            else:
+                parity = 0
+
+    return parity == 0
+```
+
+# Una máquina de estado equivalente
+
+Le llamaremos **Automáta Finito Determinista**
+
+``` {python}
+#| output: asis
+
+
+with Canvas() as canvas:
+    automaton('q0', ['q1'], {
+        ('q0', 'a'): 'q1',
+        ('q0', 'b'): 'q0',
+        ('q1', 'a'): 'q0',
+        ('q1', 'b'): 'q1',
+    })
+```
+
+- Solo puede avanzar en la cinta
+- Reconoce si y solo si termina en un estado final
+- Si se "traba" no reconoce
+
+# Autómatas Finitos Deterministas (DFA)
+
+## Formalizando
+
+Un DFA es un quíntuplo $A=<Q,q_0,V,F,f>$ donde:
+
+- $Q$ es un conjunto _finito_ de estados ($Q = \left\{ q_0, \ldots, q_n \right\}$).
+- $q_0 \in Q$ es el estado inicial.
+- $V$ es un conjunto finito de símbolos que pueden aparecer en la cinta.
+- $F \subseteq Q$ es un subconjunto de estados que denominaremos *estados finales*.
+- $f: Q \times V \to Q$ es una *función de transición*.
+
+# Lenguaje de un DFA
+
+## Definiremos $\mathrm{L}(A)$
+
+Sea $A$ un autómata, $w$ una cadena, $\mathrm{Q} = <q^0, q^1, ..., q^{|w|}>$ una secuencia
+de $|w|+1$ estados de $Q$, donde:
+
+- $q^{0} = q_0$
+- $q^{i+1} = f(q^{i}, w_i)$
+
+Diremos que $A$ reconoce $w$, $w \in \mathrm{L}(A)$, si y solo si:
+
+$$q^{|w|} \in F$$
+
+> Notar que $\mathrm{Q}$ _es único_ para una cadena $w$ cualquiera. Es por esto que el autómata es **determinista**.
+
+# Lenguajes regulares {.t}
+
+## Definición
+
+> Un lenguaje $L$ es regular si y solo si existe un DFA tal que $\mathrm{L}(A) = L$.
+
+## Veamos algunos ejemplos:
+
+- Lenguaje universo $L = \left\{a,b,c\right\}*$
+
+. . .
+
+``` {python}
+#| output: asis
+
+
+with Canvas() as canvas:
+    automaton('q0', ['q0'], {
+        ('q0', 'a b c'): 'q0'
+    })
+```
+
+# Lenguajes regulares {.t}
+
+## Definición
+
+> Un lenguaje $L$ es regular si y solo si existe un DFA tal que $\mathrm{L}(A) = L$.
+
+## Veamos algunos ejemplos:
+
+- Lenguaje finito $L = \left\{let, if, else\right\}$
+
+. . .
+
+``` {python}
+#| output: asis
+
+
+with Canvas() as canvas:
+    automaton('q0', ['q3', 'q5', 'q9'], {
+        ('q0', 'l'): 'q1',
+        ('q1', 'e'): 'q2',
+        ('q2', 't'): 'q3',
+        ('q0', 'i'): 'q4',
+        ('q4', 'f'): 'q5',
+        ('q0', 'e'): 'q6',
+        ('q6', 'l'): 'q7',
+        ('q7', 's'): 'q8',
+        ('q8', 'e'): 'q9',
+    })
+```
+
+# Añadiendo no-determinismo
+
+Sea $L$ el lenguaje de las cadenas sobre $\left\{a,b\right\}$ que tienen una $a$ en la antepenúltima posición.
+
+## Hagamos un autómata (paso a paso)
+
+. . .
+
+``` {python}
+#| output: asis
+
+
+with Canvas() as canvas:
+    automaton('q0', ['q3'], {
+        ('q0', 'a'): 'q1',
+        ('q1', 'a'): 'q2',
+        ('q1', 'b'): 'q2',
+        ('q2', 'a'): 'q3',
+        ('q2', 'b'): 'q3',
+    })
+```
+
+> ¿Qué pasa si la cadena empieza con muchas $b$?
+
+# Añadiendo no-determinismo
+
+Sea $L$ el lenguaje de las cadenas sobre $\left\{a,b\right\}$ que tienen una $a$ en la antepenúltima posición.
+
+## Hagamos un autómata (paso a paso)
+
+``` {python}
+#| output: asis
+
+
+with Canvas() as canvas:
+    automaton('q0', ['q3'], {
+        ('q0', 'a'): 'q1',
+        ('q0', 'b'): 'q0',
+        ('q1', 'a'): 'q2',
+        ('q1', 'b'): 'q2',
+        ('q2', 'a'): 'q3',
+        ('q2', 'b'): 'q3',
+    })
+```
+
+> ¿Qué pasa si la cadena empieza con muchas $a$?
+
+# Añadiendo no-determinismo
+
+Sea $L$ el lenguaje de las cadenas sobre $\left\{a,b\right\}$ que tienen una $a$ en la antepenúltima posición.
+
+## Hagamos un autómata (paso a paso)
+
+``` {python}
+#| output: asis
+
+
+with Canvas() as canvas:
+    automaton('q0', ['q3'], {
+        ('q0', 'a b'): 'q0',
+        ('q0', 'a'): 'q1',
+        ('q1', 'a'): 'q2',
+        ('q1', 'b'): 'q2',
+        ('q2', 'a'): 'q3',
+        ('q2', 'b'): 'q3',
+    })
+```
+
+> Nos quedó un autómata **no-determinista** (hay más de un camino posible).
+
+# Autómata Finito No-Determinista
+
+## Formalizando
+
+Un NFA es un quíntuplo $A=<Q,q_0,V,F,f>$ donde:
+
+- $Q$ es un conjunto _finito_ de estados ($Q = \left\{ q_0, \ldots, q_n \right\}$).
+- $q_0 \in Q$ es el estado inicial.
+- $V$ es un conjunto finito de símbolos que pueden aparecer en la cinta.
+- $F \subseteq Q$ es un subconjunto de estados que denominaremos *estados finales*.
+- $f: Q \times V \bigcup \left\{ \epsilon \right\} \to 2^Q$ es una *función de transición*.
+
+**NOTA:** La diferencia es la función de transición, que permite saltar a más de un estado,
+y hacer $\epsilon$-transiciones (sin leer de la cinta).
+
+# Lenguaje de un NFA
+
+## Definiremos $\mathrm{L}(A)$
+
+Sea $A$ un autómata, $w$ una cadena, $\mathrm{Q} = <q^0, q^1, ..., q^{k}>$ una secuencia
+de $k \geq |w|+1$ estados de $Q$, donde:
+
+- $q^{0} = q_0$
+- $q^{i+j+1} = f(q^{i}, w_i)$, o
+- $q^{i+j+1} = f(q^{i}, \epsilon)$ con $j \geq 0$.
+
+Diremos que $A$ reconoce $w$, $w \in \mathrm{L}(A)$, si y solo si, existe $\mathrm{Q}$ tal que:
+
+$$q^{k} \in F$$
+
+> Notar que $\mathrm{Q}$ _no es único_ para una cadena $w$ cualquiera. Es por esto que el autómata es **no-determinista**.
+
+# ¿Es bueno el no-determinismo?
+
+- Permite reconocer lenguajes más fácilmente (¿por qué?).
+- Es más complicado de evaluar computacionalmente (¿por qué?).
+
+. . .
+
+## Surgen entonces algunas preguntas
+
+- ¿Son **más poderosos** los autómatas no-deterministas?
+- ¿Existen lenguajes que un NFA puede reconocer, pero ningún DFA puede?
+- O son los lenguajes reconocibles por los NFA también regulares?
+
+# Convirtiendo un NFA a un DFA
+
+## Definamos primero
+
+Sea $Q' \subseteq Q$ un subconjunto de estados:
+
+- $Goto(Q',c) = \left\{ q_j \in Q \,\, | \,\, q_i \in Q', \,\, q_j \in f(q_i,c) \right\}$
+- $\epsilon Closure(Q') = \left\{ q_j \in Q \,\, | \,\, q_i \in \epsilon Closure(Q'), \,\, q_j \in f(q_i,\epsilon) \right\}$
+
+. . .
+
+## Idea del algoritmo
+
+- Los estados del nuevo DFA serán $Q' \subseteq Q$, cada estado es un elemento $Q' \in 2^Q$.
+- Entre un par de estados $Q_i, Q_j$ hay una transición con $c$, si y solo si, $Q_j = \epsilon Closure (Goto (Q_j, c))$.
+- El estado inicial es $Q_0 = \epsilon Closure(q_0)$.
+- Los estados finales son aquellos $Q'$ que contienen un $q_i \in F$.
+
+# Sea el NFA siguiente {.t}
+
+``` {python}
+#| output: asis
+
+
+with Canvas() as canvas:
+    automaton('q0', ['q3'], {
+        ('q0', 'a b'): 'q0',
+        ('q0', 'epsilon'): 'q1',
+        ('q1', 'a'): 'q2',
+        ('q2', 'a'): 'q3',
+        ('q2', 'b'): 'q3',
+    })
+```
+
+## Hagamos el DFA (paso a paso)
+
+- El estado inicial es $Q_0 = \epsilon Closure(q_0) = \{q_0, q_1\}$
+
+``` {python}
+#| output: asis
+
+
+with Canvas() as canvas:
+    automaton('q0q1', [], {
+    })
+```
+
+# Sea el NFA siguiente {.t}
+
+``` {python}
+#| output: asis
+
+
+with Canvas() as canvas:
+    automaton('q0', ['q3'], {
+        ('q0', 'a b'): 'q0',
+        ('q0', 'epsilon'): 'q1',
+        ('q1', 'a'): 'q2',
+        ('q2', 'a'): 'q3',
+        ('q2', 'b'): 'q3',
+    })
+```
+
+## Hagamos el DFA (paso a paso)
+
+- $Goto(\{ q_0,q_1 \},a) = \{q_0, q_2\}$
+- $\epsilon Closure (\{q_0, q_2\}) = \{q_0, q_1, q_2\}$
+
+``` {python}
+#| output: asis
+
+
+with Canvas() as canvas:
+    automaton('q0q1', [], {
+        ('q0q1', 'a') : 'q0q1q2',
+    })
+```
+
+# Sea el NFA siguiente {.t}
+
+``` {python}
+#| output: asis
+
+
+with Canvas() as canvas:
+    automaton('q0', ['q3'], {
+        ('q0', 'a b'): 'q0',
+        ('q0', 'epsilon'): 'q1',
+        ('q1', 'a'): 'q2',
+        ('q2', 'a'): 'q3',
+        ('q2', 'b'): 'q3',
+    })
+```
+
+## Hagamos el DFA (paso a paso)
+
+- $Goto(\{ q_0,q_1 \},b) = \{q_0\}$
+- $\epsilon Closure (\{q_0\}) = \{q_0, q_1\}$
+
+``` {python}
+#| output: asis
+
+
+with Canvas() as canvas:
+    automaton('q0q1', [], {
+        ('q0q1', 'a') : 'q0q1q2',
+        ('q0q1', 'b') : 'q0q1',
+    })
+```
+
+# Sea el NFA siguiente {.t}
+
+``` {python}
+#| output: asis
+
+
+with Canvas() as canvas:
+    automaton('q0', ['q3'], {
+        ('q0', 'a b'): 'q0',
+        ('q0', 'epsilon'): 'q1',
+        ('q1', 'a'): 'q2',
+        ('q2', 'a'): 'q3',
+        ('q2', 'b'): 'q3',
+    })
+```
+
+## Hagamos el DFA (paso a paso)
+
+- $Goto(\{ q_0,q_1,q2 \},a) = \{q_0, q_2, q_3\}$
+- $\epsilon Closure (\{q_0, q_2, q_3\}) = \{q_0, q_1, q_2, q_3\}$
+
+``` {python}
+#| output: asis
+
+
+with Canvas() as canvas:
+    automaton('q0q1', [], {
+        ('q0q1', 'a') : 'q0q1q2',
+        ('q0q1', 'b') : 'q0q1',
+        ('q0q1q2', 'a') : 'q0q1q2q3',
+    })
+```
+
+# Sea el NFA siguiente {.t}
+
+``` {python}
+#| output: asis
+
+
+with Canvas() as canvas:
+    automaton('q0', ['q3'], {
+        ('q0', 'a b'): 'q0',
+        ('q0', 'epsilon'): 'q1',
+        ('q1', 'a'): 'q2',
+        ('q2', 'a'): 'q3',
+        ('q2', 'b'): 'q3',
+    })
+```
+
+## Hagamos el DFA (paso a paso)
+
+- $Goto(\{ q_0,q_1,q2 \},b) = \{q_0, q_3\}$
+- $\epsilon Closure (\{q_0, q_3\}) = \{q_0, q_1, q_3\}$
+
+``` {python}
+#| output: asis
+
+
+with Canvas() as canvas:
+    automaton('q0q1', [], {
+        ('q0q1', 'a') : 'q0q1q2',
+        ('q0q1', 'b') : 'q0q1',
+        ('q0q1q2', 'a') : 'q0q1q2q3',
+        ('q0q1q2', 'b') : 'q0q1q3',
+    })
+```
+
+# Sea el NFA siguiente {.t}
+
+``` {python}
+#| output: asis
+
+
+with Canvas() as canvas:
+    automaton('q0', ['q3'], {
+        ('q0', 'a b'): 'q0',
+        ('q0', 'epsilon'): 'q1',
+        ('q1', 'a'): 'q2',
+        ('q2', 'a'): 'q3',
+        ('q2', 'b'): 'q3',
+    })
+```
+
+## Hagamos el DFA (paso a paso)
+
+- $Goto(\{ q_0,q_1,q2,q3 \},a) = \{q_0, q_2, q_3\}$
+- $\epsilon Closure (\{q_0, q_2, q_3\}) = \{q_0, q_1, q_2, q_3\}$
+
+``` {python}
+#| output: asis
+
+
+with Canvas() as canvas:
+    automaton('q0q1', [], {
+        ('q0q1', 'a') : 'q0q1q2',
+        ('q0q1', 'b') : 'q0q1',
+        ('q0q1q2', 'a') : 'q0q1q2q3',
+        ('q0q1q2', 'b') : 'q0q1q3',
+        ('q0q1q2q3', 'a') : 'q0q1q2q3',
+    })
+```
+
+# Sea el NFA siguiente {.t}
+
+``` {python}
+#| output: asis
+
+
+with Canvas() as canvas:
+    automaton('q0', ['q3'], {
+        ('q0', 'a b'): 'q0',
+        ('q0', 'epsilon'): 'q1',
+        ('q1', 'a'): 'q2',
+        ('q2', 'a'): 'q3',
+        ('q2', 'b'): 'q3',
+    })
+```
+
+## Hagamos el DFA (paso a paso)
+
+- $Goto(\{ q_0,q_1,q2,q3 \},b) = \{q_0,q_3\}$
+- $\epsilon Closure (\{q0,q_3\}) = \{q0,q_1,q_3\}$
+
+``` {python}
+#| output: asis
+
+
+with Canvas() as canvas:
+    automaton('q0q1', [], {
+        ('q0q1', 'a') : 'q0q1q2',
+        ('q0q1', 'b') : 'q0q1',
+        ('q0q1q2', 'a') : 'q0q1q2q3',
+        ('q0q1q2', 'b') : 'q0q1q3',
+        ('q0q1q2q3', 'a') : 'q0q1q2q3',
+        ('q0q1q2q3', 'b') : 'q0q1q3',
+    })
+```
+
+# Sea el NFA siguiente {.t}
+
+``` {python}
+#| output: asis
+
+
+with Canvas() as canvas:
+    automaton('q0', ['q3'], {
+        ('q0', 'a b'): 'q0',
+        ('q0', 'epsilon'): 'q1',
+        ('q1', 'a'): 'q2',
+        ('q2', 'a'): 'q3',
+        ('q2', 'b'): 'q3',
+    })
+```
+
+## Hagamos el DFA (paso a paso)
+
+- $Goto(\{ q_0,q_1,q3 \},a) = \{q_0,q_2\}$
+- $\epsilon Closure (\{q0,q_2\}) = \{q0,q_1,q_2\}$
+
+``` {python}
+#| output: asis
+
+
+with Canvas() as canvas:
+    automaton('q0q1', [], {
+        ('q0q1', 'a') : 'q0q1q2',
+        ('q0q1', 'b') : 'q0q1',
+        ('q0q1q2', 'a') : 'q0q1q2q3',
+        ('q0q1q2', 'b') : 'q0q1q3',
+        ('q0q1q2q3', 'a') : 'q0q1q2q3',
+        ('q0q1q2q3', 'b') : 'q0q1q3',
+        ('q0q1q3', 'a') : 'q0q1q2',
+    })
+```
+
+# Sea el NFA siguiente {.t}
+
+``` {python}
+#| output: asis
+
+
+with Canvas() as canvas:
+    automaton('q0', ['q3'], {
+        ('q0', 'a b'): 'q0',
+        ('q0', 'epsilon'): 'q1',
+        ('q1', 'a'): 'q2',
+        ('q2', 'a'): 'q3',
+        ('q2', 'b'): 'q3',
+    })
+```
+
+## Hagamos el DFA (paso a paso)
+
+- $Goto(\{ q_0,q_1,q3 \},b) = \{q_0\}$
+- $\epsilon Closure (\{q0\}) = \{q0,q_1\}$
+
+``` {python}
+#| output: asis
+
+
+with Canvas() as canvas:
+    automaton('q0q1', [], {
+        ('q0q1', 'a') : 'q0q1q2',
+        ('q0q1', 'b') : 'q0q1',
+        ('q0q1q2', 'a') : 'q0q1q2q3',
+        ('q0q1q2', 'b') : 'q0q1q3',
+        ('q0q1q2q3', 'a') : 'q0q1q2q3',
+        ('q0q1q2q3', 'b') : 'q0q1q3',
+        ('q0q1q3', 'a') : 'q0q1q2',
+        ('q0q1q3', 'b') : 'q0q1',
+    })
+```
+
+# Sea el NFA siguiente {.t}
+
+``` {python}
+#| output: asis
+
+
+with Canvas() as canvas:
+    automaton('q0', ['q3'], {
+        ('q0', 'a b'): 'q0',
+        ('q0', 'epsilon'): 'q1',
+        ('q1', 'a'): 'q2',
+        ('q2', 'a'): 'q3',
+        ('q2', 'b'): 'q3',
+    })
+```
+
+## Finalmente
+
+- Los estados finales son $\{q0,q1,q2,q3\}$ y $\{q0,q1,q3\}$
+
+``` {python}
+#| output: asis
+
+
+with Canvas() as canvas:
+    automaton('q0q1', ['q0q1q2q3', 'q0q1q3'], {
+        ('q0q1', 'a') : 'q0q1q2',
+        ('q0q1', 'b') : 'q0q1',
+        ('q0q1q2', 'a') : 'q0q1q2q3',
+        ('q0q1q2', 'b') : 'q0q1q3',
+        ('q0q1q2q3', 'a') : 'q0q1q2q3',
+        ('q0q1q2q3', 'b') : 'q0q1q3',
+        ('q0q1q3', 'a') : 'q0q1q2',
+        ('q0q1q3', 'b') : 'q0q1',
+    })
+```
+
+# Consideraciones finales (por ahora)
+
+## El no-determinismo en lenguajes regulares no es un problema
+
+- Se puede convertir a un DFA (aunque con una cantidad exponencial de estados)
+- Se puede evaluar en tiempo lineal en la cadena (sin realizar la conversión completa)
+- Brinda un poder expresivo que será útil para reconocer expresiones regulares
+
+. . .
+
+## Para demostrar que un lenguaje es regular
+
+- Definir un autómata (determinista o no)
+- Demostrar que el autómata reconoce el lenguaje
+    - Para toda cadena de $L$ hay una secuencia $\mathrm{Q}$ que termina en $F$.
+    - Toda secuencia $\mathrm{Q}$ que termina en $F$ reconoce una cadena de $L$.

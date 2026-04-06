@@ -1,0 +1,210 @@
+---
+title: "Generación de Código"
+format: beamer
+---
+
+## Generación de Código
+
+- Representación intermedia
+- Código de tres direcciones
+- CIL (Common Intermediate Language)
+- Generación para expresiones
+- Generación para funciones
+- Optimización básica
+- Ejemplos en HULK
+
+## Representación Intermedia
+
+Después del análisis semántico, necesitamos generar código.
+
+La **IR** (Intermediate Representation) es independiente del lenguaje fuente y objetivo.
+
+## Diseño de la IR
+
+Propiedades deseadas:
+
+- Independencia de arquitectura
+- Facilitar optimizaciones
+- Fácil de generar desde el AST
+- Fácil de traducir a código objeto
+
+## Código de Tres Direcciones
+
+Cada instrucción tiene como máximo tres operandos:
+
+```
+t1 = a + b
+t2 = t1 * c
+x = t2
+```
+
+## Ventajas de Tres Direcciones
+
+- Simple de generar
+- Representa operaciones básicas
+- Facilita análisis de dependencias
+- Permite optimizaciones locales
+
+## CIL (Common Intermediate Language)
+
+Lenguaje .NET para representación intermedia.
+
+```
+.method static void main() {
+    .entrypoint
+    ldstr "Hello"
+    call void [mscorlib]System.Console::WriteLine(string)
+    ret
+}
+```
+
+## IR para HULK
+
+Nuestro compilador HULK genera CIL:
+
+```
+function square(x: Number): Number => x * x;
+```
+
+Traducción a CIL:
+```
+.method static float64 square(float64 x) {
+    ldarg.0
+    ldarg.0
+    mul
+    ret
+}
+```
+
+## Generación de Expresiones
+
+Recorrido post-order del AST:
+
+```
+BinaryExpr(op, left, right)
+    -> generar(left)
+    -> generar(right)
+    -> generar operación
+```
+
+## Generación para Expresiones Aritméticas
+
+```python
+def generar(expr):
+    match expr:
+        case Number(n):
+            return f"ldc.i8 {n}"
+        case BinaryExpr(op, left, right):
+            code = generar(left)
+            code += generar(right)
+            code += f"{op_to_cil(op)}\n"
+            return code
+```
+
+## Generación para Variables
+
+```python
+def generar(expr):
+    match expr:
+        case Variable(name):
+            # Buscar en ámbito
+            return f"ldloc {name}"
+```
+
+## Generación para Llamadas a Función
+
+```python
+def generar(expr):
+    match expr:
+        case FuncCall(name, args):
+            for arg in reversed(args):
+                generar(arg)
+            return f"call {signature(name)}"
+```
+
+## Tabla de Símbolos para Generación
+
+```python
+# En la tabla de símbolos necesitamos:
+# - Tipo de retorno (para verificar)
+# - Tipos de argumentos
+# - Offset de parámetros y variables locales
+```
+
+## Generación de Declaraciones
+
+```python
+def generar_stmt(stmt):
+    match stmt:
+        case LetVar(name, expr):
+            code = generar(expr)
+            # Reservar espacio
+            code += f"locals init({type(expr)} {name})"
+            code += f"stloc {name}\n"
+            return code
+```
+
+## Generación de Funciones
+
+```hulk
+function square(x: Number): Number => x * x;
+```
+
+```
+.method static float64 square(float64 x) {
+    .maxstack 10
+    ldarg.0
+    ldarg.0
+    mul
+    ret
+}
+```
+
+## Generación de Print
+
+```hulk
+print(x + 1);
+```
+
+```
+ldloc x
+ldc.i8 1
+add
+call void [mscorlib]System.Console::WriteLine(object)
+```
+
+## Optimización Básica
+
+### Eliminación de subexpresiones comunes
+
+```
+t1 = a + b
+t2 = c + d
+t3 = a + b  # Ya calculado
+```
+
+### Propagación de constantes
+
+```
+x = 5
+y = x + 1  # y = 6
+```
+
+## Código Mips
+
+Para arquitecturas reales:
+
+```asm
+# int foo(int a, int b) { return a + b; }
+foo:
+    add $v0, $a0, $a1
+    jr $ra
+```
+
+## Resumen
+
+- La IR debe ser independiente
+- Código de tres direcciones es popular
+- Recorrido del AST para generación
+- Tabla de símbolos facilita generación
+- Optimizaciones básicas son posibles

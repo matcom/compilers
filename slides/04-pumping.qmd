@@ -1,0 +1,153 @@
+---
+title: "No todos los lenguajes son regulares"
+format: beamer
+---
+
+# No todos los lenguajes son regulares
+
+> Sea $L = \{ a^n b^n \,\, | \,\, n \geq 0 \}$
+
+- ¿Es $L$ regular?
+- ¿Cómo podemos demostrar que no existe un autómata $A$ tal que $L_A = L$?
+
+# Idea intuitiva
+
+- Supongamos que existe $A$.
+- Sea $k = |Q|$ la cantidad de estados de $A$.
+- Analicemos la cadena $a^k$
+- Existe un estado $q_i$ que se usa 2 veces (¿?).
+- Sea $q_i$ este estado, existe un par de prefijos $a^p$ y $a^q$ que ambos terminan en $q_i$.
+- Entonces las cadenas $a^p b^p$ y $a^q b^p$ pasan por $q_i$ y terminan en el mismo $q_f$ (¿?)
+- Pero una de las dos no pertenece a $L$.
+- Contradicción, $A$ no puede existir.
+
+# Formalizando
+
+## Lema del bombeo (regular)
+
+Sea $L$ un lenguaje regular, existe un $n$ (que depende de $L$), tal que,
+para toda cadena $\omega$ con $|\omega| \geq n$, $\omega$ se puede escribir como
+$xyz$, tal que:
+
+1. $y \neq \epsilon$
+2. $|xy| \leq n$
+3. Para todo $k$, $xy^kz \in L$
+
+# Usando el lema del bombeo
+
+Quiero demostrar que un lenguaje no es regular.
+
+- Escojo una cadena $\omega$ en función de $n$.
+- Escojo una forma de picar $\omega$ en $xyz$ que _no dependa_ de $n$.
+- Escojo un $k$ tal que $xy^kz$ no esté en $L$.
+
+# Ejemplos de no-regulares
+
+- Cantidad igual de $a$ y $b$.
+- Paréntesis balanceados.
+- $0^n 1^m$ con $n \leq m$.
+
+## Otros lenguajes no regulares
+
+- $\omega \in \{a,b\}^*$ con $\#_a \mod \#_b (k)$, para un $k$ arbitrario.
+- $\omega = yxy^R$ con $x,y \in \{0,1\}^*$.
+
+# Propiedades de cerradura
+
+Un lenguaje $L$ es regular si y solo si existe un DFA $A=<Q,q_0,V,F,f>$ tal que $L_A = L$.
+
+## ¿Para cuáles operaciones es cerrado el conjunto de lenguajes regulares?
+
+- Unión, intersección, diferencia, complemento
+- Concatenación, reverso
+- Cerradura (Kleene)
+
+# Demostrando cerradura: Unión
+
+Sean $L_1$ y $L_2$ dos lenguajes regulares, entonces $L_1 \cup L_2$ es regular.
+
+Idea: Construir un NFA que combine ambos autómatas con un nuevo estado inicial y un nuevo estado final.
+
+# Demostrando cerradura: Complemento
+
+Sea $L$ un lenguaje regular, el complemento $L^C$ es regular.
+
+Idea: Invertir los estados finales en el DFA (debe estar totalmente especificado).
+
+# Demostrando cerradura: Intersección
+
+Sean $L_1$ y $L_2$ dos lenguajes regulares, entonces $L_1 \cap L_2$ es regular.
+
+Idea: Usando De Morgan: $L_1 \cap L_2 = (L_1^C \cup L_2^C)^C$
+
+O directamente: construir un DFA que simule ambos en paralelo (producto de autómatas).
+
+# Producto de autómatas
+
+Los estados serán pares $(q_i, q_j)$.
+
+- Las transiciones van de $(q_i, q_j) \to (q_k, q_l)$ si hay transiciones separadas.
+- Los estados finales dependen de la operación.
+
+## Ejemplo: Intersección
+
+$L_{1,2} =$ cantidad par de $a$ y cantidad par de $b$.
+
+# Lenguajes libres del contexto
+
+¿Qué sucede con lenguajes más complejos?
+
+> Sea $L = \{ a^n b^n c^n \,\, | \,\, n \geq 0 \}$
+
+- ¿Es $L$ libre del contexto?
+- ¿Cómo podemos demostrar que no existe una gramática $G$ tal que $L_G = L$?
+
+# Lema del bombeo (libre del contexto)
+
+Sea $L$ un lenguaje libre del contexto, existe un $n$ (que depende de $L$), tal que,
+para toda cadena $\omega$ con $|\omega| \geq n$, $\omega$ se puede escribir como
+$uvwxy$, tal que:
+
+1. $vx \neq \epsilon$
+2. $|vwx| \leq n$
+3. Para todo $k$, $uv^kwx^ky \in L$
+
+# Forma Normal de Chomsky
+
+Para toda gramática $G$ libre del contexto, existe una gramática $G'$ en **Forma Normal de Chomsky**, tal que todas las producciones son de la forma:
+
+- $A \rightarrow BC$ (dos no-terminales)
+- $A \rightarrow a$ (un terminal)
+
+## Pasos para convertir a FNC:
+
+1. Eliminar producciones $\epsilon$
+2. Eliminar producciones $A \rightarrow B$
+3. Eliminar símbolos inútiles
+4. Factorizar producciones largas
+
+# ¿De qué sirve la FNC?
+
+- Todo árbol de derivación tiene 2 hijos (excepto en las hojas).
+- Si la rama más larga tiene $m$ nodos, entonces $|\omega| \leq 2^{m-1}$.
+- Escogiendo $n = 2^{|N|}$ obliga a tener dos no-terminales repetidos.
+
+# Cerradura de lenguajes libres del contexto
+
+## Operaciones cerradas:
+
+- Unión
+- Concatenación
+- Cerradura (Kleene)
+- Sustitución
+- Reverso
+
+## Operaciones NO cerradas:
+
+- Intersección
+- Complemento
+
+## Operaciones condicionalmente cerradas:
+
+- Intersección con lenguaje regular
+- Diferencia con lenguaje regular

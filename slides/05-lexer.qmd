@@ -1,0 +1,151 @@
+---
+title: "Implementación del Lexer"
+format: beamer
+---
+
+## Implementación del Lexer
+
+- De regex a autómata
+- Construcción de Thompson
+- NFA a DFA
+- Algoritmo de tokenización
+- Manejo de errores
+
+## Tokens
+
+Un lexer convierte texto en tokens:
+
+```python
+class Token:
+    def __init__(self, type, lexeme, line, column):
+        self.type = type
+        self.lexeme = lexeme
+        self.line = line
+        self.column = column
+```
+
+## Ejemplo de Tokens
+
+```python
+# Input: let x = 5 in x + 1
+# Output:
+[
+    Token("let", "let", 1, 1),
+    Token("id", "x", 1, 5),
+    Token("=", "=", 1, 7),
+    Token("num", "5", 1, 9),
+    Token("in", "in", 1, 11),
+    Token("id", "x", 1, 14),
+    Token("+", "+", 1, 16),
+    Token("num", "1", 1, 18),
+]
+```
+
+## Construcción de Thompson
+
+Convertir regex a NFA:
+
+- $a$ → estado inicial y final
+- $\epsilon$ → transición sin consumir
+- $(s)|(r)$ → dos caminos paralelos
+- $(s)(r)$ → concatenación
+- $(s)*$ → ciclo con $\epsilon$
+
+## Thompson: Ejemplo
+
+Regex: $(a|b)*abb$
+
+```
+q0 →ε→ q1 (inicio)
+q1 →ε→ q2 o q4 (a|b)*
+q2 →a→ q3
+q3 →ε→ q1 o q5
+q4 →b→ q6
+q6 →b→ q7
+q7 →ε→ q8 (fin)
+```
+
+## NFA a DFA
+
+Algoritmo: Subset Construction
+
+1. Calcular $\epsilon$ Clausura
+2. Para cada estado del DFA
+3. Para cada símbolo de entrada
+4. Calcular nuevo conjunto de estados NFA
+
+## Algoritmo de Tokenización
+
+```python
+def lex(input):
+    tokens = []
+    pos = 0
+    while pos < len(input):
+        token, pos = match_token(input, pos)
+        tokens.append(token)
+    return tokens
+```
+
+## Prioridad de Tokens
+
+Cuando hay ambigüedad:
+
+```python
+# En HULK:
+# "if" es keyword antes que identifier
+# "123" es número antes que identifier
+```
+
+## Manejo de Errores
+
+Tipos de errores léxicos:
+
+- Caracteres inválidos
+- Números mal formados
+- Strings sin cerrar
+- Comentarios no cerrados
+
+## Estrategias de Recuperación
+
+1. **Panic mode**: Saltar caracteres hasta encontrar delimitador
+2. **Token de error**: Generar token especial
+3. **Corrección**: Intentar adivinar intención
+
+## Ejemplo: Error Léxico
+
+```python
+# Input: let x = @abc
+# Error: '@' no es válido
+
+# Recuperación: generar error token y continuar
+Token("error", "@abc", 1, 9)
+```
+
+## Lexer Basado en DFA
+
+```python
+def match_token(input, pos):
+    state = start_state
+    start = pos
+    while pos < len(input):
+        c = input[pos]
+        if (state, c) not in transitions:
+            break
+        state = transitions[(state, c)]
+        pos += 1
+    return Token(type[state], input[start:pos], start, pos)
+```
+
+## Optimizaciones
+
+- Tabla de transiciones compacta
+- Codificación de estados muertos
+- Cache de resultados frecuentes
+
+## Resumen
+
+- Tokens son unidades léxicas
+- Regex → NFA (Thompson)
+- NFA → DFA (Subset)
+- DFA → Lexer
+- Manejo de errores importante
