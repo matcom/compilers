@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="230.0" height="290.0" viewBox="-115.0 -20.0 230.0 290.0">
+  <defs><marker id="arrow" viewBox="-10 -4 10 8" refX="0" refY="0" orient="auto" markerWidth="10" markerHeight="8"><path d="M -10 -4 L 0 0 L -10 4 Z" fill="rgba(0,0,0,1.0)" stroke="rgba(0,0,0,0.0)" stroke-width="1.0"/></marker></defs>
+  <g transform="translate(0.0 25.0) rotate(0.0) scale(1.0 1.0)">
+<circle cx="0" cy="0" r="25" stroke="rgba(0,0,139,1.0)" fill="rgba(255,255,224,1.0)"/>
+</g>
+<g transform="translate(0.0 25.0) rotate(0.0) scale(1.0 1.0)">
+<text x="0" y="0" font-family="sans-serif" font-size="12" fill="rgba(0,0,0,1.0)" text-anchor="middle" dominant-baseline="middle">a</text>
+</g>
+  <g transform="translate(0.0 25.0) rotate(0.0) scale(1.0 1.0)">
+<circle cx="0" cy="0" r="25" stroke="rgba(0,0,139,1.0)" fill="rgba(255,255,224,1.0)"/>
+</g>
+<g transform="translate(0.0 25.0) rotate(0.0) scale(1.0 1.0)">
+<text x="0" y="0" font-family="sans-serif" font-size="12" fill="rgba(0,0,0,1.0)" text-anchor="middle" dominant-baseline="middle">0</text>
+</g>
+  <g transform="translate(0.0 25.0) rotate(0.0) scale(1.0 1.0)">
+<circle cx="0" cy="0" r="25" stroke="rgba(0,0,139,1.0)" fill="rgba(255,255,224,1.0)"/>
+</g>
+<g transform="translate(-35.0 125.0) rotate(0.0) scale(1.0 1.0)">
+<circle cx="0" cy="0" r="25" stroke="rgba(0,0,139,1.0)" fill="rgba(173,216,230,1.0)"/>
+</g>
+<g transform="translate(35.0 125.0) rotate(0.0) scale(1.0 1.0)">
+<circle cx="0" cy="0" r="25" stroke="rgba(0,0,139,1.0)" fill="rgba(173,216,230,1.0)"/>
+</g>
+<path d="M 0.0 50.0 L -35.0 100.0" fill="rgba(0,0,0,0.0)" stroke="rgba(0,0,0,1.0)" stroke-width="1.0" marker-end="url(#arrow)"/>
+<path d="M 0.0 50.0 L 35.0 100.0" fill="rgba(0,0,0,0.0)" stroke="rgba(0,0,0,1.0)" stroke-width="1.0" marker-end="url(#arrow)"/>
+<g transform="translate(0.0 25.0) rotate(0.0) scale(1.0 1.0)">
+<text x="0" y="0" font-family="sans-serif" font-size="12" fill="rgba(0,0,0,1.0)" text-anchor="middle" dominant-baseline="middle">&lt;=</text>
+</g>
+<g transform="translate(-35.0 125.0) rotate(0.0) scale(1.0 1.0)">
+<text x="0" y="0" font-family="sans-serif" font-size="12" fill="rgba(0,0,0,1.0)" text-anchor="middle" dominant-baseline="middle">a</text>
+</g>
+<g transform="translate(35.0 125.0) rotate(0.0) scale(1.0 1.0)">
+<text x="0" y="0" font-family="sans-serif" font-size="12" fill="rgba(0,0,0,1.0)" text-anchor="middle" dominant-baseline="middle">0</text>
+</g>
+  <g transform="translate(0.0 25.0) rotate(0.0) scale(1.0 1.0)">
+<circle cx="0" cy="0" r="25" stroke="rgba(0,0,139,1.0)" fill="rgba(255,255,224,1.0)"/>
+</g>
+<g transform="translate(0.0 25.0) rotate(0.0) scale(1.0 1.0)">
+<text x="0" y="0" font-family="sans-serif" font-size="12" fill="rgba(0,0,0,1.0)" text-anchor="middle" dominant-baseline="middle">b</text>
+</g>
+  <g transform="translate(0.0 25.0) rotate(0.0) scale(1.0 1.0)">
+<circle cx="0" cy="0" r="25" stroke="rgba(0,0,139,1.0)" fill="rgba(255,255,224,1.0)"/>
+</g>
+<g transform="translate(0.0 25.0) rotate(0.0) scale(1.0 1.0)">
+<text x="0" y="0" font-family="sans-serif" font-size="12" fill="rgba(0,0,0,1.0)" text-anchor="middle" dominant-baseline="middle">c</text>
+</g>
+  <g transform="translate(0.0 25.0) rotate(0.0) scale(1.0 1.0)">
+<circle cx="0" cy="0" r="25" stroke="rgba(0,0,139,1.0)" fill="rgba(255,255,224,1.0)"/>
+</g>
+<g transform="translate(-70.0 125.0) rotate(0.0) scale(1.0 1.0)">
+<circle cx="0" cy="0" r="25" stroke="rgba(0,0,139,1.0)" fill="rgba(173,216,230,1.0)"/>
+</g>
+<g transform="translate(-35.0 225.0) rotate(0.0) scale(1.0 1.0)">
+<circle cx="0" cy="0" r="25" stroke="rgba(0,0,139,1.0)" fill="rgba(173,216,230,1.0)"/>
+</g>
+<g transform="translate(35.0 225.0) rotate(0.0) scale(1.0 1.0)">
+<circle cx="0" cy="0" r="25" stroke="rgba(0,0,139,1.0)" fill="rgba(173,216,230,1.0)"/>
+</g>
+<g transform="translate(0.0 125.0) rotate(0.0) scale(1.0 1.0)">
+<circle cx="0" cy="0" r="25" stroke="rgba(0,0,139,1.0)" fill="rgba(173,216,230,1.0)"/>
+</g>
+<g transform="translate(70.0 125.0) rotate(0.0) scale(1.0 1.0)">
+<circle cx="0" cy="0" r="25" stroke="rgba(0,0,139,1.0)" fill="rgba(173,216,230,1.0)"/>
+</g>
+<path d="M 0.0 50.0 L -70.0 100.0" fill="rgba(0,0,0,0.0)" stroke="rgba(0,0,0,1.0)" stroke-width="1.0" marker-end="url(#arrow)"/>
+<path d="M -70.0 150.0 L -35.0 200.0" fill="rgba(0,0,0,0.0)" stroke="rgba(0,0,0,1.0)" stroke-width="1.0" marker-end="url(#arrow)"/>
+<path d="M -70.0 150.0 L 35.0 200.0" fill="rgba(0,0,0,0.0)" stroke="rgba(0,0,0,1.0)" stroke-width="1.0" marker-end="url(#arrow)"/>
+<path d="M 0.0 50.0 L 0.0 100.0" fill="rgba(0,0,0,0.0)" stroke="rgba(0,0,0,1.0)" stroke-width="1.0" marker-end="url(#arrow)"/>
+<path d="M 0.0 50.0 L 70.0 100.0" fill="rgba(0,0,0,0.0)" stroke="rgba(0,0,0,1.0)" stroke-width="1.0" marker-end="url(#arrow)"/>
+<g transform="translate(0.0 25.0) rotate(0.0) scale(1.0 1.0)">
+<text x="0" y="0" font-family="sans-serif" font-size="12" fill="rgba(0,0,0,1.0)" text-anchor="middle" dominant-baseline="middle">IF-EXPR</text>
+</g>
+<g transform="translate(-70.0 125.0) rotate(0.0) scale(1.0 1.0)">
+<text x="0" y="0" font-family="sans-serif" font-size="12" fill="rgba(0,0,0,1.0)" text-anchor="middle" dominant-baseline="middle">&lt;=</text>
+</g>
+<g transform="translate(-35.0 225.0) rotate(0.0) scale(1.0 1.0)">
+<text x="0" y="0" font-family="sans-serif" font-size="12" fill="rgba(0,0,0,1.0)" text-anchor="middle" dominant-baseline="middle">a</text>
+</g>
+<g transform="translate(35.0 225.0) rotate(0.0) scale(1.0 1.0)">
+<text x="0" y="0" font-family="sans-serif" font-size="12" fill="rgba(0,0,0,1.0)" text-anchor="middle" dominant-baseline="middle">0</text>
+</g>
+<g transform="translate(0.0 125.0) rotate(0.0) scale(1.0 1.0)">
+<text x="0" y="0" font-family="sans-serif" font-size="12" fill="rgba(0,0,0,1.0)" text-anchor="middle" dominant-baseline="middle">b</text>
+</g>
+<g transform="translate(70.0 125.0) rotate(0.0) scale(1.0 1.0)">
+<text x="0" y="0" font-family="sans-serif" font-size="12" fill="rgba(0,0,0,1.0)" text-anchor="middle" dominant-baseline="middle">c</text>
+</g>
+</svg>

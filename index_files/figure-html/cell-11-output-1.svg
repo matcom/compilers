@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="670.0" height="140.0" viewBox="-20.0 -100.0 670.0 140.0">
+  <defs><marker id="arrow" viewBox="-10 -4 10 8" refX="0" refY="0" orient="auto" markerWidth="10" markerHeight="8"><path d="M -10 -4 L 0 0 L -10 4 Z" fill="rgba(0,0,0,1.0)" stroke="rgba(0,0,0,0.0)" stroke-width="1.0"/></marker></defs>
+  <g transform="translate(40.0 0.0) rotate(0.0) scale(1.0 1.0)">
+<rect x="-40.0" y="-20.0" width="80" height="40" stroke="rgba(0,0,139,1.0)" fill="rgba(173,216,230,1.0)"/>
+</g>
+<g transform="translate(150.0 0.0) rotate(0.0) scale(1.0 1.0)">
+<rect x="-40.0" y="-20.0" width="80" height="40" stroke="rgba(0,0,139,1.0)" fill="rgba(173,216,230,1.0)"/>
+</g>
+<g transform="translate(260.0 0.0) rotate(0.0) scale(1.0 1.0)">
+<rect x="-40.0" y="-20.0" width="80" height="40" stroke="rgba(0,0,139,1.0)" fill="rgba(173,216,230,1.0)"/>
+</g>
+<g transform="translate(370.0 0.0) rotate(0.0) scale(1.0 1.0)">
+<rect x="-40.0" y="-20.0" width="80" height="40" stroke="rgba(0,0,139,1.0)" fill="rgba(173,216,230,1.0)"/>
+</g>
+<g transform="translate(480.0 0.0) rotate(0.0) scale(1.0 1.0)">
+<rect x="-40.0" y="-20.0" width="80" height="40" stroke="rgba(0,0,139,1.0)" fill="rgba(173,216,230,1.0)"/>
+</g>
+<g transform="translate(590.0 0.0) rotate(0.0) scale(1.0 1.0)">
+<rect x="-40.0" y="-20.0" width="80" height="40" stroke="rgba(0,0,139,1.0)" fill="rgba(173,216,230,1.0)"/>
+</g>
+<g transform="translate(40.0 0.0) rotate(0.0) scale(1.0 1.0)">
+<text x="0" y="0" font-family="sans-serif" font-size="12" fill="rgba(0,0,0,1.0)" text-anchor="middle" dominant-baseline="middle">HULK</text>
+</g>
+<g transform="translate(150.0 0.0) rotate(0.0) scale(1.0 1.0)">
+<text x="0" y="0" font-family="sans-serif" font-size="12" fill="rgba(0,0,0,1.0)" text-anchor="middle" dominant-baseline="middle">Lexer</text>
+</g>
+<g transform="translate(260.0 0.0) rotate(0.0) scale(1.0 1.0)">
+<text x="0" y="0" font-family="sans-serif" font-size="12" fill="rgba(0,0,0,1.0)" text-anchor="middle" dominant-baseline="middle">Parser</text>
+</g>
+<g transform="translate(370.0 0.0) rotate(0.0) scale(1.0 1.0)">
+<text x="0" y="0" font-family="sans-serif" font-size="12" fill="rgba(0,0,0,1.0)" text-anchor="middle" dominant-baseline="middle">Semántico</text>
+</g>
+<g transform="translate(480.0 0.0) rotate(0.0) scale(1.0 1.0)">
+<text x="0" y="0" font-family="sans-serif" font-size="12" fill="rgba(0,0,0,1.0)" text-anchor="middle" dominant-baseline="middle">Generador</text>
+</g>
+<g transform="translate(590.0 0.0) rotate(0.0) scale(1.0 1.0)">
+<text x="0" y="0" font-family="sans-serif" font-size="12" fill="rgba(0,0,0,1.0)" text-anchor="middle" dominant-baseline="middle">MIPS</text>
+</g>
+<path d="M 80.0 0.0 L 110.0 0.0" fill="rgba(0,0,0,0.0)" stroke="rgba(0,0,0,1.0)" stroke-width="1.0" marker-end="url(#arrow)"/>
+<path d="M 190.0 0.0 L 220.0 0.0" fill="rgba(0,0,0,0.0)" stroke="rgba(0,0,0,1.0)" stroke-width="1.0" marker-end="url(#arrow)"/>
+<path d="M 300.0 0.0 L 330.0 0.0" fill="rgba(0,0,0,0.0)" stroke="rgba(0,0,0,1.0)" stroke-width="1.0" marker-end="url(#arrow)"/>
+<path d="M 410.0 0.0 L 440.0 0.0" fill="rgba(0,0,0,0.0)" stroke="rgba(0,0,0,1.0)" stroke-width="1.0" marker-end="url(#arrow)"/>
+<path d="M 462.5 -45.0 L 480.0 -57.5 L 497.5 -45.0" fill="rgba(0,0,0,0.0)" stroke="rgba(169,169,169,1.0)" stroke-width="1.5" marker-end="url(#arrow)"/>
+<g transform="translate(480.0 -75.0) rotate(0.0) scale(1.0 1.0)">
+<text x="0" y="0" font-family="sans-serif" font-size="10" fill="rgba(169,169,169,1.0)" text-anchor="middle" dominant-baseline="middle">Optimización</text>
+</g>
+<path d="M 520.0 0.0 L 550.0 0.0" fill="rgba(0,0,0,0.0)" stroke="rgba(0,0,0,1.0)" stroke-width="1.0" marker-end="url(#arrow)"/>
+</svg>

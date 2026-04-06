@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>7&nbsp; — – Introducción a la Construcción de Compiladores</title>
+<title>6&nbsp; Semántica de Tipos – Introducción a la Construcción de Compiladores</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -146,7 +146,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./chap6.html"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">—</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./chap6.html"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Semántica de Tipos</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -174,55 +174,55 @@ window.Quarto = {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">—</span></span></a>
+ <span class="menu-text">Introducción</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./chap1.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">—</span></span></a>
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Análisis Lexicográfico</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./chap2.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">—</span></span></a>
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Parsing Descendente</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./chap3.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">—</span></span></a>
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Parsing Ascendente</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./chap4.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">—</span></span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Análisis Semántico</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./chap5.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">—</span></span></a>
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Gramáticas Atributadas</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./chap6.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">—</span></span></a>
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Semántica de Tipos</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./chap7.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">—</span></span></a>
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Generación de Código</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./chap8.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">—</span></span></a>
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">El lenguaje HULK</span></span></a>
   </div>
 </li>
     </ul>
@@ -235,14 +235,10 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#setup" id="toc-setup" class="nav-link active" data-scroll-target="#setup"><span class="header-section-number">8</span> Setup</a></li>
-  <li><a href="#semantics" id="toc-semantics" class="nav-link" data-scroll-target="#semantics"><span class="header-section-number">9</span> Semántica de Tipos</a>
-  <ul class="collapse">
-  <li><a href="#verificando-tipos" id="toc-verificando-tipos" class="nav-link" data-scroll-target="#verificando-tipos"><span class="header-section-number">9.1</span> Verificando tipos</a></li>
-  <li><a href="#contextos" id="toc-contextos" class="nav-link" data-scroll-target="#contextos"><span class="header-section-number">9.2</span> Contextos</a></li>
-  <li><a href="#implementando-un-verificador-de-tipos" id="toc-implementando-un-verificador-de-tipos" class="nav-link" data-scroll-target="#implementando-un-verificador-de-tipos"><span class="header-section-number">9.3</span> Implementando un verificador de tipos</a></li>
-  <li><a href="#el-patrón-visitor" id="toc-el-patrón-visitor" class="nav-link" data-scroll-target="#el-patrón-visitor"><span class="header-section-number">9.4</span> El Patrón Visitor</a></li>
-  </ul></li>
+  <li><a href="#verificando-tipos" id="toc-verificando-tipos" class="nav-link active" data-scroll-target="#verificando-tipos"><span class="header-section-number">6.1</span> Verificando tipos</a></li>
+  <li><a href="#contextos" id="toc-contextos" class="nav-link" data-scroll-target="#contextos"><span class="header-section-number">6.2</span> Contextos</a></li>
+  <li><a href="#implementando-un-verificador-de-tipos" id="toc-implementando-un-verificador-de-tipos" class="nav-link" data-scroll-target="#implementando-un-verificador-de-tipos"><span class="header-section-number">6.3</span> Implementando un verificador de tipos</a></li>
+  <li><a href="#el-patrón-visitor" id="toc-el-patrón-visitor" class="nav-link" data-scroll-target="#el-patrón-visitor"><span class="header-section-number">6.4</span> El Patrón Visitor</a></li>
   </ul>
 </nav>
     </div>
@@ -251,7 +247,7 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">—</span></h1>
+<h1 class="title"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Semántica de Tipos</span></h1>
 </div>
 
 
@@ -268,60 +264,44 @@ window.Quarto = {
 </header>
 
 
-<section id="setup" class="level1" data-number="8">
-<h1 data-number="8"><span class="header-section-number">8</span> Setup</h1>
-<div id="2bce1c2f" class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sys</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>sys.path.append(os.path.abspath(os.curdir))</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> source.trees <span class="im">import</span> Tree</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> source.diagrams <span class="im">import</span> Pipeline, Lexer</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</section>
-<section id="semantics" class="level1" data-number="9">
-<h1 data-number="9"><span class="header-section-number">9</span> Semántica de Tipos</h1>
 <p>En la mayoría de los lenguajes de programación modernos existe el concepto de “tipo”. De manera informal, diremos que un tipo es una definición de especifica cuáles operaciones son válidas a realizar sobre un objeto particular. Un objeto en este caso puede ser un valor simple (<code>int</code> o <code>bool</code> en los lenguajes tipo C), o un objeto compuesto en algún lenguaje orientado a objetos. El paradigma <strong>orientado a objetos</strong> ha venido a convertirse en los últimos años en una de las columnas fundamentales del diseño y la investigación de nuevos lenguajes de programación. En este paradigma, cada “valor” que se puede manipulado en un programa es un <em>objeto</em>, y los objetos pueden agruparse para definir objetos más complejos. A cada objeto se le asocia un <em>tipo</em>, que define las operaciones válidas a realizar sobre dicho objeto.</p>
 <p>La implementación más usual del concepto de tipo es una <strong>clase</strong>. Una clase (en C, C++, C#, Java, Python, Ruby, y tantos otros lenguajes orientados a objetos) es fundamentalmente una definición de las operaciones disponibles para un tipo. En general las clases permiten definir <em>atributos</em> que almacenan un valor, y <em>métodos</em> (o <em>funciones</em>) que permiten realizar una serie de operaciones (con o sin efectos colaterales) sobre el tipo en cuestión y los <em>argumentos</em> del método. A todos estos lenguajes los llamados <em>lenguajes tipados</em>, porque manejan el concepto de tipo. De forma general, si la operación <code>f(x)</code> (o <code>x.f()</code>) es válida en algunos contextos, e inválida en otros, aunque en ambos casos <code>f</code> y <code>x</code> son símbolos definidos, entonces diremos que dicho lenguaje es tipado, pues la validez de una operación no solo depende de que estén definidos los símbolos que participan, sino de <strong>cómo</strong> están definidos dichos símbolos. Un ejemplo de lenguaje no tipado es el lenguaje para expresiones que definimos en la sección <em>[Diseño de un AST]</em>.</p>
 <p>Una forma usual de clasificar a los lenguajes tipados es la distinción entre tipado <em>dinámico</em> y <em>estático</em>. En ambos casos cada expresión, variable y método tiene asociado un tipo que define las operaciones válidas. La diferencia fundamental radica en que en los lenguajes con tipado estático, además existe una <em>declaración explícita</em> del tipo que deseamos para una expresión, variable, método, etc. Esto lo hacemos con la esperanza de poder capturar en la fase de chequeo semántico la mayor cantidad de errores asociados a inconsistencias de tipos posibles. En los lenguajes con tipado dinámico las inconsistencias de tipos no pasan desapercibidas, simplemente se espera hasta la ejecución para detectarlas.</p>
 <p>En general, la discusión entre si es preferible el tipado estático o dinámico es futil. En muchas ocasiones, es conveniente tener lo antes posible una validación de que la expresión que queremos compilar no tendrá inconsistencias de tipos, y por este motivo surgieron los lenguajes con tipado estático. Por otro lado, es inevitable que existan circunstancias en las que el compilador será incapaz de inferir exactamente el tipo real que tendrá una expresión y nos impedirá realizar alguna operación cuando en realidad dicha operación sería posible. Por ejemplo, si tenemos la siguiente declaración de clases en C#:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode cs code-with-copy"><code class="sourceCode cs"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> A <span class="op">{</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">F</span><span class="op">()</span> <span class="op">{</span> <span class="co">/* ... */</span> <span class="op">}</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> B <span class="op">:</span> A <span class="op">{</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">G</span><span class="op">()</span> <span class="op">{</span> <span class="co">/* ... */</span> <span class="op">}</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> A:</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> f(<span class="va">self</span>):</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>        ...</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> B(A):</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> g(<span class="va">self</span>):</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>        ...</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>El siguiente fragmento código da error de compilación pues el tipo declarado para la variable <code>a</code> es <code>A</code>, donde no está definida la operación <code>G</code>, aunque sabemos que en caso de ejecutar, no existiría realmente ningún error de inconsistencia de tipos, pues el tipo real del objeto almancenado en <code>a</code> es <code>B</code>:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode cs code-with-copy"><code class="sourceCode cs"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>A a <span class="op">=</span> <span class="kw">new</span> <span class="fu">B</span><span class="op">();</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>a<span class="op">.</span><span class="fu">G</span><span class="op">();</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>a: A <span class="op">=</span> B()</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>a.g()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Por analogía, le llamaremos <em>tipo estático</em> al tipo declarado de una variable, atributo, método, o cualquier construcción sintáctica que almacene o produzca un valor, y <em>tipo dinámico</em> al tipo asociado a dicho valor durante la ejecución del programa. Es decir, en el caso anterior, <code>a</code> es una variable con tipo estático <code>A</code>, pero que en tiempo de ejecución almacena un objeto cuyo tipo dinámico es <code>B</code>. Más adelante podremos formalizar esta noción.</p>
 <p>En esta sección nos dedicaremos entonces a construir un <strong>verificador de tipos</strong>, que nos es más que un algoritmo que nos dirá si todos los usos de tipos en nuestro AST son consistentes. Idealmente, queremos que nuestro verificador de tipos nos permita decidir exactamente cuáles programas hacen un uso consistente de los tipos, pero como hemos visto en el ejemplo anterior, en ocasiones es imposible determinar exactamente cuál será el tipo dinámico de una expresión en tiempo de ejecución. En estos caso, generalmente preferimos errar por exceso, es decir, evitar la ejecución de aquellos programas donde <em>podría</em> existir una inconsistencia de tipos, aunque en la realidad no suceda. Cuando un verificador de tipos cumple esta propiedad, decimos que es <em>consistente</em>. Es decir, un verificador consistente detecta todos los programas con errores de tipo, aunque puede decidir erróneamente que un programa correcto es incorrecto. Por supuesto, queremos reducir al mínimo posible este segundo caso.</p>
 <p>En los lenguajes tipados es muy común que se permita construir <em>jerarquías de tipos</em>. Estas jeraquías se construyen mediante una operación, denominada generalmente <strong>herencia</strong>, que define que un tipo <code>B</code> es un <em>subtipo</em> del tipo <code>A</code>. La semántica exacta de la herencia varía de lenguaje en lenguaje, pero en general significa que todas las operaciones definidas para <code>A</code> también lo están para <code>B</code>, aunque <code>B</code> puede introducir nuevas operaciones (métodos, atributos, etc.), o <em>sobrescribir</em> la implementación de algunas de las operaciones definidas en <code>A</code>.</p>
 <p>Esta sobrescritura generalmente se asocia al nombre de <strong>polimorfismo</strong>, que para nuestro interés simplemente será el mecanismo que permite que una expresión <code>a.f()</code> se traduzca como la ejecución de una implementacion particular de <code>f</code> que depende del tipo dinámico de <code>a</code>, y no simplemente la implementación definida en el tipo estático. A este proceso le llamamos <em>resolución de métodos virtuales</em>.</p>
 <p>Las reglas de la herencia varían en diversos lenguajes de programación, pero en general se distinguen dos grandes paradigmas, los lenguajes con <em>herencia simple</em>, donde cada tipo puede heredar de un solo tipo “padre”, y los lenguajes con herencia múltiple. En los primeros, la jerarquía de tipos es un árbol (o conjunto de árboles, si no existe un tipo base de todos los tipos), y en el segundo caso la jerarquía de tipos se comporta como un grafo dirgido y acíclico (por supuesto, la herencia cíclica es, en principio, imposible). Del mismo modo que con los lenguajes estáticos y dinámicos, existen argumentos a favor y en contra de cada paradigma, aunque de forma general, los lenguajes con herencia simple son más sencillos de verificar que los lenguajes con herencia múltiple.</p>
 <p>En cualquier caso, de forma general existe una relación entre los tipos de una jerarquía, que llamaremos <strong>relación de conformidad</strong>, y denotaremos <span class="math inline">\(B \leq A\)</span>, es decir, <span class="math inline">\(B\)</span> <em>se conforma a</em> <span class="math inline">\(A\)</span>, si se cumple que <span class="math inline">\(B\)</span> hereda de <span class="math inline">\(A\)</span> o, recursivamente, si hereda de algún tipo <span class="math inline">\(C\)</span> que se conforme a <span class="math inline">\(A\)</span>. Verificar esta relación de conformidad en una implementación concreta de un verificador de tipos implica recorrer el árbol o grafo de la jerarquía de tipos. De momento asumiremos la relación como dada, y más adelante veremos ideas para su implementación en un ejemplo concreto.</p>
-<section id="verificando-tipos" class="level2" data-number="9.1">
-<h2 data-number="9.1" class="anchored" data-anchor-id="verificando-tipos"><span class="header-section-number">9.1</span> Verificando tipos</h2>
+<section id="verificando-tipos" class="level2" data-number="6.1">
+<h2 data-number="6.1" class="anchored" data-anchor-id="verificando-tipos"><span class="header-section-number">6.1</span> Verificando tipos</h2>
 <p>De modo que el problema que tenemos que resolver es, para un nodo particular del AST, si el uso de los tipos es consistente. Este proceso en general lo haremos <em>bottom-up</em>, ya que la consistencia del uso de tipos en una expresión particular dependerá de los tipos en sus partes componentes. Por lo tanto, en un recorrido en post-orden del AST, iremos computando los tipos asociados a los nodos “hijos”, y en el retorno chequearemos en cada “padre” la consistencia y computaremos el tipo del padre. Por ejemplo, si estamos en un nodo <code>SumExpr</code> que representa una expresión binaria de suma, podemos decir que este nodo es consistente si y solo sí cada una de las expresiones son a su vez consistentes, y son de tipo <code>int</code>, y la expresión en general es de tipo <code>int</code> también:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode cs code-with-copy"><code class="sourceCode cs"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> SumExpr <span class="op">:</span> Expression <span class="op">{</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> Expression Left<span class="op">;</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> Expression Right<span class="op">;</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> Type NodeType<span class="op">;</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">bool</span> <span class="fu">CheckTypes</span><span class="op">()</span> <span class="op">{</span></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>        <span class="kw">if</span> <span class="op">(!</span>Left<span class="op">.</span><span class="fu">CheckTypes</span><span class="op">()</span> <span class="op">||</span> <span class="op">!</span>Right<span class="op">.</span><span class="fu">CheckTypes</span><span class="op">())</span> <span class="op">{</span></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>            <span class="kw">return</span> <span class="kw">false</span><span class="op">;</span></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>        <span class="kw">if</span> <span class="op">(</span>Left<span class="op">.</span><span class="fu">NodeType</span> <span class="op">!=</span> Type<span class="op">.</span><span class="fu">Integer</span> <span class="op">||</span></span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>            Right<span class="op">.</span><span class="fu">NodeType</span> <span class="op">!=</span> Type<span class="op">.</span><span class="fu">Integer</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>            <span class="kw">return</span> <span class="kw">false</span><span class="op">;</span></span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>        NodeType <span class="op">=</span> Type<span class="op">.</span><span class="fu">Integer</span><span class="op">;</span></span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>        <span class="kw">return</span> <span class="kw">true</span><span class="op">;</span></span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> SumExpr(Expression):</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>):</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.left: Expression <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.right: Expression <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.node_type: Type <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> check_types(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">bool</span>:</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="kw">not</span> <span class="va">self</span>.left.check_types() <span class="kw">or</span> <span class="kw">not</span> <span class="va">self</span>.right.check_types():</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> <span class="va">False</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="va">self</span>.left.node_type <span class="op">!=</span> Type.Integer <span class="kw">or</span> <span class="va">self</span>.right.node_type <span class="op">!=</span> Type.Integer:</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> <span class="va">False</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.node_type <span class="op">=</span> Type.Integer</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">True</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>De este modo, recursivamente, podemos computar el tipo de todas las expresiones de un lenguaje (todos los posibles nodos de un AST). Vamos a definir a continuación una notación formal para expresar esta noción del chequeo de tipos de forma recursiva. La notación que definiremos tiene la forma de una demostración en el lenguaje de la lógica de predicados. Comienza con una lista de precondiciones lógicas (sobre los tipos de las sub-expresiones), y termina con una conclusión que dice cuál es el tipo de la expresión actual. Por ejemplo, para el caso anterior, podemos escribir:</p>
 <p><span class="math display">\[
 \begin{array}{l}
@@ -333,8 +313,8 @@ e_2 : Integer \\
 \]</span></p>
 <p>Podemos leer esta expresión de la siguiente forma: si <span class="math inline">\(e_1\)</span> es una expresión de tipo <span class="math inline">\(Integer\)</span> y <span class="math inline">\(e_2\)</span> es una expresión de tipo <span class="math inline">\(Integer\)</span>, entonces se deduce que la expresión <span class="math inline">\(e_1 + e_2\)</span> es de tipo <span class="math inline">\(Integer\)</span>. El símbolo <span class="math inline">\(\vdash\)</span> significa “se deduce que”.</p>
 </section>
-<section id="contextos" class="level2" data-number="9.2">
-<h2 data-number="9.2" class="anchored" data-anchor-id="contextos"><span class="header-section-number">9.2</span> Contextos</h2>
+<section id="contextos" class="level2" data-number="6.2">
+<h2 data-number="6.2" class="anchored" data-anchor-id="contextos"><span class="header-section-number">6.2</span> Contextos</h2>
 <p>Una pregunta interesante es ¿qué sucede con las variables? Dado que estamos en un recorrido <em>bottom-up</em>, nos encontraremos la declaración de una variable luego de su uso. Luego, si nos encontramos un nodo <code>VarExpr</code> que representa el uso de una variable, ¿qué tipo le asociamos? En la sección <em>[Validando las reglas semánticas]</em> introdujimos el concepto de <em>contexto</em>, para almacenar las declaraciones anteriores, de forma que siempre supiéramos qué símbolo estaba declarado en cualquier expresión. Ahora vamos a extender este contexto, para especificar no solo los símbolos declarados, sino qué tipo está asociado a cada símbolo. Vamos a introducir entonces una función <span class="math inline">\(O\)</span> que llamaremos <em>contexto de objetos</em>, y que usaremos de la forma <span class="math inline">\(O(x) = T\)</span> para decir que este nodo existe un símbolo <span class="math inline">\(x\)</span> definido con tipo estático declarado <span class="math inline">\(T\)</span>. Por tanto, extenderemos nuestra notación para incluir el contexto de objetos como parte de las precondiciones y la conclusión. Luego, la expresión suma quedaría de la forma:</p>
 <p><span class="math display">\[
 \begin{array}{l}
@@ -345,8 +325,8 @@ O \vdash e_1 + e_2 : Integer
 \end{array}
 \]</span></p>
 <p>Que podemos leer de la siguiente forma: si dado el contexto de objetos <span class="math inline">\(O\)</span>, podemos deducir (recursivamente) que el tipo de <span class="math inline">\(e_1\)</span> es <span class="math inline">\(Integer\)</span> (e igual para <span class="math inline">\(e_2\)</span>), entonces en este mismo contexto de objetos podemos deducir que el tipo de <span class="math inline">\(e_1 + e_2\)</span> es <span class="math inline">\(Integer\)</span>. Es importante notar que hemos dicho <span class="math inline">\(O \vdash e : T\)</span>, y no <span class="math inline">\(O(e) = T\)</span>, pues <span class="math inline">\(e\)</span> es una expresión en el sentido general, y <span class="math inline">\(O\)</span> solamente está definido para símbolos (variables, atributos, etc.). Por tanto, <span class="math inline">\(O \vdash e : T\)</span> nos indica que es necesario chequear el tipo de <span class="math inline">\(e\)</span> recursivamente en el contexto <span class="math inline">\(O\)</span> para computar el tipo que tiene la expresión.</p>
-<p>Los contextos de objetos se modifican cuando aparecen expresiones (instrucciones) que introducen nuevos símbolos (e.g.&nbsp;declaraciones de variables). Supongamos entonces que tenemos una expresión de la forma <span class="math inline">\(T x \is e\)</span>, que indica que la variable <span class="math inline">\(x\)</span> se define con el tipo <span class="math inline">\(T\)</span> y se inicializa con la expresión <span class="math inline">\(e\)</span>. Este es el tipo de instrucción que comunmente vemos en lenguajes tipo C para inicializar una variable recién declarada:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode cs code-with-copy"><code class="sourceCode cs"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> x <span class="op">=</span> <span class="dv">4</span> <span class="op">+</span> <span class="dt">int</span><span class="op">.</span><span class="fu">Parse</span><span class="op">(</span>Console<span class="op">.</span><span class="fu">ReadLine</span><span class="op">());</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Los contextos de objetos se modifican cuando aparecen expresiones (instrucciones) que introducen nuevos símbolos (e.g.&nbsp;declaraciones de variables). Supongamos entonces que tenemos una expresión de la forma <span class="math inline">\(T \; x \; := \; e\)</span>, que indica que la variable <span class="math inline">\(x\)</span> se define con el tipo <span class="math inline">\(T\)</span> y se inicializa con la expresión <span class="math inline">\(e\)</span>. Este es el tipo de instrucción que comunmente vemos en lenguajes tipo C para inicializar una variable recién declarada:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> <span class="dv">4</span> <span class="op">+</span> <span class="bu">int</span>(<span class="bu">input</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>En esta instrucción se introduce un nuevo símbolo en el contexto de objetos, con el nombre <span class="math inline">\(x\)</span>, y el tipo <span class="math inline">\(T\)</span>. Luego, es necesario verificar que el tipo de la expresión <span class="math inline">\(e\)</span> se conforme al tipo <span class="math inline">\(T\)</span>, y luego definir el tipo de retorno de toda la expresión. En el caso particular de C, una instrucción de tipo asignación como esta no puede ser usada como expresión, y por tanto no devuelve valor, así que usaremos el símbolo <span class="math inline">\(\emptyset\)</span> para especificar que no tiene asociado (equivalente a <code>void</code>). Para especificar la modificación del contexto de objetos, introduciremos la sintaxis <span class="math inline">\(O[T/x]\)</span> que significa, informalmente, un nuevo contexto de objetos con las mismas definiciones que tenía <span class="math inline">\(O\)</span>, pero además adicionando la definición del símbolo <span class="math inline">\(x\)</span> con tipo <span class="math inline">\(T\)</span>. Formalmente:</p>
 <p><span class="math display">\[
 O[T/x](c) = \left\{ \begin{array}{ll} T &amp; c = x \\ O(c) &amp; c \neq x \end{array} \right.
@@ -357,7 +337,7 @@ O[T/x](c) = \left\{ \begin{array}{ll} T &amp; c = x \\ O(c) &amp; c \neq x \end{
 O \vdash e : T' \\
 T' \leq T \\
 \hline
-O[T/x] \vdash T x \is e : \emptyset
+O[T/x] \vdash T \; x \; := \; e : \emptyset
 \end{array}
 \]</span></p>
 <p>Podemos leer esta definición de la siguiente forma: si en el contexto actual el tipo de la expresión <span class="math inline">\(e\)</span> es <span class="math inline">\(T'\)</span>, y <span class="math inline">\(T'\)</span> conforma a <span class="math inline">\(T\)</span>, entonces en un nuevo contexto definimos <span class="math inline">\(x\)</span> con tipo <span class="math inline">\(T\)</span>, y el tipo de retorno de la expresión es <code>void</code>.</p>
@@ -401,8 +381,8 @@ O_C,M,C \vdash f(x_1 : T_1, \ldots, x_n : T_n) : T \{ e \}
 \]</span></p>
 <p>Existen disímiles expresiones con reglas de tipos diversas pero, a grandes razgos, hemos mostrado cómo luce la formalización de la semántica de tipos de una expresión arbitraria. Armados con los conceptos de contexto de objetos y métodos, y una definición formal de la semántica de tipos para un lenguaje concreto de ejemplo, ya estamos en condiciones de implementar un verificador de tipos.</p>
 </section>
-<section id="implementando-un-verificador-de-tipos" class="level2" data-number="9.3">
-<h2 data-number="9.3" class="anchored" data-anchor-id="implementando-un-verificador-de-tipos"><span class="header-section-number">9.3</span> Implementando un verificador de tipos</h2>
+<section id="implementando-un-verificador-de-tipos" class="level2" data-number="6.3">
+<h2 data-number="6.3" class="anchored" data-anchor-id="implementando-un-verificador-de-tipos"><span class="header-section-number">6.3</span> Implementando un verificador de tipos</h2>
 <p>Para implementar un verificador de tipos necesitamos concretar dos elementos: una clase que nos permita manejar el contexto de objetos y el contexto de métodos, y un algoritmo para recorrer el AST. Vamos a ejemplificar algunos detalles de implementación, asumiendo un lenguaje orientado a objetos muy simple, con las siguientes características:</p>
 <ul>
 <li>Un programa consiste en una lista de definiciones de clases.</li>
@@ -418,197 +398,222 @@ O_C,M,C \vdash f(x_1 : T_1, \ldots, x_n : T_n) : T \{ e \}
 </ul>
 <p>No vamos a especificar formalmente qué tipos de expresiones son válidas en este lenguaje, pero de forma general podemos pensar en ciclos, condicionales, expresiones aritméticas, inicializaciones (<code>new T()</code>), invocaciones a métodos, etc. En fin, todos los tipos de expresiones comunes en un lenguaje orientado a objetos moderno. Solamente formalizaremos algunas de estas expresiones cuando nos interese mostrar la implementación.</p>
 <p>Comencemos por representar los conceptos de tipo, atributo y método:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode cs code-with-copy"><code class="sourceCode cs"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">interface</span> IType <span class="op">{</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">string</span> Name <span class="op">{</span> <span class="kw">get</span><span class="op">;</span> <span class="op">}</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    IAtribute<span class="op">[]</span> Attributes <span class="op">{</span> <span class="kw">get</span><span class="op">;</span> <span class="op">}</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    IMethod<span class="op">[]</span> Methods <span class="op">{</span> <span class="kw">get</span><span class="op">;</span> <span class="op">}</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    IAttribute <span class="fu">GetAttribute</span><span class="op">(</span><span class="dt">string</span> name<span class="op">);</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    IMethod <span class="fu">GetMethod</span><span class="op">(</span><span class="dt">string</span> name<span class="op">);</span></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">bool</span> <span class="fu">DefineAttribute</span><span class="op">(</span><span class="dt">string</span> name<span class="op">,</span> IType type<span class="op">);</span></span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">bool</span> <span class="fu">DefineMethod</span><span class="op">(</span><span class="dt">string</span> name<span class="op">,</span> IType returnType<span class="op">,</span></span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>                      <span class="dt">string</span><span class="op">[]</span> arguments<span class="op">,</span> IType<span class="op">[]</span> argumentTypes<span class="op">);</span></span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="kw">interface</span> IAttribute <span class="op">{</span></span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>    <span class="dt">string</span> Name <span class="op">{</span> <span class="kw">get</span><span class="op">;</span> <span class="op">}</span></span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>    IType Type <span class="op">{</span> <span class="kw">get</span><span class="op">;</span> <span class="op">}</span></span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="kw">interface</span> IMethod <span class="op">{</span></span>
-<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>    <span class="dt">string</span> Name <span class="op">{</span> <span class="kw">get</span><span class="op">;</span> <span class="op">}</span></span>
-<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>    IType ReturnType <span class="op">{</span> <span class="kw">get</span><span class="op">;</span> <span class="op">}</span></span>
-<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>    IAttribute<span class="op">[]</span> Arguments <span class="op">{</span> <span class="kw">get</span><span class="op">;</span> <span class="op">}</span></span>
-<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> IType(ABC):</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">@property</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">@abstractmethod</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> name(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">str</span>:</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>        ...</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">@abstractmethod</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> attributes(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">list</span>[IAttribute]:</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>        ...</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">@abstractmethod</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> methods(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">list</span>[IMethod]:</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>        ...</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">@abstractmethod</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> get_attribute(<span class="va">self</span>, name: <span class="bu">str</span>) <span class="op">-&gt;</span> IAttribute:</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>        ...</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">@abstractmethod</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> get_method(<span class="va">self</span>, name: <span class="bu">str</span>) <span class="op">-&gt;</span> IMethod:</span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>        ...</span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">@abstractmethod</span></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> define_attribute(<span class="va">self</span>, name: <span class="bu">str</span>, attr_type: IType) <span class="op">-&gt;</span> <span class="bu">bool</span>:</span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>        ...</span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">@abstractmethod</span></span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> define_method(<span class="va">self</span>, name: <span class="bu">str</span>, return_type: IType,</span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>                      arguments: <span class="bu">list</span>[<span class="bu">str</span>], argument_types: <span class="bu">list</span>[IType]) <span class="op">-&gt;</span> <span class="bu">bool</span>:</span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>        ...</span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> IAttribute(ABC):</span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">@property</span></span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">@abstractmethod</span></span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> name(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">str</span>:</span>
+<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a>        ...</span>
+<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">@property</span></span>
+<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a>    <span class="at">@abstractmethod</span></span>
+<span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> attr_type(<span class="va">self</span>) <span class="op">-&gt;</span> IType:</span>
+<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a>        ...</span>
+<span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-43"><a href="#cb5-43" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> IMethod(ABC):</span>
+<span id="cb5-44"><a href="#cb5-44" aria-hidden="true" tabindex="-1"></a>    <span class="at">@property</span></span>
+<span id="cb5-45"><a href="#cb5-45" aria-hidden="true" tabindex="-1"></a>    <span class="at">@abstractmethod</span></span>
+<span id="cb5-46"><a href="#cb5-46" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> name(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">str</span>:</span>
+<span id="cb5-47"><a href="#cb5-47" aria-hidden="true" tabindex="-1"></a>        ...</span>
+<span id="cb5-48"><a href="#cb5-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-49"><a href="#cb5-49" aria-hidden="true" tabindex="-1"></a>    <span class="at">@property</span></span>
+<span id="cb5-50"><a href="#cb5-50" aria-hidden="true" tabindex="-1"></a>    <span class="at">@abstractmethod</span></span>
+<span id="cb5-51"><a href="#cb5-51" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> return_type(<span class="va">self</span>) <span class="op">-&gt;</span> IType:</span>
+<span id="cb5-52"><a href="#cb5-52" aria-hidden="true" tabindex="-1"></a>        ...</span>
+<span id="cb5-53"><a href="#cb5-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-54"><a href="#cb5-54" aria-hidden="true" tabindex="-1"></a>    <span class="at">@abstractmethod</span></span>
+<span id="cb5-55"><a href="#cb5-55" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> arguments(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">list</span>[IAttribute]:</span>
+<span id="cb5-56"><a href="#cb5-56" aria-hidden="true" tabindex="-1"></a>        ...</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Para representar un contexto podemos usar la siguiente <em>interface</em>, similar al contexto que hemos usado anteriormente en la sección <em>[Validando las reglas semánticas]</em>, pero modificada para adaptarse las definiciones anteriores:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode cs code-with-copy"><code class="sourceCode cs"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">interface</span> IContext <span class="op">{</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    IType <span class="fu">GetType</span><span class="op">(</span><span class="dt">string</span> typeName<span class="op">);</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    IType <span class="fu">GetTypeFor</span><span class="op">(</span><span class="dt">string</span> symbol<span class="op">);</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    IContext <span class="fu">CreateChildContext</span><span class="op">();</span></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">bool</span> <span class="fu">DefineSymbol</span><span class="op">(</span><span class="dt">string</span> symbol<span class="op">,</span> IType type<span class="op">);</span></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    IType <span class="fu">CreateType</span><span class="op">(</span><span class="dt">string</span> name<span class="op">)</span></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> IContext(ABC):</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">@abstractmethod</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> get_type(<span class="va">self</span>, type_name: <span class="bu">str</span>) <span class="op">-&gt;</span> IType:</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>        ...</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">@abstractmethod</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> get_type_for(<span class="va">self</span>, symbol: <span class="bu">str</span>) <span class="op">-&gt;</span> IType:</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>        ...</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">@abstractmethod</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> create_child_context(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="st">"IContext"</span>:</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>        ...</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">@abstractmethod</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> define_symbol(<span class="va">self</span>, symbol: <span class="bu">str</span>, sym_type: IType) <span class="op">-&gt;</span> <span class="bu">bool</span>:</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>        ...</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">@abstractmethod</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> create_type(<span class="va">self</span>, name: <span class="bu">str</span>) <span class="op">-&gt;</span> IType:</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>        ...</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Esta <em>interface</em> básicamente nos representa el contexto de objetos. El contexto de métodos realmente lo tenemos modelado como parte de la definición de cada tipo, por lo que no es necesario tener un contexto de métodos global. El propio tipo <span class="math inline">\(C\)</span> nos permitirá acceder al contexto de métodos del tipo actual. Por otro lado, para acceder al contexto de métodos de un tipo específico, basta resolver la instancia de <code>IType</code> correspondiente (mediante el método <code>GetType</code>).</p>
 <p>Vamos a definir entonces un subconjunto de los nodos del AST que nos interesa modelar. Comenzaremos como siempre por una clase base:</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode cs code-with-copy"><code class="sourceCode cs"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">abstract</span> <span class="kw">class</span> Node <span class="op">{</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Node(ABC):</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">pass</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Nuestro siguiente nodo es un programa, que se compone de una lista de definiciones de clase:</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode cs code-with-copy"><code class="sourceCode cs"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> Program <span class="op">:</span> Node <span class="op">{</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> List<span class="op">&lt;</span>ClassDef<span class="op">&gt;</span> Classes<span class="op">;</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Program(Node):</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>):</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.classes: <span class="bu">list</span>[ClassDef] <span class="op">=</span> []</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Cada definición de clase a su vez define un tipo con un nombre y una lista de atributos y métodos:</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode cs code-with-copy"><code class="sourceCode cs"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> ClassDef <span class="op">:</span> Node <span class="op">{</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">string</span> Name<span class="op">;</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> List<span class="op">&lt;</span>AttrDef<span class="op">&gt;</span> Attributes<span class="op">;</span></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> List<span class="op">&lt;</span>MethodDef<span class="op">&gt;</span> Methods<span class="op">;</span></span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> ClassDef(Node):</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>):</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.name: <span class="bu">str</span> <span class="op">=</span> <span class="st">""</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.attributes: <span class="bu">list</span>[AttrDef] <span class="op">=</span> []</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.methods: <span class="bu">list</span>[MethodDef] <span class="op">=</span> []</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Los atributos se definen como un nombre, tipo asociado, y una expresión de inicialización:</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode cs code-with-copy"><code class="sourceCode cs"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> AttrDef <span class="op">:</span> Node <span class="op">{</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">string</span> Name<span class="op">;</span></span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">string</span> Type<span class="op">;</span></span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> Expression Initialization<span class="op">;</span></span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> AttrDef(Node):</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>):</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.name: <span class="bu">str</span> <span class="op">=</span> <span class="st">""</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.attr_type: <span class="bu">str</span> <span class="op">=</span> <span class="st">""</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.initialization: Expression <span class="op">=</span> <span class="va">None</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Mientras que los métodos se definen como un nombre, una lista de argumentos (nombres y tipos), un tipo de retorno, y un cuerpo que es una expresión:</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode cs code-with-copy"><code class="sourceCode cs"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> MethodDef <span class="op">:</span> Node <span class="op">{</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">string</span> Name<span class="op">;</span></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">string</span> ReturnType<span class="op">;</span></span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> List<span class="op">&lt;</span><span class="dt">string</span><span class="op">&gt;</span> ArgNames<span class="op">;</span></span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> List<span class="op">&lt;</span><span class="dt">string</span><span class="op">&gt;</span> ArgTypes<span class="op">;</span></span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">string</span> ReturnType<span class="op">;</span></span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> Expression Body<span class="op">;</span></span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> MethodDef(Node):</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>):</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.name: <span class="bu">str</span> <span class="op">=</span> <span class="st">""</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.return_type: <span class="bu">str</span> <span class="op">=</span> <span class="st">""</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.arg_names: <span class="bu">list</span>[<span class="bu">str</span>] <span class="op">=</span> []</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.arg_types: <span class="bu">list</span>[<span class="bu">str</span>] <span class="op">=</span> []</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.body: Expression <span class="op">=</span> <span class="va">None</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Luego nos quedarían todos los nodos de la jerarquía de expresiones, que no mostraremos por simplicidad.</p>
 <p>Centraremos a continuación nuestra atención en el problema de la verificación en sí. De forma general, primero tenemos que hacer un recorrido por todo el AST para encontrar todas las definiciones de tipos. Este primer paso es necesario antes de verificar los métodos o atributos de un tipo particular, ya que podemos tener una declaración de un tipo <code>A</code> con un atributo de tipo <code>B</code>, donde la declaración del tipo <code>B</code> aparece luego de la declaración de <code>A</code>. Por este motivo, es necesario recolectar primero todos los nombres de todas las clases declaradas y adicionarlos al contexto. Luego es necesario volver a recorrer todo el AST pero esta vez recogiendo las declaraciones de métodos y atributos, a quienes ya podemos asociar los tipos correspondientes. Esta segunda vez también es necesaria antes de pasar a analizar el cuerpo de los métodos, pues podemos tener un método <code>F</code> llamando a otro método <code>G</code> que está definido posteriormente. De esta forma completamos el contexto de métodos, y podemos finalmente recorrer el AST una vez más, esta vez adentrándonos en el cuerpo de los métodos y verificando la semántica de las expresiones.</p>
 <p>De modo que necesitamos hacer al menos 3 pasadas por el AST, ya que podemos tener definiciones que usen a su vez símbolos definidos posteriormente. Para evitar esto, en lenguajes como C y C++ es necesario declarar de antemano en archivo <em>header</em> (con extensión <code>.h</code>) los símbolos que luego serán definidos (en un archivo <code>.c</code>).</p>
 <p>Una primera aproximación a este problema nos lleva a definir al menos 3 métodos recursivos, uno para buscar las definiciones de tipos, otro para los métodos y atributos, y otro finalmente para la semántica. A medida que nuestro lenguaje crece, la semántica se complica, y aparecen nuevas fases (como la generación de código que veremos más adelante), notaremos que se repite este patrón de recorrer todo el AST buscando algunos nodos particulares y haciendo algunas operaciones en ellos. Por lo tanto, esta solución de definir un método recursivo para cada posible recorrido por el AST se vuelve cada vez menos atractivo. Cada vez que adicionamos algún tipo de chequeo tendremos que modificar la jerarquía del AST para acomodar los métodos recursivos necesarios. Por otro lado, si decidimos introducir un tipo de nodo nuevo (porque nuestra gramática ha cambiado o porque es conveniente especializar alguna función semántica), tendremos que redefinir todos estos métodos de chequeo en consecuencia. Por último, la mayoría de estos métodos recursivos se van a parecer mucho, pues todos tienen que descender recursivamente por los nodos del AST, y realizar alguna operación en pre-orden o post-orden.</p>
 <p>El problema que tenemos aquí es un caso típico de acoplamiento, que nos lleva a una replicación de comportamiento similar. Tenemos que reconocer que existen dos responsabilidades diferentes en cada uno de estos casos: una es la que juega cada nodo del AST, que consiste en representar la función semántica correspondiente; y la otra es justamente el procesamiento necesario a realizar en un nodo para verificar algún predicado semántico. Vamos entonces a separar la responsabilidad de procesar a un nodo del nodo en sí, y ponerla en una clase distinta. A este diseño que presentaremos se le denomina el <strong>patrón visitor</strong>, y es uno de los patrones de diseño más populares y útiles, especialmente en la implementación de compiladores.</p>
 </section>
-<section id="el-patrón-visitor" class="level2" data-number="9.4">
-<h2 data-number="9.4" class="anchored" data-anchor-id="el-patrón-visitor"><span class="header-section-number">9.4</span> El Patrón Visitor</h2>
+<section id="el-patrón-visitor" class="level2" data-number="6.4">
+<h2 data-number="6.4" class="anchored" data-anchor-id="el-patrón-visitor"><span class="header-section-number">6.4</span> El Patrón Visitor</h2>
 <p>Comenzaremos por definir la siguiente <em>interface</em>:</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode cs code-with-copy"><code class="sourceCode cs"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">interface</span> IVisitor<span class="op">&lt;</span>TNode<span class="op">&gt;</span> where TNode <span class="op">:</span> Node <span class="op">{</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">void</span> <span class="fu">Visit</span><span class="op">(</span>TNode node<span class="op">);</span></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> IVisitor(ABC, Generic[TNode]):</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> visit(<span class="va">self</span>, node: TNode):</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>        ...</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>La <em>interface</em> <code>IVisitor&lt;TNode&gt;</code> nos permitirá abstraer el concepto de procesamiento sobre un nodo. En cada implementación particular, escogeremos qué procesamiento realizar sobre cada tipo de nodo particular, y cómo “caminar” sobre la porción de AST correspondiente. Veamos entonces como implementar la primera pasada, que nos permite recolectar todos los tipos definidos. Este <em>visitor</em> solamente se interesa en nodos de tipo <code>Program</code> y nodos de tipo <code>ClassDef</code>. Su tarea consiste en crear un contexto, y definir en este contexto todos los tipos que se encuentre:</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode cs code-with-copy"><code class="sourceCode cs"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> TypeCollectorVisitor<span class="op">:</span> IVisitor<span class="op">&lt;</span>Program<span class="op">&gt;,</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>                                   IVisitor<span class="op">&lt;</span>ClassDef<span class="op">&gt;</span> <span class="op">{</span></span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> IContext Context<span class="op">;</span></span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">Visit</span><span class="op">(</span>Program node<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>        Context <span class="op">=</span> <span class="kw">new</span> <span class="co">// ...</span></span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>        <span class="kw">foreach</span><span class="op">(</span><span class="dt">var</span> classDef <span class="kw">in</span> node<span class="op">.</span><span class="fu">Classes</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>            <span class="kw">this</span><span class="op">.</span><span class="fu">Visit</span><span class="op">(</span>classDef<span class="op">);</span></span>
-<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
-<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">Visit</span><span class="op">(</span>ClassDef node<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>        Context<span class="op">.</span><span class="fu">CreateType</span><span class="op">(</span>node<span class="op">.</span><span class="fu">Name</span><span class="op">);</span></span>
-<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> TypeCollectorVisitor(IVisitor[Program], IVisitor[ClassDef]):</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>):</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.context: IContext <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> visit(<span class="va">self</span>, node: Program):</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.context <span class="op">=</span> Context()</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> class_def <span class="kw">in</span> node.classes:</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.visit(class_def)</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> visit(<span class="va">self</span>, node: ClassDef):</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.context.create_type(node.name)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>El llamado <code>this.Visit(classDef)</code> resolverá estáticamente la sobrecarga adecuada. Veamos ahora como implementar un <em>visitor</em> que construya todo el contexto de métodos y atributos. En este caso, nos interesan además los nodos de tipo <code>AttrDef</code> y <code>MethodDef</code>:</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode cs code-with-copy"><code class="sourceCode cs"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> TypeBuilderVisitor <span class="op">:</span> IVisitor<span class="op">&lt;</span>Program<span class="op">&gt;,</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>                                  IVisitor<span class="op">&lt;</span>ClassDef<span class="op">&gt;,</span></span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>                                  IVisitor<span class="op">&lt;</span>AttrDef<span class="op">&gt;,</span></span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>                                  IVisitor<span class="op">&lt;</span>MethodDef<span class="op">&gt;</span> <span class="op">{</span></span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> IContext Context<span class="op">;</span></span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> IType currentType<span class="op">;</span></span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">Visit</span><span class="op">(</span>Program node<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>        <span class="kw">foreach</span><span class="op">(</span><span class="dt">var</span> classDef <span class="kw">in</span> node<span class="op">.</span><span class="fu">Classes</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>            <span class="kw">this</span><span class="op">.</span><span class="fu">Visit</span><span class="op">(</span>classDef<span class="op">);</span></span>
-<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
-<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">Visit</span><span class="op">(</span>ClassDef node<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>        currentType <span class="op">=</span> Context<span class="op">.</span><span class="fu">GetType</span><span class="op">(</span>node<span class="op">.</span><span class="fu">Name</span><span class="op">);</span></span>
-<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>        <span class="kw">foreach</span><span class="op">(</span><span class="dt">var</span> attrDef <span class="kw">in</span> node<span class="op">.</span><span class="fu">Attributes</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>            <span class="kw">this</span><span class="op">.</span><span class="fu">Visit</span><span class="op">(</span>attrDef<span class="op">);</span></span>
-<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
-<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a>        <span class="kw">foreach</span><span class="op">(</span><span class="dt">var</span> methodDef <span class="kw">in</span> node<span class="op">.</span><span class="fu">Methods</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a>            <span class="kw">this</span><span class="op">.</span><span class="fu">Visit</span><span class="op">(</span>methodDef<span class="op">);</span></span>
-<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
-<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a>    <span class="co">// ...</span></span>
-<span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> TypeBuilderVisitor(</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    IVisitor[Program],</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    IVisitor[ClassDef],</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    IVisitor[AttrDef],</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    IVisitor[MethodDef]</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>):</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>):</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.context: IContext <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>._current_type: IType <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> visit(<span class="va">self</span>, node: Program):</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> class_def <span class="kw">in</span> node.classes:</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.visit(class_def)</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> visit(<span class="va">self</span>, node: ClassDef):</span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>._current_type <span class="op">=</span> <span class="va">self</span>.context.get_type(node.name)</span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> attr_def <span class="kw">in</span> node.attributes:</span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.visit(attr_def)</span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> method_def <span class="kw">in</span> node.methods:</span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.visit(method_def)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Hasta este punto simplemente hemos descendido por las definiciones de tipos hasta llegar a cada definición de atributo o método. En cada paso, nos hemos asegurado además de mantener una referencia al tipo concreto dentro del cual se están realizando las definiciones. Veamos entonces los métodos restantes:</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode cs code-with-copy"><code class="sourceCode cs"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> TypeBuilderVisitor <span class="op">:</span> IVisitor<span class="op">&lt;</span>Program<span class="op">&gt;,</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>                                  IVisitor<span class="op">&lt;</span>ClassDef<span class="op">&gt;,</span></span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>                                  IVisitor<span class="op">&lt;</span>AttrDef<span class="op">&gt;,</span></span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>                                  IVisitor<span class="op">&lt;</span>MethodDef<span class="op">&gt;</span> <span class="op">{</span></span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> IContext Context<span class="op">;</span></span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> IType currentType<span class="op">;</span></span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">// ...</span></span>
-<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">Visit</span><span class="op">(</span>AttrDef node<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>        IType attrType <span class="op">=</span> Context<span class="op">.</span><span class="fu">GetType</span><span class="op">(</span>node<span class="op">.</span><span class="fu">Type</span><span class="op">);</span></span>
-<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>        currentType<span class="op">.</span><span class="fu">DefineAttribute</span><span class="op">(</span>node<span class="op">.</span><span class="fu">Name</span><span class="op">,</span> attrType<span class="op">);</span></span>
-<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">Visit</span><span class="op">(</span>MethodDef node<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>        IType returnType <span class="op">=</span> Context<span class="op">.</span><span class="fu">GetType</span><span class="op">(</span>node<span class="op">.</span><span class="fu">ReturnType</span><span class="op">);</span></span>
-<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>        <span class="dt">var</span> argTypes <span class="op">=</span> node<span class="op">.</span><span class="fu">ArgTypes</span><span class="op">.</span><span class="fu">Select</span><span class="op">(</span>t <span class="op">=&gt;</span> Context<span class="op">.</span><span class="fu">GetType</span><span class="op">(</span>t<span class="op">));</span></span>
-<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>        currentType<span class="op">.</span><span class="fu">DefineMethod</span><span class="op">(</span>node<span class="op">.</span><span class="fu">Name</span><span class="op">,</span> returnType<span class="op">,</span></span>
-<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>                                 node<span class="op">.</span><span class="fu">ArgNames</span><span class="op">.</span><span class="fu">ToArray</span><span class="op">(),</span></span>
-<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a>                                 argTypes<span class="op">.</span><span class="fu">ToArray</span><span class="op">());</span></span>
-<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> TypeBuilderVisitor(</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    IVisitor[Program],</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    IVisitor[ClassDef],</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    IVisitor[AttrDef],</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    IVisitor[MethodDef]</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>):</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>):</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.context: IContext <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>._current_type: IType <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> visit(<span class="va">self</span>, node: AttrDef):</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>        attr_type <span class="op">=</span> <span class="va">self</span>.context.get_type(node.attr_type)</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>._current_type.define_attribute(node.name, attr_type)</span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> visit(<span class="va">self</span>, node: MethodDef):</span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>        return_type <span class="op">=</span> <span class="va">self</span>.context.get_type(node.return_type)</span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>        arg_types <span class="op">=</span> [<span class="va">self</span>.context.get_type(t) <span class="cf">for</span> t <span class="kw">in</span> node.arg_types]</span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>._current_type.define_method(</span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>            node.name, return_type,</span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a>            node.arg_names, arg_types</span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a>        )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Por último, tendremos un <code>TypeCheckerVisitor</code> que verificará finalmente la consistencia de tipos en todos los nodos del AST. Este implementará la <em>interface</em> <code>IVisitor&lt;T&gt;</code> en cada tipo de nodo que sea capaz de chequear, incluidos todos los tipos de expresiones e instrucciones que no hemos definido. A este <code>TypeCheckerVisitor</code> le pasaremos el contexto ya construido anteriormente, y lo dejaremos procesar todo el AST. Este <em>visitor</em> además de verificar el tipo de todas las expresiones, será el encargado de computar el tipo asociado a cada expresión y almacenarlo en el nodo <code>Expression</code>:</p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode cs code-with-copy"><code class="sourceCode cs"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">abstract</span> <span class="kw">class</span> Expression <span class="op">{</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> IType ComputedType<span class="op">;</span></span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Expression(Node, ABC):</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    computed_type: IType <span class="op">=</span> <span class="va">None</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Hemos obviado hasta el momento cualquier consideración de error. Si alguno de los tipos definidos para alguno de los atributos o métodos no es válido, o alguno de los tipos aparece declarado más de una vez, o cualquier otro error semántico es detectado, nuestro verificador lanzará una excepción, o peor, fallará silenciosamente. Para manejar los errores de forma consistente, adicionaremos a los métodos <code>Visit</code> un argumento <code>IErrorLogger</code> con la <em>interface</em> siguiente:</p>
-<div class="sourceCode" id="cb18"><pre class="sourceCode cs code-with-copy"><code class="sourceCode cs"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">interface</span> IErrorLogger <span class="op">{</span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">void</span> <span class="fu">LogError</span><span class="op">(</span><span class="dt">string</span> msg<span class="op">);</span></span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> IErrorLogger(ABC):</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">@abstractmethod</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> log_error(<span class="va">self</span>, msg: <span class="bu">str</span>):</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>        ...</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>De modo que ante un error cualquier de chequeo de tipos, simplemente nos remitiremos a este objeto para indicar que ocurrió un error. Una vez detectado el error, la pregunta que queda es ¿qué hacer a continuación? Si detenemos el chequeo entonces nuestro compilador solamente será capaz de detectar un error en cada iteración, pero idealmente quisiéramos indicar la mayor cantidad de errores posibles en cada corrida. Por lo tanto, lo que se sugiere es tomar alguna acción de reparo sensata y continuar la verificacion. Por ejemplo:</p>
-<div class="sourceCode" id="cb19"><pre class="sourceCode cs code-with-copy"><code class="sourceCode cs"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> TypeCheckerVisitor <span class="op">:</span> IVisitor<span class="op">&lt;...&gt;</span> <span class="op">{</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> Context Context<span class="op">;</span></span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">Visit</span><span class="op">(</span>BinaryExpr node<span class="op">,</span> IErrorLogger logger<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>        <span class="kw">this</span><span class="op">.</span><span class="fu">Visit</span><span class="op">(</span>node<span class="op">.</span><span class="fu">Left</span><span class="op">,</span> logger<span class="op">);</span></span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>        <span class="kw">this</span><span class="op">.</span><span class="fu">Visit</span><span class="op">(</span>node<span class="op">.</span><span class="fu">Right</span><span class="op">,</span> logger<span class="op">);</span></span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>        <span class="kw">if</span> <span class="op">(</span>node<span class="op">.</span><span class="fu">Left</span><span class="op">.</span><span class="fu">ComputedType</span> <span class="op">!=</span> node<span class="op">.</span><span class="fu">Right</span><span class="op">.</span><span class="fu">ComputedType</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>            logger<span class="op">.</span><span class="fu">LogError</span><span class="op">(</span><span class="st">"Type mismatch..."</span><span class="op">);</span></span>
-<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>            node<span class="op">.</span><span class="fu">ComputedType</span> <span class="op">=</span> <span class="kw">null</span><span class="op">;</span></span>
-<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
-<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>        <span class="kw">else</span> <span class="op">{</span></span>
-<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>            node<span class="op">.</span><span class="fu">ComputedType</span> <span class="op">=</span> node<span class="op">.</span><span class="fu">Left</span><span class="op">.</span><span class="fu">ComputedType</span><span class="op">;</span></span>
-<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
-<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> TypeCheckerVisitor(IVisitor[...]):</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>):</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.context: Context <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> visit(<span class="va">self</span>, node: BinaryExpr, logger: IErrorLogger):</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.visit(node.left, logger)</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.visit(node.right, logger)</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> node.left.computed_type <span class="op">!=</span> node.right.computed_type:</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>            logger.log_error(<span class="st">"Type mismatch..."</span>)</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>            node.computed_type <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>            node.computed_type <span class="op">=</span> node.left.computed_type</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Con estas herramientas, podemos adicionar un método en la clase <code>Program</code> que realice todas las pasadas correspondientes:</p>
-<div class="sourceCode" id="cb20"><pre class="sourceCode cs code-with-copy"><code class="sourceCode cs"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> Program <span class="op">:</span> Node <span class="op">{</span></span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">// ...</span></span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">CheckSemantics</span><span class="op">(</span>IErrorLogger logger<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>        <span class="dt">var</span> typeCollector <span class="op">=</span> <span class="kw">new</span> <span class="fu">TypeCollectorVisitor</span><span class="op">();</span></span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>        typeCollector<span class="op">.</span><span class="fu">Visit</span><span class="op">(</span><span class="kw">this</span><span class="op">,</span> logger<span class="op">);</span></span>
-<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>        <span class="dt">var</span> typeBuilder <span class="op">=</span> <span class="kw">new</span> <span class="fu">TypeBuilderVisitor</span><span class="op">()</span> <span class="op">{</span></span>
-<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>            Context <span class="op">=</span> typeCollector<span class="op">.</span><span class="fu">Context</span></span>
-<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>        <span class="op">};</span></span>
-<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>        typeBuilder<span class="op">.</span><span class="fu">Visit</span><span class="op">(</span><span class="kw">this</span><span class="op">,</span> logger<span class="op">);</span></span>
-<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>        <span class="dt">var</span> typeChecker <span class="op">=</span> <span class="kw">new</span> <span class="fu">TypeCheckerVisitor</span><span class="op">()</span> <span class="op">{</span></span>
-<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>            Context <span class="op">=</span> typeBuilder<span class="op">.</span><span class="fu">Context</span><span class="op">;</span></span>
-<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>        <span class="op">};</span></span>
-<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a>        typeChecker<span class="op">.</span><span class="fu">Visit</span><span class="op">(</span><span class="kw">this</span><span class="op">,</span> logger<span class="op">);</span></span>
-<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Program(Node):</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>):</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.classes: <span class="bu">list</span>[ClassDef] <span class="op">=</span> []</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> check_semantics(<span class="va">self</span>, logger: IErrorLogger):</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>        type_collector <span class="op">=</span> TypeCollectorVisitor()</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>        type_collector.visit(<span class="va">self</span>)</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>        type_builder <span class="op">=</span> TypeBuilderVisitor()</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>        type_builder.context <span class="op">=</span> type_collector.context</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>        type_builder.visit(<span class="va">self</span>)</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>        type_checker <span class="op">=</span> TypeCheckerVisitor()</span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>        type_checker.context <span class="op">=</span> type_builder.context</span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>        type_checker.visit(<span class="va">self</span>, logger)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 
-</section>
 </section>
 
 </main> <!-- /main -->
@@ -1013,13 +1018,13 @@ O_C,M,C \vdash f(x_1 : T_1, \ldots, x_n : T_n) : T \{ e \}
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./chap5.html" class="pagination-link" aria-label="---">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">—</span></span>
+      <a href="./chap5.html" class="pagination-link" aria-label="Gramáticas Atributadas">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Gramáticas Atributadas</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./chap7.html" class="pagination-link" aria-label="---">
-        <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">—</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./chap7.html" class="pagination-link" aria-label="Generación de Código">
+        <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Generación de Código</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

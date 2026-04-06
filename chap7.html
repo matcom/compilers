@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>8&nbsp; — – Introducción a la Construcción de Compiladores</title>
+<title>7&nbsp; Generación de Código – Introducción a la Construcción de Compiladores</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -19,41 +19,6 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
-}
-/* CSS for syntax highlighting */
-html { -webkit-text-size-adjust: 100%; }
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -117,7 +82,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./chap7.html"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">—</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./chap7.html"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Generación de Código</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -145,55 +110,55 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">—</span></span></a>
+ <span class="menu-text">Introducción</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./chap1.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">—</span></span></a>
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Análisis Lexicográfico</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./chap2.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">—</span></span></a>
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Parsing Descendente</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./chap3.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">—</span></span></a>
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Parsing Ascendente</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./chap4.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">—</span></span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Análisis Semántico</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./chap5.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">—</span></span></a>
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Gramáticas Atributadas</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./chap6.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">—</span></span></a>
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Semántica de Tipos</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./chap7.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">—</span></span></a>
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Generación de Código</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./chap8.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">—</span></span></a>
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">El lenguaje HULK</span></span></a>
   </div>
 </li>
     </ul>
@@ -206,34 +171,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#setup" id="toc-setup" class="nav-link active" data-scroll-target="#setup"><span class="header-section-number">9</span> Setup</a></li>
-  <li><a href="#generación-de-código" id="toc-generación-de-código" class="nav-link" data-scroll-target="#generación-de-código"><span class="header-section-number">10</span> Generación de Código</a>
+  <li><a href="#código-de-3-direcciones-orientado-o-objetos-cil" id="toc-código-de-3-direcciones-orientado-o-objetos-cil" class="nav-link active" data-scroll-target="#código-de-3-direcciones-orientado-o-objetos-cil"><span class="header-section-number">7.1</span> Código de 3 Direcciones Orientado o Objetos (CIL)</a>
   <ul class="collapse">
-  <li><a href="#código-de-3-direcciones-orientado-o-objetos-cil" id="toc-código-de-3-direcciones-orientado-o-objetos-cil" class="nav-link" data-scroll-target="#código-de-3-direcciones-orientado-o-objetos-cil"><span class="header-section-number">10.1</span> Código de 3 Direcciones Orientado o Objetos (CIL)</a>
-  <ul class="collapse">
-  <li><a href="#jerarquía-de-tipos" id="toc-jerarquía-de-tipos" class="nav-link" data-scroll-target="#jerarquía-de-tipos"><span class="header-section-number">10.1.1</span> Jerarquía de Tipos</a></li>
-  <li><a href="#datos" id="toc-datos" class="nav-link" data-scroll-target="#datos"><span class="header-section-number">10.1.2</span> Datos</a></li>
-  <li><a href="#funciones" id="toc-funciones" class="nav-link" data-scroll-target="#funciones"><span class="header-section-number">10.1.3</span> Funciones</a></li>
-  <li><a href="#asignación-simple" id="toc-asignación-simple" class="nav-link" data-scroll-target="#asignación-simple"><span class="header-section-number">10.1.4</span> Asignación simple</a></li>
-  <li><a href="#operaciones-aritméticas" id="toc-operaciones-aritméticas" class="nav-link" data-scroll-target="#operaciones-aritméticas"><span class="header-section-number">10.1.5</span> Operaciones aritméticas</a></li>
-  <li><a href="#acceso-a-atributos" id="toc-acceso-a-atributos" class="nav-link" data-scroll-target="#acceso-a-atributos"><span class="header-section-number">10.1.6</span> Acceso a atributos</a></li>
-  <li><a href="#acceso-a-arrays" id="toc-acceso-a-arrays" class="nav-link" data-scroll-target="#acceso-a-arrays"><span class="header-section-number">10.1.7</span> Acceso a arrays</a></li>
-  <li><a href="#manipulación-de-memoria" id="toc-manipulación-de-memoria" class="nav-link" data-scroll-target="#manipulación-de-memoria"><span class="header-section-number">10.1.8</span> Manipulación de memoria</a></li>
-  <li><a href="#invocación-de-métodos" id="toc-invocación-de-métodos" class="nav-link" data-scroll-target="#invocación-de-métodos"><span class="header-section-number">10.1.9</span> Invocación de métodos</a></li>
-  <li><a href="#saltos" id="toc-saltos" class="nav-link" data-scroll-target="#saltos"><span class="header-section-number">10.1.10</span> Saltos</a></li>
-  <li><a href="#retorno-de-función" id="toc-retorno-de-función" class="nav-link" data-scroll-target="#retorno-de-función"><span class="header-section-number">10.1.11</span> Retorno de Función</a></li>
-  <li><a href="#funciones-de-cadena" id="toc-funciones-de-cadena" class="nav-link" data-scroll-target="#funciones-de-cadena"><span class="header-section-number">10.1.12</span> Funciones de cadena</a></li>
-  <li><a href="#operaciones-io" id="toc-operaciones-io" class="nav-link" data-scroll-target="#operaciones-io"><span class="header-section-number">10.1.13</span> Operaciones IO</a></li>
+  <li><a href="#jerarquía-de-tipos" id="toc-jerarquía-de-tipos" class="nav-link" data-scroll-target="#jerarquía-de-tipos"><span class="header-section-number">7.1.1</span> Jerarquía de Tipos</a></li>
+  <li><a href="#datos" id="toc-datos" class="nav-link" data-scroll-target="#datos"><span class="header-section-number">7.1.2</span> Datos</a></li>
+  <li><a href="#funciones" id="toc-funciones" class="nav-link" data-scroll-target="#funciones"><span class="header-section-number">7.1.3</span> Funciones</a></li>
+  <li><a href="#asignación-simple" id="toc-asignación-simple" class="nav-link" data-scroll-target="#asignación-simple"><span class="header-section-number">7.1.4</span> Asignación simple</a></li>
+  <li><a href="#operaciones-aritméticas" id="toc-operaciones-aritméticas" class="nav-link" data-scroll-target="#operaciones-aritméticas"><span class="header-section-number">7.1.5</span> Operaciones aritméticas</a></li>
+  <li><a href="#acceso-a-atributos" id="toc-acceso-a-atributos" class="nav-link" data-scroll-target="#acceso-a-atributos"><span class="header-section-number">7.1.6</span> Acceso a atributos</a></li>
+  <li><a href="#acceso-a-arrays" id="toc-acceso-a-arrays" class="nav-link" data-scroll-target="#acceso-a-arrays"><span class="header-section-number">7.1.7</span> Acceso a arrays</a></li>
+  <li><a href="#manipulación-de-memoria" id="toc-manipulación-de-memoria" class="nav-link" data-scroll-target="#manipulación-de-memoria"><span class="header-section-number">7.1.8</span> Manipulación de memoria</a></li>
+  <li><a href="#invocación-de-métodos" id="toc-invocación-de-métodos" class="nav-link" data-scroll-target="#invocación-de-métodos"><span class="header-section-number">7.1.9</span> Invocación de métodos</a></li>
+  <li><a href="#saltos" id="toc-saltos" class="nav-link" data-scroll-target="#saltos"><span class="header-section-number">7.1.10</span> Saltos</a></li>
+  <li><a href="#retorno-de-función" id="toc-retorno-de-función" class="nav-link" data-scroll-target="#retorno-de-función"><span class="header-section-number">7.1.11</span> Retorno de Función</a></li>
+  <li><a href="#funciones-de-cadena" id="toc-funciones-de-cadena" class="nav-link" data-scroll-target="#funciones-de-cadena"><span class="header-section-number">7.1.12</span> Funciones de cadena</a></li>
+  <li><a href="#operaciones-io" id="toc-operaciones-io" class="nav-link" data-scroll-target="#operaciones-io"><span class="header-section-number">7.1.13</span> Operaciones IO</a></li>
   </ul></li>
-  <li><a href="#programas-de-ejemplo" id="toc-programas-de-ejemplo" class="nav-link" data-scroll-target="#programas-de-ejemplo"><span class="header-section-number">10.2</span> Programas de ejemplo</a>
+  <li><a href="#programas-de-ejemplo" id="toc-programas-de-ejemplo" class="nav-link" data-scroll-target="#programas-de-ejemplo"><span class="header-section-number">7.2</span> Programas de ejemplo</a>
   <ul class="collapse">
-  <li><a href="#hola-mundo" id="toc-hola-mundo" class="nav-link" data-scroll-target="#hola-mundo"><span class="header-section-number">10.2.1</span> Hola Mundo</a></li>
+  <li><a href="#hola-mundo" id="toc-hola-mundo" class="nav-link" data-scroll-target="#hola-mundo"><span class="header-section-number">7.2.1</span> Hola Mundo</a></li>
   </ul></li>
-  <li><a href="#generando-código" id="toc-generando-código" class="nav-link" data-scroll-target="#generando-código"><span class="header-section-number">10.3</span> Generando código</a>
+  <li><a href="#generando-código" id="toc-generando-código" class="nav-link" data-scroll-target="#generando-código"><span class="header-section-number">7.3</span> Generando código</a>
   <ul class="collapse">
-  <li><a href="#un-lenguaje-plantilla-para-la-generación-de-código" id="toc-un-lenguaje-plantilla-para-la-generación-de-código" class="nav-link" data-scroll-target="#un-lenguaje-plantilla-para-la-generación-de-código"><span class="header-section-number">10.3.1</span> Un lenguaje plantilla para la generación de código</a></li>
-  <li><a href="#expresiones-let-in" id="toc-expresiones-let-in" class="nav-link" data-scroll-target="#expresiones-let-in"><span class="header-section-number">10.3.2</span> Expresiones Let-In</a></li>
-  </ul></li>
+  <li><a href="#un-lenguaje-plantilla-para-la-generación-de-código" id="toc-un-lenguaje-plantilla-para-la-generación-de-código" class="nav-link" data-scroll-target="#un-lenguaje-plantilla-para-la-generación-de-código"><span class="header-section-number">7.3.1</span> Un lenguaje plantilla para la generación de código</a></li>
+  <li><a href="#expresiones-let-in" id="toc-expresiones-let-in" class="nav-link" data-scroll-target="#expresiones-let-in"><span class="header-section-number">7.3.2</span> Expresiones Let-In</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -243,7 +204,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">—</span></h1>
+<h1 class="title"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Generación de Código</span></h1>
 </div>
 
 
@@ -260,24 +221,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="setup" class="level1" data-number="9">
-<h1 data-number="9"><span class="header-section-number">9</span> Setup</h1>
-<div id="ad91d401" class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sys</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>sys.path.append(os.path.abspath(os.curdir))</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> source.trees <span class="im">import</span> Tree</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> source.diagrams <span class="im">import</span> Pipeline, Lexer</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</section>
-<section id="generación-de-código" class="level1" data-number="10">
-<h1 data-number="10"><span class="header-section-number">10</span> Generación de Código</h1>
-<section id="código-de-3-direcciones-orientado-o-objetos-cil" class="level2" data-number="10.1">
-<h2 data-number="10.1" class="anchored" data-anchor-id="código-de-3-direcciones-orientado-o-objetos-cil"><span class="header-section-number">10.1</span> Código de 3 Direcciones Orientado o Objetos (CIL)</h2>
+<section id="código-de-3-direcciones-orientado-o-objetos-cil" class="level2" data-number="7.1">
+<h2 data-number="7.1" class="anchored" data-anchor-id="código-de-3-direcciones-orientado-o-objetos-cil"><span class="header-section-number">7.1</span> Código de 3 Direcciones Orientado o Objetos (CIL)</h2>
 <p>Para la generación de código intermedio de COOL a MIPS vamos a diseñar un lenguaje de máquina con capacidades orientadas a objeto. Este lenguaje nos va a permitir generar código de COOL de forma más sencilla, ya que el salto directamente desde COOL a MIPS es demasiado complejo. Este lenguaje se denomina CIL, <strong>3-address object-oriented</strong>.</p>
 <p>Un programa en CIL tiene 3 secciones:</p>
-<section id="jerarquía-de-tipos" class="level3" data-number="10.1.1">
-<h3 data-number="10.1.1" class="anchored" data-anchor-id="jerarquía-de-tipos"><span class="header-section-number">10.1.1</span> Jerarquía de Tipos</h3>
+<section id="jerarquía-de-tipos" class="level3" data-number="7.1.1">
+<h3 data-number="7.1.1" class="anchored" data-anchor-id="jerarquía-de-tipos"><span class="header-section-number">7.1.1</span> Jerarquía de Tipos</h3>
 <p>La primera es una sección (opcional) de declaración de tipos:</p>
 <pre class="cil"><code>.TYPES
 
@@ -301,15 +250,15 @@ type C {
 <p>El “tipo” de los atributos en CIL no importa, pues todos los atributos son de tipo numérico. El único tipo por valor es <code>Integer</code> que almacena un entero de 32 bits. Todos los demás tipos son por referencia, y por lo tanto se representan por el valor de 32 bits del lugar de memoria virtual donde se ubican.</p>
 <p>El orden de los atributos es muy importante, ya que luego veremos instrucciones para acceder a los atributos que usan realmente la dirección de memoria del atributo. Esta dirección está definida por el orden en que se declaran. Por este motivo, por ejemplo, si la clase <code>A</code> hereda de la clase <code>B</code>, y la clase <code>B</code> tiene un atributo <code>x</code>, es importante que en ambas declaraciones de tipos haya un atributo <code>x</code> y además que esté en el mismo orden. Lo mismo sucede con los métodos. Más adelante cuando completemos la generación de código veremos estos detalles más en profundidad.</p>
 </section>
-<section id="datos" class="level3" data-number="10.1.2">
-<h3 data-number="10.1.2" class="anchored" data-anchor-id="datos"><span class="header-section-number">10.1.2</span> Datos</h3>
+<section id="datos" class="level3" data-number="7.1.2">
+<h3 data-number="7.1.2" class="anchored" data-anchor-id="datos"><span class="header-section-number">7.1.2</span> Datos</h3>
 <p>En la sección de datos se declaran todas las cadenas de texto constantes que serán usadas durante todo el programa.</p>
 <pre class="cil"><code>.DATA
 
 msg = "Hello World";</code></pre>
 </section>
-<section id="funciones" class="level3" data-number="10.1.3">
-<h3 data-number="10.1.3" class="anchored" data-anchor-id="funciones"><span class="header-section-number">10.1.3</span> Funciones</h3>
+<section id="funciones" class="level3" data-number="7.1.3">
+<h3 data-number="7.1.3" class="anchored" data-anchor-id="funciones"><span class="header-section-number">7.1.3</span> Funciones</h3>
 <blockquote class="blockquote">
 <p>Se toma como convenio que la primera función declarada es la función que se ejecuta al iniciar el programa.</p>
 </blockquote>
@@ -335,16 +284,16 @@ function f2 {
 <p>El cuerpo de una función en CIL se compone de una secuencia de instrucciones, que siempre reciben a lo sumo 3 argumentos, uno para almacenar el valor de retorno, y 2 operandos.</p>
 <p>Entre las instrucciones básicas tenemos:</p>
 </section>
-<section id="asignación-simple" class="level3" data-number="10.1.4">
-<h3 data-number="10.1.4" class="anchored" data-anchor-id="asignación-simple"><span class="header-section-number">10.1.4</span> Asignación simple</h3>
+<section id="asignación-simple" class="level3" data-number="7.1.4">
+<h3 data-number="7.1.4" class="anchored" data-anchor-id="asignación-simple"><span class="header-section-number">7.1.4</span> Asignación simple</h3>
 <pre class="cil"><code>x = y ;</code></pre>
 </section>
-<section id="operaciones-aritméticas" class="level3" data-number="10.1.5">
-<h3 data-number="10.1.5" class="anchored" data-anchor-id="operaciones-aritméticas"><span class="header-section-number">10.1.5</span> Operaciones aritméticas</h3>
+<section id="operaciones-aritméticas" class="level3" data-number="7.1.5">
+<h3 data-number="7.1.5" class="anchored" data-anchor-id="operaciones-aritméticas"><span class="header-section-number">7.1.5</span> Operaciones aritméticas</h3>
 <pre class="cil"><code>x = y + z ;</code></pre>
 </section>
-<section id="acceso-a-atributos" class="level3" data-number="10.1.6">
-<h3 data-number="10.1.6" class="anchored" data-anchor-id="acceso-a-atributos"><span class="header-section-number">10.1.6</span> Acceso a atributos</h3>
+<section id="acceso-a-atributos" class="level3" data-number="7.1.6">
+<h3 data-number="7.1.6" class="anchored" data-anchor-id="acceso-a-atributos"><span class="header-section-number">7.1.6</span> Acceso a atributos</h3>
 <p>El acceso a atributos se utiliza para obtener el valor de un atributo almacenado en un lugar de la memoria en una variable temporal.</p>
 <pre class="cil"><code>x = GETATTR y b ;</code></pre>
 <p>Es equivalente a <code>x = y.b</code>.</p>
@@ -352,15 +301,15 @@ function f2 {
 <p>El “atributo” <code>b</code> realmente es solamente la dirección de memoria donde está el atributo.</p>
 <p>Es equivalente a <code>y.b = x</code>.</p>
 </section>
-<section id="acceso-a-arrays" class="level3" data-number="10.1.7">
-<h3 data-number="10.1.7" class="anchored" data-anchor-id="acceso-a-arrays"><span class="header-section-number">10.1.7</span> Acceso a arrays</h3>
+<section id="acceso-a-arrays" class="level3" data-number="7.1.7">
+<h3 data-number="7.1.7" class="anchored" data-anchor-id="acceso-a-arrays"><span class="header-section-number">7.1.7</span> Acceso a arrays</h3>
 <p>Cuando una variable es de un tipo array (o <code>string</code>), se puede acceder al iésimo elemento:</p>
 <pre class="cil"><code>x = GETINDEX a i ;</code></pre>
 <p>O asignar un valor:</p>
 <pre class="cil"><code>SETINDEX a i x ;</code></pre>
 </section>
-<section id="manipulación-de-memoria" class="level3" data-number="10.1.8">
-<h3 data-number="10.1.8" class="anchored" data-anchor-id="manipulación-de-memoria"><span class="header-section-number">10.1.8</span> Manipulación de memoria</h3>
+<section id="manipulación-de-memoria" class="level3" data-number="7.1.8">
+<h3 data-number="7.1.8" class="anchored" data-anchor-id="manipulación-de-memoria"><span class="header-section-number">7.1.8</span> Manipulación de memoria</h3>
 <p>Para crear un nuevo objeto existe una instrucción de alocación de memoria:</p>
 <pre class="cil"><code>x = ALLOCATE T ;</code></pre>
 <p>Esta instrucción crea en memoria espacio suficiente para alojar un tipo <code>T</code> y devuelve en <code>x</code> la dirección de memoria de inicio del tipo.</p>
@@ -370,8 +319,8 @@ function f2 {
 <pre class="cil"><code>x = ARRAY y ;</code></pre>
 <p>Donde <code>y</code> es una variable de tipo numérico (como todas) que define el tamaño del array.</p>
 </section>
-<section id="invocación-de-métodos" class="level3" data-number="10.1.9">
-<h3 data-number="10.1.9" class="anchored" data-anchor-id="invocación-de-métodos"><span class="header-section-number">10.1.9</span> Invocación de métodos</h3>
+<section id="invocación-de-métodos" class="level3" data-number="7.1.9">
+<h3 data-number="7.1.9" class="anchored" data-anchor-id="invocación-de-métodos"><span class="header-section-number">7.1.9</span> Invocación de métodos</h3>
 <p>Para invocar un método se debe indicar el tipo donde se encuentra el método, además del método en concreto que se desea ejecutar.</p>
 <pre class="cil"><code>x = CALL f ;</code></pre>
 <p>Este llamado es una invocación estática, es decir, se llama exactamente al método <code>f</code>.</p>
@@ -382,8 +331,8 @@ function f2 {
 <p>Cada método espera que los parámetros estén ubicados en la memoria en el mismo orden en que están declarados en el método. Es responsabilidad del que invoca pasar los parámetros de forma adecuada.</p>
 <p>En particular, para todos los métodos “de instancia”, que tiene un argumento <code>self</code> o similar, es responsabilidad del que invoca pasar este <code>self</code> como primer parámetro.</p>
 </section>
-<section id="saltos" class="level3" data-number="10.1.10">
-<h3 data-number="10.1.10" class="anchored" data-anchor-id="saltos"><span class="header-section-number">10.1.10</span> Saltos</h3>
+<section id="saltos" class="level3" data-number="7.1.10">
+<h3 data-number="7.1.10" class="anchored" data-anchor-id="saltos"><span class="header-section-number">7.1.10</span> Saltos</h3>
 <p>Los saltos condicionales en CIL siempre tienen una condición y una instrucción de salto:</p>
 <pre class="cil"><code>IF x GOTO label ;</code></pre>
 <p>Donde <code>label</code> tiene que ser una etiqueta declarada en algún lugar de la propia función. La etiqueta puede estar declarada después de su uso. Si la etiqueta no está declarada correctamente, el resultado de la operación no está definido.</p>
@@ -397,8 +346,8 @@ IF x GOTO label ;
 x = y - z
 IF x GOTO label ;</code></pre>
 </section>
-<section id="retorno-de-función" class="level3" data-number="10.1.11">
-<h3 data-number="10.1.11" class="anchored" data-anchor-id="retorno-de-función"><span class="header-section-number">10.1.11</span> Retorno de Función</h3>
+<section id="retorno-de-función" class="level3" data-number="7.1.11">
+<h3 data-number="7.1.11" class="anchored" data-anchor-id="retorno-de-función"><span class="header-section-number">7.1.11</span> Retorno de Función</h3>
 <p>Finalmente todas las funciones deben tener una instrucción de retorno:</p>
 <pre class="cil"><code>RETURN x ;</code></pre>
 <p>Esta instrucción pone el valor de <code>x</code> en la dirección de retorno de <code>f</code> y además termina la ejecución de la función. Si esta instrucción no se ejecuta en el cuerpo de una función el resultado de la invocación de la función no está bien definido. Si no importa el valor de retorno de la función, simplemente se puede usar cualquiera de las siguientes dos variantes, (que son equivalentes):</p>
@@ -406,8 +355,8 @@ IF x GOTO label ;</code></pre>
 
 RETURN 0 ;</code></pre>
 </section>
-<section id="funciones-de-cadena" class="level3" data-number="10.1.12">
-<h3 data-number="10.1.12" class="anchored" data-anchor-id="funciones-de-cadena"><span class="header-section-number">10.1.12</span> Funciones de cadena</h3>
+<section id="funciones-de-cadena" class="level3" data-number="7.1.12">
+<h3 data-number="7.1.12" class="anchored" data-anchor-id="funciones-de-cadena"><span class="header-section-number">7.1.12</span> Funciones de cadena</h3>
 <p>Las cadenas de texto se pueden manipular con funciones especiales. Primero es necesario obtener una dirección a la cadena:</p>
 <pre class="cil"><code>x = LOAD msg ;</code></pre>
 <p>Luego se puede operar sobre una cadena con instrucciones tales como <code>LENGTH</code>, <code>CONCAT</code> y <code>SUBSTRING</code>, con la semántica esperada:</p>
@@ -415,19 +364,19 @@ RETURN 0 ;</code></pre>
 <p>Además hay una función STR que computa la representación textual de un valor numérico y devuelve la dirección en memoria:</p>
 <pre class="cil"><code>z = STR y ;</code></pre>
 </section>
-<section id="operaciones-io" class="level3" data-number="10.1.13">
-<h3 data-number="10.1.13" class="anchored" data-anchor-id="operaciones-io"><span class="header-section-number">10.1.13</span> Operaciones IO</h3>
+<section id="operaciones-io" class="level3" data-number="7.1.13">
+<h3 data-number="7.1.13" class="anchored" data-anchor-id="operaciones-io"><span class="header-section-number">7.1.13</span> Operaciones IO</h3>
 <p>Finalmente, hay 2 instrucciones de entrada-salida, <code>READ</code> que lee de la entrada estándar hasta el siguiente cambio de línea (incluído):</p>
 <pre class="cil"><code>x = READ ;</code></pre>
 <p>Y <code>PRINT</code> que imprime en la salida estándar, sin incluir el cambio de línea.</p>
 <pre class="cil"><code>PRINT z ;</code></pre>
 </section>
 </section>
-<section id="programas-de-ejemplo" class="level2" data-number="10.2">
-<h2 data-number="10.2" class="anchored" data-anchor-id="programas-de-ejemplo"><span class="header-section-number">10.2</span> Programas de ejemplo</h2>
+<section id="programas-de-ejemplo" class="level2" data-number="7.2">
+<h2 data-number="7.2" class="anchored" data-anchor-id="programas-de-ejemplo"><span class="header-section-number">7.2</span> Programas de ejemplo</h2>
 <p>Veamos algunos programas de ejemplo directamente escritos en CIL antes de pasar a definir cómo haremos la generación de código.</p>
-<section id="hola-mundo" class="level3" data-number="10.2.1">
-<h3 data-number="10.2.1" class="anchored" data-anchor-id="hola-mundo"><span class="header-section-number">10.2.1</span> Hola Mundo</h3>
+<section id="hola-mundo" class="level3" data-number="7.2.1">
+<h3 data-number="7.2.1" class="anchored" data-anchor-id="hola-mundo"><span class="header-section-number">7.2.1</span> Hola Mundo</h3>
 <p>El “Hola Mundo” en CIL es muy sencillo:</p>
 <pre class="cil"><code>.DATA
 
@@ -492,11 +441,11 @@ function f1 {
 <p>Podemos ver que el código generado es más ineficiente que el código que se podría concebir manualmente. Este es un resultado necesario del hecho de subir de nivel de abstracción. Un programador humano escribiendo directamente CIL probablemetne pueda generar código más eficiente que nuestro compilador de COOL (al menos hasta que comencemos a aplicar técnicas de optimización de código), pero la ganancia en productividad es tal, que no tiene sentido tal comparación.</p>
 </section>
 </section>
-<section id="generando-código" class="level2" data-number="10.3">
-<h2 data-number="10.3" class="anchored" data-anchor-id="generando-código"><span class="header-section-number">10.3</span> Generando código</h2>
+<section id="generando-código" class="level2" data-number="7.3">
+<h2 data-number="7.3" class="anchored" data-anchor-id="generando-código"><span class="header-section-number">7.3</span> Generando código</h2>
 <p>Veamos entonces algunas ideas sobre cómo generar código concreto de COOL en CIL. Primero nos vamos a concentrar en la generación de expresiones concretas y al final veremos cómo combinarlo todo para generar un programa completo, con sus clases y métodos virtuales.</p>
-<section id="un-lenguaje-plantilla-para-la-generación-de-código" class="level3" data-number="10.3.1">
-<h3 data-number="10.3.1" class="anchored" data-anchor-id="un-lenguaje-plantilla-para-la-generación-de-código"><span class="header-section-number">10.3.1</span> Un lenguaje plantilla para la generación de código</h3>
+<section id="un-lenguaje-plantilla-para-la-generación-de-código" class="level3" data-number="7.3.1">
+<h3 data-number="7.3.1" class="anchored" data-anchor-id="un-lenguaje-plantilla-para-la-generación-de-código"><span class="header-section-number">7.3.1</span> Un lenguaje plantilla para la generación de código</h3>
 <p>Para ejemplificar y documentar nuestras reglas de generación de código vamos a expandir el lenguaje CIL y el lenguaje COOL con una notación informal de “plantilla”. No vamos a ser muy formales con esta notación, ya que no la usaremos nada más que como documentación. La idea básica es que permitiremos algunas expresiones “vagas”, como puntos suspensivos, nombres genéricos, etc., donde nos sea conveniente. Además, no seremos estrictos con escribir todo el código CIL necesario, solamente la parte que corresponda al fragmento de COOL que nos interesa generar, y asumiremos que el lector entiende el contexto. A medida que veamos ejemplos se irá haciendo más claro este “lenguaje”.</p>
 <p>Supongamos que tenemos una expresión en COOL de la forma:</p>
 <pre class="cool"><code>let x : Integer = 5 in
@@ -533,8 +482,8 @@ end</code></pre>
 <p>El convenio que estamos tomando aquí, es usar <code>&lt;expr.locals&gt;</code> para indicar que se debe rellenar esta parte con todas las inicializaciones de variables locales que sean necesarias para poder computar la expresión <code>&lt;expr&gt;</code>. Además, luego en el cuerpo del método usamos <code>&lt;expr.code&gt;</code> para indicar que se debe rellenar con todo el código generado para la expresión <code>&lt;expr&gt;</code>. Finalmente, asumimos que <code>&lt;expr.value&gt;</code> será reemplazado por el nombre de la variable local que haya sido escogida para almacenar temporalmente el valor de <code>&lt;expr&gt;</code>.</p>
 <p>Esperamos que esta notación se vaya haciendo más clara a medida que veamos más ejemplos. Vamos a comenzar entonces con ejemplos concretos:</p>
 </section>
-<section id="expresiones-let-in" class="level3" data-number="10.3.2">
-<h3 data-number="10.3.2" class="anchored" data-anchor-id="expresiones-let-in"><span class="header-section-number">10.3.2</span> Expresiones Let-In</h3>
+<section id="expresiones-let-in" class="level3" data-number="7.3.2">
+<h3 data-number="7.3.2" class="anchored" data-anchor-id="expresiones-let-in"><span class="header-section-number">7.3.2</span> Expresiones Let-In</h3>
 <p>Sea la expresión genérica de COOL <code>let-in</code> con la forma:</p>
 <pre class="cool-template"><code>let &lt;var&gt; : &lt;type&gt; = &lt;init&gt; in
     &lt;body&gt;
@@ -556,7 +505,6 @@ end</code></pre>
 <p>Puede parecer que no hemos ganado mucho con esta notación, pero en realidad hemos logrado definir para una expresión de tipo <code>let-in</code> arbitraria, exactamente lo que hace falta para su generación de código en CIL. Si interpretamos las expresiones <code>&lt;init.locals&gt;</code> y <code>&lt;body.locals&gt;</code> como, recursivamente, generar las inicializaciones de variables correspondientes, e igualmente <code>&lt;init.code&gt;</code> y <code>&lt;body.code&gt;</code> como, recursivamente, generar los fragmentos de código asociados, podemos ver que esta sintaxis nos permite decir de forma precisa en qué orden hay que recorrer el AST generando qué parte de cada tipo de nodo. No es difícil ver cómo este tipo de plantillas se convierten en respectivos llamados a <em>visitors</em> adecuados para cada parte del código.</p>
 
 
-</section>
 </section>
 </section>
 
@@ -962,13 +910,13 @@ end</code></pre>
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./chap6.html" class="pagination-link" aria-label="---">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">—</span></span>
+      <a href="./chap6.html" class="pagination-link" aria-label="Semántica de Tipos">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Semántica de Tipos</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./chap8.html" class="pagination-link" aria-label="---">
-        <span class="nav-page-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">—</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./chap8.html" class="pagination-link" aria-label="El lenguaje HULK">
+        <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">El lenguaje HULK</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

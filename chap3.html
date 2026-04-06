@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>4&nbsp; — – Introducción a la Construcción de Compiladores</title>
+<title>3&nbsp; Parsing Ascendente – Introducción a la Construcción de Compiladores</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -19,41 +19,6 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
-}
-/* CSS for syntax highlighting */
-html { -webkit-text-size-adjust: 100%; }
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -146,7 +111,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./chap3.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">—</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./chap3.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Parsing Ascendente</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -174,55 +139,55 @@ window.Quarto = {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">—</span></span></a>
+ <span class="menu-text">Introducción</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./chap1.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">—</span></span></a>
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Análisis Lexicográfico</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./chap2.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">—</span></span></a>
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Parsing Descendente</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./chap3.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">—</span></span></a>
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Parsing Ascendente</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./chap4.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">—</span></span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Análisis Semántico</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./chap5.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">—</span></span></a>
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Gramáticas Atributadas</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./chap6.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">—</span></span></a>
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Semántica de Tipos</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./chap7.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">—</span></span></a>
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Generación de Código</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./chap8.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">—</span></span></a>
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">El lenguaje HULK</span></span></a>
   </div>
 </li>
     </ul>
@@ -235,19 +200,15 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#setup" id="toc-setup" class="nav-link active" data-scroll-target="#setup"><span class="header-section-number">5</span> Setup</a></li>
-  <li><a href="#parsing-ascendente-bottom-up" id="toc-parsing-ascendente-bottom-up" class="nav-link" data-scroll-target="#parsing-ascendente-bottom-up"><span class="header-section-number">6</span> Parsing Ascendente (<em>Bottom-Up</em>)</a>
-  <ul class="collapse">
-  <li><a href="#parsers-shift-reduce" id="toc-parsers-shift-reduce" class="nav-link" data-scroll-target="#parsers-shift-reduce"><span class="header-section-number">6.1</span> Parsers <em>Shift-Reduce</em></a></li>
-  <li><a href="#reconociendo-handles" id="toc-reconociendo-handles" class="nav-link" data-scroll-target="#reconociendo-handles"><span class="header-section-number">6.2</span> Reconociendo <strong>Handles</strong></a></li>
-  <li><a href="#autómata-lr0" id="toc-autómata-lr0" class="nav-link" data-scroll-target="#autómata-lr0"><span class="header-section-number">6.3</span> Autómata LR(0)</a></li>
-  <li><a href="#parsing-lr0" id="toc-parsing-lr0" class="nav-link" data-scroll-target="#parsing-lr0"><span class="header-section-number">6.4</span> Parsing LR(0)</a></li>
-  <li><a href="#parsing-slr1" id="toc-parsing-slr1" class="nav-link" data-scroll-target="#parsing-slr1"><span class="header-section-number">6.5</span> Parsing SLR(1)</a></li>
-  <li><a href="#parsing-lr1" id="toc-parsing-lr1" class="nav-link" data-scroll-target="#parsing-lr1"><span class="header-section-number">6.6</span> Parsing LR(1)</a></li>
-  <li><a href="#parsing-lalr1" id="toc-parsing-lalr1" class="nav-link" data-scroll-target="#parsing-lalr1"><span class="header-section-number">6.7</span> Parsing LALR(1)</a></li>
-  <li><a href="#implementación-del-parser-lr" id="toc-implementación-del-parser-lr" class="nav-link" data-scroll-target="#implementación-del-parser-lr"><span class="header-section-number">6.8</span> Implementación del parser LR</a></li>
-  <li><a href="#comparaciones-entre-ll-slr-lr-y-lalr" id="toc-comparaciones-entre-ll-slr-lr-y-lalr" class="nav-link" data-scroll-target="#comparaciones-entre-ll-slr-lr-y-lalr"><span class="header-section-number">6.9</span> Comparaciones entre LL, SLR, LR y LALR</a></li>
-  </ul></li>
+  <li><a href="#parsers-shift-reduce" id="toc-parsers-shift-reduce" class="nav-link active" data-scroll-target="#parsers-shift-reduce"><span class="header-section-number">3.1</span> Parsers <em>Shift-Reduce</em></a></li>
+  <li><a href="#reconociendo-handles" id="toc-reconociendo-handles" class="nav-link" data-scroll-target="#reconociendo-handles"><span class="header-section-number">3.2</span> Reconociendo <strong>Handles</strong></a></li>
+  <li><a href="#autómata-lr0" id="toc-autómata-lr0" class="nav-link" data-scroll-target="#autómata-lr0"><span class="header-section-number">3.3</span> Autómata LR(0)</a></li>
+  <li><a href="#parsing-lr0" id="toc-parsing-lr0" class="nav-link" data-scroll-target="#parsing-lr0"><span class="header-section-number">3.4</span> Parsing LR(0)</a></li>
+  <li><a href="#parsing-slr1" id="toc-parsing-slr1" class="nav-link" data-scroll-target="#parsing-slr1"><span class="header-section-number">3.5</span> Parsing SLR(1)</a></li>
+  <li><a href="#parsing-lr1" id="toc-parsing-lr1" class="nav-link" data-scroll-target="#parsing-lr1"><span class="header-section-number">3.6</span> Parsing LR(1)</a></li>
+  <li><a href="#parsing-lalr1" id="toc-parsing-lalr1" class="nav-link" data-scroll-target="#parsing-lalr1"><span class="header-section-number">3.7</span> Parsing LALR(1)</a></li>
+  <li><a href="#implementación-del-parser-lr" id="toc-implementación-del-parser-lr" class="nav-link" data-scroll-target="#implementación-del-parser-lr"><span class="header-section-number">3.8</span> Implementación del parser LR</a></li>
+  <li><a href="#comparaciones-entre-ll-slr-lr-y-lalr" id="toc-comparaciones-entre-ll-slr-lr-y-lalr" class="nav-link" data-scroll-target="#comparaciones-entre-ll-slr-lr-y-lalr"><span class="header-section-number">3.9</span> Comparaciones entre LL, SLR, LR y LALR</a></li>
   </ul>
 </nav>
     </div>
@@ -256,7 +217,7 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">—</span></h1>
+<h1 class="title"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Parsing Ascendente</span></h1>
 </div>
 
 
@@ -273,18 +234,6 @@ window.Quarto = {
 </header>
 
 
-<section id="setup" class="level1" data-number="5">
-<h1 data-number="5"><span class="header-section-number">5</span> Setup</h1>
-<div id="f0073661" class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sys</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>sys.path.append(os.path.abspath(os.curdir))</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> source.trees <span class="im">import</span> Tree</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> source.diagrams <span class="im">import</span> Pipeline, Lexer</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</section>
-<section id="parsing-ascendente-bottom-up" class="level1" data-number="6">
-<h1 data-number="6"><span class="header-section-number">6</span> Parsing Ascendente (<em>Bottom-Up</em>)</h1>
 <p>En la sección anterior vimos las técnicas de parsing descendente, y aprendimos algunas de las limitaciones más importantes que tienen. Dado que el objetivo es poder predecir exactamente que producción es necesario ejecutar en cada momento, las gramáticas LL(1) tienen fuertes restricciones. En particular, deben estar factorizadas, y no pueden tener recursión izquierda (criterios que son necesarios pero no suficientes). Por este motivo, para convertir una gramática “natural” en una gramática LL(1) es necesario adicionar no-terminales para factorizar y eliminar la recursión, que luego no tienen ningún significado semántico. Los árboles de derivación de estas gramáticas son por tanto más complejos, y tienen menos relación con el árbol de sintaxis abstracta que queremos obtener finalmente (aunque aún no hemos definido este concepto formalmente).</p>
 <p>Intuitivamente, el problema con los parsers descendentes, es que son demasiado exigentes. En cada momento, se quiere saber qué producción hay que aplicar para obtener la porción de cadena que sigue. En otras palabras, a partir de una forma oracional, tenemos que decidir cómo expandir el no-terminal más a la izquierda, de modo que la siguiente forma oracional esté “más cerca” de generar la cadena. Por este motivo se llama parsing descendente.</p>
 <p>¿Qué pasa si pensamos el problema de forma inversa? Comenzamos con la cadena completa, y vamos a intentar reducir fragmentos de la cadena, aplicando producciones “a la inversa” hasta lograr reducir toda la cadena a <code>S</code>. En vez de intentar adivinar que producción aplicar “de ahora en adelante”, intentaremos deducir, dado un prefijo de la cadena analizado, qué producción se puede “desaplicar” para reducir ese prefijo a una forma oracional que esté “más cerca” del símbolo inicial. Si pensamos el problema de forma inversa, puede que encontremos una estrategia de parsing que sea más permisiva con las gramáticas.</p>
@@ -352,8 +301,8 @@ T = int * T | int | ( E )</code></pre>
  T|                          | reduce E -&gt; T
  E                           | OK</code></pre>
 <p>Debido a estas operaciones, llamaremos a este tipo de mecanismos <em>parsers shift-reduce</em>. Veamos de forma general como implementar este tipo de parsers.</p>
-<section id="parsers-shift-reduce" class="level2" data-number="6.1">
-<h2 data-number="6.1" class="anchored" data-anchor-id="parsers-shift-reduce"><span class="header-section-number">6.1</span> Parsers <em>Shift-Reduce</em></h2>
+<section id="parsers-shift-reduce" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="parsers-shift-reduce"><span class="header-section-number">3.1</span> Parsers <em>Shift-Reduce</em></h2>
 <p>Notemos que la parte a la izquierda de la barra siempre cambia porque un sufijo es parte derecha de una producción, y se reduce a un no-terminal. La parte derecha solo cambia cuando un terminal “cruza” la barra y se convierte en parte del sufijo que será reducido en el futuro. De forma que la barra que la parte izquierda se comporta como una pila, ya que solamente se introducen terminales por un extremo, y se extraen símbolos (terminales o no-terminales) por el mismo extremo. La parte derecha es simplemente una secuencia de tokens, que se introducen en la pila uno a uno. Formalicemos entonces el funcionamiento de un parser <em>shift-reduce</em>.</p>
 <p>Un parser <em>shift-reduce</em> es un mecanismo de parsing que cuenta con las siguientes estructuras:</p>
 <ul>
@@ -382,8 +331,8 @@ T = int * T | int | ( E )</code></pre>
 <p>Intuitivamente, un <strong>handle</strong> nos representa un estado en la pila donde es conveniente reducir, porque sabemos que existen reducciones futuras que nos permiten llegar al símbolo inicial. En la definición anterior la pila sería justamente <span class="math inline">\(\alpha \beta |\)</span>, y la cadena de terminales sería <span class="math inline">\(\omega \$\)</span>. Sabemos que es posible seguir reduciendo, justamente porque hemos definido un <strong>handle</strong> a partir de conocer que existe una derivación extrema derecha donde aparece ese prefijo. De modo que justamente lo que queremos es identificar cuando tenemos un <strong>handle</strong> en la pila, y en ese momento sabemos que es conveniente reducir.</p>
 <p>El problema que nos queda es que hemos definido el concepto de <strong>handle</strong> pero no tenemos una forma evidente de reconocerlos. Resulta que, desgraciadamente no se conoce ningún algoritmo para identificar un <strong>handle</strong> unívocamente en cualquier gramática libre del contexto. Sin embargo, existen algunas heurísticas que nos permiten reconocer algunos <strong>handle</strong> en ciertas ocasiones, y afortunadamente existen gramáticas donde estas heurísticas son suficientes para reconocer todos los <strong>handle</strong> de forma determinista. En última instancia, la diferencia real entre todos los parsers shitf-reduce radica en la estrategia que usen para reconocer los <strong>handle</strong>. Comenzaremos por la más simple.</p>
 </section>
-<section id="reconociendo-handles" class="level2" data-number="6.2">
-<h2 data-number="6.2" class="anchored" data-anchor-id="reconociendo-handles"><span class="header-section-number">6.2</span> Reconociendo <strong>Handles</strong></h2>
+<section id="reconociendo-handles" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="reconociendo-handles"><span class="header-section-number">3.2</span> Reconociendo <strong>Handles</strong></h2>
 <p>La forma en la que hemos definido el concepto de <strong>handle</strong> nos permite demostrar una propiedad interesante:</p>
 <blockquote class="blockquote">
 <p>En un parser shift-reduce, los <strong>handles</strong> aparecen solo en el tope de la pila, nunca en su interior.</p>
@@ -500,8 +449,8 @@ T -&gt;  ( E ).</code></pre>
 [17] E' -&gt;  E.</code></pre>
 <p>A estos <strong>items</strong> se les denomina también <strong>items LR(0)</strong>, que significa <em>left-to-right rightmost-derivation look-ahead 0</em>.</p>
 </section>
-<section id="autómata-lr0" class="level2" data-number="6.3">
-<h2 data-number="6.3" class="anchored" data-anchor-id="autómata-lr0"><span class="header-section-number">6.3</span> Autómata LR(0)</h2>
+<section id="autómata-lr0" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="autómata-lr0"><span class="header-section-number">3.3</span> Autómata LR(0)</h2>
 <p>Hemos construido finalmente un autómata finito no-determinista que reconoce exactamente el lenguaje de los prefijos viables. Sabemos que existe un autómata finito determinista que reconoce exactamente el mismo lenguaje. Aplicando el algoritmo de conversión de NFA a DFA podemos obtener dicho autómata. Sin embargo, hay una forma más directa de obtener el autómata finito determinista, que consiste en construir los estados aplicando el algoritmo de conversión a medida que vamos analizando las producciones y obteniendo los <strong>items</strong>.</p>
 <p>Recordemos que el algoritmo de conversión de NFA a DFA básicamente construye un estado por cada subconjunto de los estados del NFA, siguiendo primero todas las transiciones con el mismo terminal, y luego computando la <span class="math inline">\(\epsilon\)</span>-clausura del conjunto de estados resultante. Para cada uno de estos “super-estados” <span class="math inline">\(Q_i\)</span>, la nueva transición con un terminal concreto <span class="math inline">\(c\)</span> va hacia el super-estado que representa exactamente al conjunto clausura de todos los estados originales a los que se llegaba desde algún estado <span class="math inline">\(q_j \in Q_i\)</span>.</p>
 <p>Vamos ahora a reescribir este algoritmo, pero teniendo en cuenta directamente que los estados del NFA son <strong>items</strong>. Por tanto, los super-estados del DFA serán conjuntos de <strong>items</strong>, que son justamente la <span class="math inline">\(\epsilon\)</span>-clausura de los <strong>items</strong> a los que se puede llegar desde otro conjunto de <strong>items</strong> siguiendo un símbolo concreto <span class="math inline">\(X\)</span> (terminal o no-terminal). Definiremos entonces dos tipos de <strong>items</strong> para simplicar:</p>
@@ -581,8 +530,8 @@ T -&gt;  ( E ).</code></pre>
 <pre><code>I10 = { T -&gt; ( E ). }</code></pre>
 <p>Para agilizar este algoritmo, podemos notar que, como dijimos anteriormente, solamente los item kernel son importantes. De hecho, podemos probar fácilmente que dos estados son iguales sí y solo si sus item kernel son iguales, dado que las operaciones de clausura sobre conjuntos de items kernel iguales nos darán el mismo conjunto final. Por lo tanto, en una implementación computacional (o un cómputo manual), si distinguimos los items kernel del resto de los items, cuando computamos un nuevo estado a partir de la función <span class="math inline">\(Goto\)</span>, antes de computar su clausura vemos si su conjunto de items kernel coincide con el kernel de otro estado ya creado. En caso contrario, hemos descubierto un nuevo estado y pasamos a computar su clausura.</p>
 </section>
-<section id="parsing-lr0" class="level2" data-number="6.4">
-<h2 data-number="6.4" class="anchored" data-anchor-id="parsing-lr0"><span class="header-section-number">6.4</span> Parsing LR(0)</h2>
+<section id="parsing-lr0" class="level2" data-number="3.4">
+<h2 data-number="3.4" class="anchored" data-anchor-id="parsing-lr0"><span class="header-section-number">3.4</span> Parsing LR(0)</h2>
 <p>Una vez construido el autómata, podemos finalmente diseñar un algoritmo de parsing bottom-up. Este algoritmo se basa en la idea de verificar en cada momento si el estado de la pila es un prefijo viable, y luego, según el terminal que corresponda en <span class="math inline">\(\omega\)</span>, decidimos si la operación a realizar es <strong>shift</strong> o <strong>reduce</strong>. Para determinar si la pila es un prefijo viable, simplemente corremos el autómata construido en el contenido de la pila. Supongamos que este autómata se detiene en el estado <span class="math inline">\(I\)</span>. Vamos que nos dicen los items de este estado sobre la operación más conveniente a realizar.</p>
 <p>Si en este estado tenemos un item <span class="math inline">\(X \leftarrow \alpha .c \beta\)</span>, y <span class="math inline">\(c \omega\)</span> es la cadena de entrada (es decir, <span class="math inline">\(c\)</span> es el próximo terminal a analizar), entonces es evidente que una operación de <strong>shift</strong> me seguirá manteniendo en la pila un prefijo viable. ¿Por qué? Pues porque al hacer <strong>shift</strong> el contenido de la pila ahora crece en <span class="math inline">\(c\)</span>, y si vuelvo a correr el autómata desde el inicio de la pila, llegaré nuevamente al estado <span class="math inline">\(I\)</span> justo antes de analizar <span class="math inline">\(c\)</span>. Pero sé que desde <span class="math inline">\(I\)</span> hay una transición con <span class="math inline">\(c\)</span> a cierto estado <span class="math inline">\(J\)</span>, que es justamente <span class="math inline">\(Goto(I, c)\)</span>, por lo tanto terminaré en el estado <span class="math inline">\(J\)</span> habiendo leído toda la pila. Luego, por definición de prefijo viable, como he podido reconocer el contenido de la pila, todo está bien.</p>
 <p>Por otro lado, si en el estado <span class="math inline">\(I\)</span> tengo un item de la forma <span class="math inline">\(X \leftarrow \beta.\)</span>, entonces es conveniente hacer una operación de <strong>reduce</strong> justamente en la producción <span class="math inline">\(X \rightarrow \beta\)</span>. Para ver por qué esta operación me sigue manteniendo en la pila un prefijo viable, notemos que <span class="math inline">\(X \rightarrow \beta.\)</span> quiere decir que hemos reconocido en la pila toda la parte derecha de esta producción. Entonces en la pila lo que tenemos en un <strong>handle</strong>, y por su propia definición reducir en un <strong>handle</strong> siempre es correcto.</p>
@@ -599,8 +548,8 @@ T -&gt;  ( E ).</code></pre>
 <p>Notemos que no es posible que tengamos conflictos <strong>shift-shift</strong>, pues solamente hay un caracter <span class="math inline">\(c\)</span> en la cadena <span class="math inline">\(\omega\)</span>, y por tanto hay un solo estado hacia donde hacer <strong>shift</strong>.</p>
 <p>Desgraciadamente nuestra gramática favorita de expresiones no es LR(0). Sin ir más lejos, en el estado <span class="math inline">\(I_3\)</span> tenemos un conflicto <strong>shift-reduce</strong>. Podemos reducir <code>T -&gt; int</code>, o hacer <strong>shift</strong> si viene un terminal <code>*</code>. Intuitivamente el problema es que la operación de <strong>reduce</strong> es demasiado permisiva. Donde quiera que encontremos un item <strong>reduce</strong> diremos que es conveniente reducir en esa producción, aunque sabemos que esto no siempre es cierto. De hecho, ya hemos tenido que lidiar con este problema anteriormente, en el algoritmo de parsing LL.</p>
 </section>
-<section id="parsing-slr1" class="level2" data-number="6.5">
-<h2 data-number="6.5" class="anchored" data-anchor-id="parsing-slr1"><span class="header-section-number">6.5</span> Parsing SLR(1)</h2>
+<section id="parsing-slr1" class="level2" data-number="3.5">
+<h2 data-number="3.5" class="anchored" data-anchor-id="parsing-slr1"><span class="header-section-number">3.5</span> Parsing SLR(1)</h2>
 <p>Recordemos que en el parsing LL teníamos la duda de cuando era conveniente aplicar una producción <span class="math inline">\(X \rightarrow \epsilon\)</span>, y definimos para ello el conjunto <span class="math inline">\(Follow(X)\)</span>, que justamente nos decía donde era conveniente eliminar <span class="math inline">\(X\)</span>. Pues en este caso, este conjunto también nos ayudará. Intuitivamente, si tenemos <span class="math inline">\(X \rightarrow \beta.\)</span>, solamente tiene sentido reducir si en el <span class="math inline">\(Follow(X)\)</span> aparece el terminal que estamos analizando. ¿Por qué? Pues porque de lo contrario no es posible que lo que nos quede en la pila sea un prefijo viable.</p>
 <p>Supongamos que <span class="math inline">\(c\)</span> es el terminal a analizar, <span class="math inline">\(c \notin Follow(X)\)</span> y hacemos la reducción. Entonces en el próximo <strong>shift</strong> tendremos en el tope de la pila la forma oracional <span class="math inline">\(Xc\)</span>. Pero esta forma oracional no puede aparecer en niguna derivación extrema derecha, porque de lo contrario <span class="math inline">\(c\)</span> sería parte del <span class="math inline">\(Follow(X)\)</span>. Por tanto, si esta forma oracional no es válida, entonces ningún <strong>handle</strong> puede tener este prefijo. Por tanto ya no tenemos un prefijo viable. Incluso si lo siguiente que hacemos tras reducir en <span class="math inline">\(X\)</span> no es <strong>shift</strong> sino otra secuencia de operaciones <strong>reduce</strong>, en cualquier caso si lo que queda una vez hagamos <strong>shift</strong> es un prefijo viable, entonces es porque <span class="math inline">\(c \in Follow(X)\)</span> (intuitivamente, aplicando las producciones en las que redujimos hasta que vuelva a aparecer X, obtendremos la forma oracional <span class="math inline">\(Xc\)</span> nuevamente).</p>
 <p>Justamente a esta estrategia denominaremos SLR(1), o <em>Simple LR look-ahead 1</em>, dado que usamos un terminal de look-ahead para decidir si vale la pena reducir. Con esta estrategia, podemos comprobar que ya en el estado <span class="math inline">\(I_2\)</span> no hay conflicto, pues <span class="math inline">\(* \notin Follow(T)\)</span>, porque cuando viene un terminal <span class="math inline">\(*\)</span> solo tiene sentido hacer <strong>shift</strong>, nunca <strong>reduce</strong>.</p>
@@ -642,8 +591,8 @@ T -&gt;  ( E ).</code></pre>
 <p>De esta forma, el algoritmo de parsing SLR(1) ha logrado obtener una derivación extrema derecha de nuestra cadena favorita, pero empleando una gramática mucho más expresiva y “natural” que la gramática LL correspondiente.</p>
 <p>De todas formas, muchas gramáticas medianamente complicadas no son SLR(1), por lo que necesitaremos un parser de mayor potencia. Para ello, tendremos que refinar aún más el criterio con el cuál se producen los <strong>reduce</strong>.</p>
 </section>
-<section id="parsing-lr1" class="level2" data-number="6.6">
-<h2 data-number="6.6" class="anchored" data-anchor-id="parsing-lr1"><span class="header-section-number">6.6</span> Parsing LR(1)</h2>
+<section id="parsing-lr1" class="level2" data-number="3.6">
+<h2 data-number="3.6" class="anchored" data-anchor-id="parsing-lr1"><span class="header-section-number">3.6</span> Parsing LR(1)</h2>
 <p>Veamos a continuación un ejemplo de una gramática clásica que no es SLR(1):</p>
 <pre><code>S -&gt; E
 E -&gt; A = A | i
@@ -841,8 +790,8 @@ Goto(I5, i) = I7
 Goto(I7, +) = I5</code></pre>
 <p>Los estados adicionales necesarios en LR son justamente aquellos donde existen conflictos.</p>
 </section>
-<section id="parsing-lalr1" class="level2" data-number="6.7">
-<h2 data-number="6.7" class="anchored" data-anchor-id="parsing-lalr1"><span class="header-section-number">6.7</span> Parsing LALR(1)</h2>
+<section id="parsing-lalr1" class="level2" data-number="3.7">
+<h2 data-number="3.7" class="anchored" data-anchor-id="parsing-lalr1"><span class="header-section-number">3.7</span> Parsing LALR(1)</h2>
 <p>Si observamos el autómata LR(1) nuevamente, notaremos algunos estados que son muy semejantes, y solo se diferencian en los conjuntos de <em>look-aheads</em>. En particular, el estado <span class="math inline">\(I_7\)</span> y el estado <span class="math inline">\(I_9\)</span> tienen los mismos centros:</p>
 <pre><code>I7 = Goto(I4, i) = {
     A -&gt; i.+ A, $
@@ -956,8 +905,8 @@ I8-11 = Goto(I5-10, A) = {
 <p>Siguiendo esta línea de pensamiento, debería ser posible construir el autómata LALR directamente, sin necesidad de primero construir el LR para luego combinar los estados innecesarios. De hecho, esto es posible, y es lo que hacen los generadores de parsers usados en la práctica. Aunque no presentaremos un algoritmo detallado para esto, podemos ver intuitivamente que los estados se pueden ir combinando “sobre la marcha”, a medida que se descubren estados con el mismo centro que otros ya creados, y arreglando las transiciones existentes en caso de ser necesario.</p>
 <p>Un punto de importancia en el autómata LALR, es que no se puede hacer “una parte” de este. Es decir, o bien todos los estados con el mismo centro de combinan, y no aparece ningún conflicto nuevo, o no se combina ninguno y el autómata se queda LR. De modo que no existen “grados” de LALR.</p>
 </section>
-<section id="implementación-del-parser-lr" class="level2" data-number="6.8">
-<h2 data-number="6.8" class="anchored" data-anchor-id="implementación-del-parser-lr"><span class="header-section-number">6.8</span> Implementación del parser LR</h2>
+<section id="implementación-del-parser-lr" class="level2" data-number="3.8">
+<h2 data-number="3.8" class="anchored" data-anchor-id="implementación-del-parser-lr"><span class="header-section-number">3.8</span> Implementación del parser LR</h2>
 <p>Veamos entonces como construir un algoritmo de parsing lineal que obtenga el árbol de derivación correspondiente. Recordemos que lo que tenemos hasta el momento es un autómata que nos permite reconocer si el contenido de la pila es un prefijo viable. En principio, en cada iteración, tras realizar un <strong>shift</strong> o un <strong>reduce</strong>, es necesario volver a correr el autómata en todo el contenido de la pila, para determinar en qué estado termina, y poder decidir la próxima operación. Esto es innecesariamente costoso. Intuitivamente, dado que tras una operación <strong>shift</strong> o <strong>reduce</strong> sabemos exactamente como cambia la pila, deberíamos poder “hacer backtrack” en el autómata, y solamente ejecutar la parte necesaria para reconocer el nuevo sufijo de la pila.</p>
 <p>Por ejemplo, supongamos que tenemos un estado del parser <span class="math inline">\(\alpha | c \omega\)</span>, y al ejecutar el autómata, terminamos en un estado <span class="math inline">\(I_i\)</span> que indica <strong>shift</strong> con el token <code>c</code>. Si <span class="math inline">\(Goto(I_i, c) = I_j\)</span>, entonces sabemos que la siguiente iteración terminaremos en el estado <span class="math inline">\(I_j\)</span>. Efectivamente, tras un <strong>shift</strong> tendremos un nuevo estado en la pila <span class="math inline">\(\alpha c | \omega\)</span>, y como el autómata es determinista, tras reconocer <span class="math inline">\(\alpha\)</span> tendrá que terminar necesariamente en el estado <span class="math inline">\(I_i\)</span>. Luego, el token <code>c</code> lo envía al estado <span class="math inline">\(I_j\)</span>, precisamente porque esa es la definición de la función <strong>Goto</strong>. Por tanto, tras una operación de <strong>shift</strong>, no es necesario volver a correr el autómata en todo el contenido de la pila. Simplemente podemos transitar directamente al estado <span class="math inline">\(Goto(I_i, c)\)</span>.</p>
 <p>Veamos que sucede tras una operación <strong>reduce</strong>. Sea <span class="math inline">\(\alpha \beta | \omega\)</span> el estado de la pila antes del <strong>reduce</strong>, y <span class="math inline">\(\alpha X | \omega\)</span> el estado después de reducir <span class="math inline">\(X \rightarrow \beta\)</span>. Supongamos que el autómata, tras reconocer <span class="math inline">\(\alpha\)</span>, cae en el estado <span class="math inline">\(I_i\)</span>. Entonces tras reconocer <span class="math inline">\(\alpha X\)</span> debe caer en el estado <span class="math inline">\(Goto(I_i, X)\)</span> por definición. Por tanto, una vez sacados <span class="math inline">\(|\beta|\)</span> terminales de la pila, solamente necesitamos ser capaces de “recordad” en que estado estaba el autómata cuando reconoció los primeros <span class="math inline">\(|\alpha|\)</span> terminales, y de ahí movernos una sola transición. Para ello, sencillamente almacenaremos en la pila, además de la forma oracional que se está construyendo, también los estados que transita el autómata en cada símbolo (ya sea almacenando pares <span class="math inline">\(&lt;X,i&gt;\)</span> o con una pila paralela para los estados). Por tanto, cuando extraemos los <span class="math inline">\(|\beta|\)</span> terminales de la pila, en el tope está justamente el estado <span class="math inline">\(I_i\)</span>.</p>
@@ -1146,8 +1095,8 @@ States  ::                   0 1|
 Trees   :: E(A(i),=,A(i,+,A(i)))|</code></pre>
 <p>Finalmente, <span class="math inline">\(T[1,E]\)</span> nos dice que la cadena ha sido parseada. En el tope de la pila de símbolos queda el símbolo inicial, y en la pila de árboles hay un solo árbol que contiene la derivación que hemos construido. Honestamente, en una implementación computacional concreta la pila de símbolos es innecesaria, pues todas las decisiones se toman mirando solamente la pila de estados, y el resultado necesario se computa en la pila de árboles. De cierta forma, esta pila de árboles es un <em>upgrade</em> de la pila de símbolos. Hemos hecho la distinción en este ejemplo por cuestiones puramente didácticas, pero en la práctica, la pila de símbolos no se usa.</p>
 </section>
-<section id="comparaciones-entre-ll-slr-lr-y-lalr" class="level2" data-number="6.9">
-<h2 data-number="6.9" class="anchored" data-anchor-id="comparaciones-entre-ll-slr-lr-y-lalr"><span class="header-section-number">6.9</span> Comparaciones entre LL, SLR, LR y LALR</h2>
+<section id="comparaciones-entre-ll-slr-lr-y-lalr" class="level2" data-number="3.9">
+<h2 data-number="3.9" class="anchored" data-anchor-id="comparaciones-entre-ll-slr-lr-y-lalr"><span class="header-section-number">3.9</span> Comparaciones entre LL, SLR, LR y LALR</h2>
 <p>Hemos visto hasta el momento los dos paradigmas fundamentales para el parsing determinista de gramáticas libres del contexto. Hagamos entonces una reflexión final sobre los resultados que hemos obtenido, y las herramientas que hemos desarrollado.</p>
 <p>El parser LL es posiblemente el más sencillo de todos los parsers que es útil. En muchos contextos donde se tiene que diseñar un lenguaje bien sencillo (por ejemplo, un DSL integrado en un sistema más complejo), este parser puede brindar una solución fácil y eficiente. La mayor ventaja es que se puede escribir directamente, sin necesidad de usar un generador de parser. Los conjuntos First y Follow se computan a mano, y luego se escriben cada uno de los métodos recursivos asociados a las producciones. Para cualquier lenguaje de complejidad algo mayor, recurriremos entonces a construir un parser LR.</p>
 <p>De manera general, el autómata SLR tiene una cantidad considerablemente menor de estados que el autómata LR correspondiente. En los casos donde la gramática es SLR(1) es preferible usar dicho autómata. Desgraciadamente, la mayoría de las construcciones sintácticas de interés para los lenguajes de programación usuales tienen gramáticas “naturales” que no son SLR, pero sí LR, y generalmente LALR. Por este motivo, el parser LR(1) es, en la práctica, el más usado. Su mayor desventaja radica en el elevado número de estados, que dificultan su almacenamiento. Este problema era especialmente complejo en el año 1965, cuando Donald Knuth propuso este parser. Por tal motivo, aunque teóricamente es una solución adecuada, en la práctica no se usó hasta que en 1969 James DeRemer propuso el parser LALR, que reduce considerablemente la cantidad de estados hasta un nivel comparable con el SLR, sin perder prácticamente en expresividad con respecto con al LR. Más adelante en 1971 el propio DeRemer propondría el SLR como una variante más sencilla de construir algo parecido al LALR de forma más sencilla.</p>
@@ -1172,7 +1121,6 @@ Trees   :: E(A(i),=,A(i,+,A(i)))|</code></pre>
 <p>Este resultado es de hecho impresionante, pero la historia no acaba ahí. Incluso aunque teóricamente LR(1) es suficiente, en la práctica hay lenguajes deterministas cuyas gramáticas LR(1) son tan complicadas, que es preferible usar una gramática más flexible, incluso incluyendo algo de ambiguedad que pueda ser resuelto en una fase superior. Afortunadamente, el problema de encontrar un árbol de derivación para cualquier gramática libre del contexto tiene solución con caso peor <span class="math inline">\(O(n^3)\)</span> con respecto a la longitud de la cadena. Es decir, existen parsers generales que pueden reconocer cualquier lenguaje libre del contexto, <em>incluso lenguajes ambiguos</em>, y en estos casos se pueden obtener <strong>todos</strong> los árboles de derivación que existen. En la práctica sin embargo, para diseñar lenguajes de programación, queremos parsers lineales por motivos de eficiencia. Estos parsers más generales se emplean sobre todo en tareas de procesamiento de lenguaje natural (p.e. traducción automática).</p>
 
 
-</section>
 </section>
 
 </main> <!-- /main -->
@@ -1577,13 +1525,13 @@ Trees   :: E(A(i),=,A(i,+,A(i)))|</code></pre>
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./chap2.html" class="pagination-link" aria-label="---">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">—</span></span>
+      <a href="./chap2.html" class="pagination-link" aria-label="Parsing Descendente">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Parsing Descendente</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./chap4.html" class="pagination-link" aria-label="---">
-        <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">—</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./chap4.html" class="pagination-link" aria-label="Análisis Semántico">
+        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Análisis Semántico</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

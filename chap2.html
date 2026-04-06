@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>3&nbsp; — – Introducción a la Construcción de Compiladores</title>
+<title>2&nbsp; Parsing Descendente – Introducción a la Construcción de Compiladores</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -146,7 +146,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./chap2.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">—</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./chap2.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Parsing Descendente</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -174,55 +174,55 @@ window.Quarto = {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">—</span></span></a>
+ <span class="menu-text">Introducción</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./chap1.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">—</span></span></a>
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Análisis Lexicográfico</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./chap2.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">—</span></span></a>
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Parsing Descendente</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./chap3.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">—</span></span></a>
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Parsing Ascendente</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./chap4.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">—</span></span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Análisis Semántico</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./chap5.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">—</span></span></a>
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Gramáticas Atributadas</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./chap6.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">—</span></span></a>
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Semántica de Tipos</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./chap7.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">—</span></span></a>
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Generación de Código</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./chap8.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">—</span></span></a>
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">El lenguaje HULK</span></span></a>
   </div>
 </li>
     </ul>
@@ -235,14 +235,10 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#setup" id="toc-setup" class="nav-link active" data-scroll-target="#setup"><span class="header-section-number">4</span> Setup</a></li>
-  <li><a href="#parsing-descendente-top-down" id="toc-parsing-descendente-top-down" class="nav-link" data-scroll-target="#parsing-descendente-top-down"><span class="header-section-number">5</span> Parsing Descendente (<em>Top-Down</em>)</a>
-  <ul class="collapse">
-  <li><a href="#parsing-recursivo-descendente" id="toc-parsing-recursivo-descendente" class="nav-link" data-scroll-target="#parsing-recursivo-descendente"><span class="header-section-number">5.1</span> Parsing Recursivo Descendente</a></li>
-  <li><a href="#parsing-predictivo-descendente" id="toc-parsing-predictivo-descendente" class="nav-link" data-scroll-target="#parsing-predictivo-descendente"><span class="header-section-number">5.2</span> Parsing Predictivo Descendente</a></li>
-  <li><a href="#gramáticas-ll1" id="toc-gramáticas-ll1" class="nav-link" data-scroll-target="#gramáticas-ll1"><span class="header-section-number">5.3</span> Gramáticas LL(1)</a></li>
-  <li><a href="#parsing-descendente-no-recursivo" id="toc-parsing-descendente-no-recursivo" class="nav-link" data-scroll-target="#parsing-descendente-no-recursivo"><span class="header-section-number">5.4</span> Parsing Descendente No Recursivo</a></li>
-  </ul></li>
+  <li><a href="#parsing-recursivo-descendente" id="toc-parsing-recursivo-descendente" class="nav-link active" data-scroll-target="#parsing-recursivo-descendente"><span class="header-section-number">2.1</span> Parsing Recursivo Descendente</a></li>
+  <li><a href="#parsing-predictivo-descendente" id="toc-parsing-predictivo-descendente" class="nav-link" data-scroll-target="#parsing-predictivo-descendente"><span class="header-section-number">2.2</span> Parsing Predictivo Descendente</a></li>
+  <li><a href="#gramáticas-ll1" id="toc-gramáticas-ll1" class="nav-link" data-scroll-target="#gramáticas-ll1"><span class="header-section-number">2.3</span> Gramáticas LL(1)</a></li>
+  <li><a href="#parsing-descendente-no-recursivo" id="toc-parsing-descendente-no-recursivo" class="nav-link" data-scroll-target="#parsing-descendente-no-recursivo"><span class="header-section-number">2.4</span> Parsing Descendente No Recursivo</a></li>
   </ul>
 </nav>
     </div>
@@ -251,7 +247,7 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">—</span></h1>
+<h1 class="title"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Parsing Descendente</span></h1>
 </div>
 
 
@@ -268,18 +264,6 @@ window.Quarto = {
 </header>
 
 
-<section id="setup" class="level1" data-number="4">
-<h1 data-number="4"><span class="header-section-number">4</span> Setup</h1>
-<div id="c5456947" class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sys</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>sys.path.append(os.path.abspath(os.curdir))</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> source.trees <span class="im">import</span> Tree</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> source.diagrams <span class="im">import</span> Pipeline, Lexer</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</section>
-<section id="parsing-descendente-top-down" class="level1" data-number="5">
-<h1 data-number="5"><span class="header-section-number">5</span> Parsing Descendente (<em>Top-Down</em>)</h1>
 <p>Hasta el momento hemos visto el proceso de compilación a grandes razgos, y hemos definido que la primera fase consiste en el análisis sintáctico. Esta fase a su vez la hemos divido en 2 procesos secuenciales: el análisis lexicográfico (<em>tokenización</em> o <em>lexing</em>), y el análisis sintáctico en sí (<em>parsing</em>). En esta sección nos concentraremos en este segundo proceso.</p>
 <p>Recordemos que el proceso de parsing consiste en analizar una secuencia de tokens, y producir un árbol de derivación, lo que es equivalente a producir una derivación extrema izquierda o derecha de la cadena a reconocer. Tomemos la siguiente gramática, que representa expresiones aritméticas (sin ambigüedad):</p>
 <pre><code>E = T
@@ -318,8 +302,8 @@ T = int * T
   -&gt; int * ( int + T )
   -&gt; int * ( int + int )</code></pre>
 <p>Básicamente, lo que hemos hecho ha sido probar todas las posibles derivaciones extrema izquierda, de forma recursiva, podando inteligentemente cada vez que era evidente que habíamos producido una derivación incorrecta. Tratemos de formalizar este proceso.</p>
-<section id="parsing-recursivo-descendente" class="level2" data-number="5.1">
-<h2 data-number="5.1" class="anchored" data-anchor-id="parsing-recursivo-descendente"><span class="header-section-number">5.1</span> Parsing Recursivo Descendente</h2>
+<section id="parsing-recursivo-descendente" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="parsing-recursivo-descendente"><span class="header-section-number">2.1</span> Parsing Recursivo Descendente</h2>
 <p>De forma general, tenemos tres tipos de operaciones o situaciones que analizar:</p>
 <ul>
 <li>La expansión de un no-terminal en la forma oracional actual.</li>
@@ -327,114 +311,105 @@ T = int * T
 <li>La comprobación de que un terminal generado coincide con el terminal esperado en la cadena.</li>
 </ul>
 <p>Para cada una de estas situaciones, vamos a tener un conjunto de métodos. Para representar la cadena a reconocer, necesitamos mantener un estado global que indique la parte reconocida de la cadena. Diseñemos una clase para ello:</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode cs code-with-copy"><code class="sourceCode cs"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">interface</span> IParser <span class="op">{</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">bool</span> <span class="fu">Parse</span><span class="op">(</span>Token<span class="op">[]</span> tokens<span class="op">);</span></span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> RecursiveParser <span class="op">:</span> IParser <span class="op">{</span></span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    Token<span class="op">[]</span> tokens<span class="op">;</span></span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> nextToken<span class="op">;</span></span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">//...</span></span>
-<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> IParser(ABC):</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> parse(<span class="va">self</span>, tokens: <span class="bu">list</span>) <span class="op">-&gt;</span> <span class="bu">bool</span>:</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>        ...</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> RecursiveParser(IParser):</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>):</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.tokens <span class="op">=</span> []</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.next_token <span class="op">=</span> <span class="dv">0</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Para reconocer un terminal, tendremos un método cuya función es a la vez decidir si se reconoce el terminal, y avanzar en la cadena:</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode cs code-with-copy"><code class="sourceCode cs"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="dt">bool</span> <span class="fu">Match</span><span class="op">(</span>Token token<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">return</span> tokens<span class="op">[</span>nextToken<span class="op">++]</span> <span class="op">==</span> token<span class="op">;</span></span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> match(<span class="va">self</span>, token):</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    result <span class="op">=</span> <span class="va">self</span>.tokens[<span class="va">self</span>.next_token] <span class="op">==</span> token</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.next_token <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> result</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>A cada no-terminal vamos a asociar un método recursivo cuya función es determinar si el no-terminal correspondiente genera una sub-cadena “adecuada” del lenguaje. Por ejemplo, para el caso de la gramática anterior, tenemos los siguientes métodos:</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode cs code-with-copy"><code class="sourceCode cs"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="dt">bool</span> <span class="fu">E</span><span class="op">()</span> <span class="op">{</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Parsea un no-terminal E</span></span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="dt">bool</span> <span class="fu">T</span><span class="op">()</span> <span class="op">{</span></span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Parsea un no-terminal T</span></span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> e(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">bool</span>:</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Parsea un no-terminal E</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    ...</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> t(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">bool</span>:</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Parsea un no-terminal T</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    ...</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>La semántica de cada uno de estos métodos es que devuelven <code>true</code> si y solo si el no-terminal correspondiente genera una parte de la cadena, comenzando en la posición <code>nextToken</code>. Tratemos de escribir el código del método <code>E</code>. Para ello, recordemos que el símbolo <code>E</code> deriva en 2 producciones: <code>E -&gt; T</code> y <code>E -&gt; T + E</code>. Por tanto, de forma recursiva podemos decir que <code>E</code> genera esta cadena si y solo si la genera a partir de una de estas dos producciones. El primer caso es fácil: <code>E</code> genera la cadena a partir de derivar en <code>T</code> si y solo si <code>T</code> a su vez genera dicha cadena, y ya tenemos un método para eso:</p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode cs code-with-copy"><code class="sourceCode cs"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="dt">bool</span> <span class="fu">E1</span><span class="op">()</span> <span class="op">{</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">// E -&gt; T</span></span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">return</span> <span class="fu">T</span><span class="op">();</span></span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> e1(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">bool</span>:</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># E -&gt; T</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="va">self</span>.t()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Para el segundo caso, notemos que la producción <code>E -&gt; T + E</code> básicamente lo que dice es: necesitamos generar una cadena a partir de <code>E</code>, de forma tal que primero se genere una parte con <code>T</code>, luego se genere un <code>+</code> y luego se genere otra parte con <code>E</code>. Dado que ya tenemos todos los métodos necesarios:</p>
-<div class="sourceCode" id="cb18"><pre class="sourceCode cs code-with-copy"><code class="sourceCode cs"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="dt">bool</span> <span class="fu">E2</span><span class="op">()</span> <span class="op">{</span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">// E -&gt; T + E</span></span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">return</span> <span class="fu">T</span><span class="op">()</span> <span class="op">&amp;&amp;</span> <span class="fu">Match</span><span class="op">(</span>Token<span class="op">.</span><span class="fu">Plus</span><span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="fu">E</span><span class="op">();</span></span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> e2(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">bool</span>:</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># E -&gt; T + E</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="va">self</span>.t() <span class="kw">and</span> <span class="va">self</span>.match(Token.Plus) <span class="kw">and</span> <span class="va">self</span>.e()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Aprovechamos el operador <code>&amp;&amp;</code> con cortocircuito para podar lo antes posible el intento de generar la cadena, de forma que el primero de estos tres métodos que falle ya nos permite salir de esa rama recursiva. Ahora que tenemos métodos para cada producción, podemos finalmente develar el cuerpo del método <code>E</code>:</p>
-<div class="sourceCode" id="cb19"><pre class="sourceCode cs code-with-copy"><code class="sourceCode cs"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="dt">bool</span> <span class="fu">E</span><span class="op">()</span> <span class="op">{</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> currToken <span class="op">=</span> nextToken<span class="op">;</span></span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">if</span> <span class="op">(</span><span class="fu">E1</span><span class="op">())</span> <span class="kw">return</span> <span class="kw">true</span><span class="op">;</span></span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    nextToken <span class="op">=</span> currToken<span class="op">;</span></span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">if</span> <span class="op">(</span><span class="fu">E2</span><span class="op">())</span> <span class="kw">return</span> <span class="kw">true</span><span class="op">;</span></span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">return</span> <span class="kw">false</span><span class="op">;</span></span>
-<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> e(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">bool</span>:</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    curr_token <span class="op">=</span> <span class="va">self</span>.next_token</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="va">self</span>.e1():</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">True</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.next_token <span class="op">=</span> curr_token</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="va">self</span>.e2():</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">True</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="va">False</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Este método simplemente prueba cada una de las producciones en orden, teniendo cuidado de retornar <code>nextToken</code> a su valor original tras cada llamado recursivo fallido. Así mismo, podemos escribir el método asociado al símbolo <code>T</code>, basado en los métodos correspondientes a cada producción:</p>
-<div class="sourceCode" id="cb20"><pre class="sourceCode cs code-with-copy"><code class="sourceCode cs"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="dt">bool</span> <span class="fu">T1</span><span class="op">()</span> <span class="op">{</span></span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">// T -&gt; int * T</span></span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">return</span> <span class="fu">Match</span><span class="op">(</span>Token<span class="op">.</span><span class="fu">Int</span><span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="fu">Match</span><span class="op">(</span>Token<span class="op">.</span><span class="fu">Times</span><span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="fu">T</span><span class="op">();</span></span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="dt">bool</span> <span class="fu">T2</span><span class="op">()</span> <span class="op">{</span></span>
-<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">// T -&gt; int</span></span>
-<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">return</span> <span class="fu">Match</span><span class="op">(</span>Token<span class="op">.</span><span class="fu">Int</span><span class="op">);</span></span>
-<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a><span class="dt">bool</span> <span class="fu">T3</span><span class="op">()</span> <span class="op">{</span></span>
-<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>    <span class="co">// T -&gt; (E)</span></span>
-<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>    <span class="kw">return</span> <span class="fu">Match</span><span class="op">(</span>Token<span class="op">.</span><span class="fu">Open</span><span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="fu">E</span><span class="op">()</span> <span class="op">&amp;&amp;</span> <span class="fu">Match</span><span class="op">(</span>Token<span class="op">.</span><span class="fu">Closed</span><span class="op">)</span></span>
-<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> t1(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">bool</span>:</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># T -&gt; int * T</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="va">self</span>.match(Token.Int) <span class="kw">and</span> <span class="va">self</span>.match(Token.Times) <span class="kw">and</span> <span class="va">self</span>.t()</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> t2(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">bool</span>:</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># T -&gt; int</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="va">self</span>.match(Token.Int)</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> t3(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">bool</span>:</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># T -&gt; (E)</span></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="va">self</span>.match(Token.Open) <span class="kw">and</span> <span class="va">self</span>.e() <span class="kw">and</span> <span class="va">self</span>.match(Token.Closed)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Y el método general para <code>T</code> queda así:</p>
-<div class="sourceCode" id="cb21"><pre class="sourceCode cs code-with-copy"><code class="sourceCode cs"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="dt">bool</span> <span class="fu">T</span><span class="op">()</span> <span class="op">{</span></span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> currToken <span class="op">=</span> nextToken<span class="op">;</span></span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">if</span> <span class="op">(</span><span class="fu">T1</span><span class="op">())</span> <span class="kw">return</span> <span class="kw">true</span><span class="op">;</span></span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>    nextToken <span class="op">=</span> currToken<span class="op">;</span></span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">if</span> <span class="op">(</span><span class="fu">T2</span><span class="op">())</span> <span class="kw">return</span> <span class="kw">true</span><span class="op">;</span></span>
-<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>    nextToken <span class="op">=</span> currToken<span class="op">;</span></span>
-<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">if</span> <span class="op">(</span><span class="fu">T3</span><span class="op">())</span> <span class="kw">return</span> <span class="kw">true</span><span class="op">;</span></span>
-<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">return</span> <span class="kw">false</span><span class="op">;</span></span>
-<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> t(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">bool</span>:</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    curr_token <span class="op">=</span> <span class="va">self</span>.next_token</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="va">self</span>.t1():</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">True</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.next_token <span class="op">=</span> curr_token</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="va">self</span>.t2():</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">True</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.next_token <span class="op">=</span> curr_token</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="va">self</span>.t3():</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">True</span></span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="va">False</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Es posible hacer estos métodos más compactos introduciendo un nuevo método auxiliar:</p>
-<div class="sourceCode" id="cb22"><pre class="sourceCode cs code-with-copy"><code class="sourceCode cs"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="dt">bool</span> <span class="fu">Reset</span><span class="op">(</span><span class="dt">int</span> pos<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>    nextToken <span class="op">=</span> pos<span class="op">;</span></span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">return</span> <span class="kw">true</span><span class="op">;</span></span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> reset(<span class="va">self</span>, pos):</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.next_token <span class="op">=</span> pos</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="va">True</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Este método nos permite reescribir cada método con una sola expresión, haciendo uso del operador <code>||</code> con cortocircuito:</p>
-<div class="sourceCode" id="cb23"><pre class="sourceCode cs code-with-copy"><code class="sourceCode cs"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="dt">bool</span> <span class="fu">E</span><span class="op">()</span> <span class="op">{</span></span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> n <span class="op">=</span> nextToken<span class="op">;</span></span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">return</span> <span class="fu">E1</span><span class="op">()</span> <span class="op">||</span> <span class="fu">Reset</span><span class="op">(</span>n<span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="fu">E2</span><span class="op">();</span></span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a><span class="dt">bool</span> <span class="fu">T</span><span class="op">()</span> <span class="op">{</span></span>
-<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> n <span class="op">=</span> nextToken<span class="op">;</span></span>
-<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">return</span> <span class="fu">T1</span><span class="op">()</span> <span class="op">||</span> <span class="fu">Reset</span><span class="op">(</span>n<span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="fu">T2</span><span class="op">()</span> <span class="op">||</span> <span class="fu">Reset</span><span class="op">(</span>n<span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="fu">T3</span><span class="op">();</span></span>
-<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> e(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">bool</span>:</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>    n <span class="op">=</span> <span class="va">self</span>.next_token</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="va">self</span>.e1() <span class="kw">or</span> <span class="va">self</span>.reset(n) <span class="kw">and</span> <span class="va">self</span>.e2()</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> t(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">bool</span>:</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>    n <span class="op">=</span> <span class="va">self</span>.next_token</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="va">self</span>.t1() <span class="kw">or</span> <span class="va">self</span>.reset(n) <span class="kw">and</span> <span class="va">self</span>.t2() <span class="kw">or</span> <span class="va">self</span>.reset(n) <span class="kw">and</span> <span class="va">self</span>.t3()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Finalmente, para reconocer la cadena completa, solo nos queda garantizar que se hayan consumido todos los <em>tokens</em>:</p>
-<div class="sourceCode" id="cb24"><pre class="sourceCode cs code-with-copy"><code class="sourceCode cs"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="dt">bool</span> <span class="fu">Parse</span><span class="op">(</span>Token<span class="op">[]</span> tokens<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">this</span><span class="op">.</span><span class="fu">tokens</span> <span class="op">=</span> tokens<span class="op">;</span></span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>    nextToken <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
-<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">return</span> <span class="fu">E</span><span class="op">()</span> <span class="op">&amp;&amp;</span> nextToken <span class="op">==</span> tokens<span class="op">.</span><span class="fu">Length</span><span class="op">;</span></span>
-<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> parse(<span class="va">self</span>, tokens: <span class="bu">list</span>) <span class="op">-&gt;</span> <span class="bu">bool</span>:</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.tokens <span class="op">=</span> tokens</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.next_token <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="va">self</span>.e() <span class="kw">and</span> <span class="va">self</span>.next_token <span class="op">==</span> <span class="bu">len</span>(tokens)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Usualmente por comodidad se asume que existe un terminal especial <code>$</code> generado directamente por el Lexer al final de toda cadena. Esto se hace para poder generalizar desde el punto de vista teórico, y no tener que especificar siempre si estamos al final de la cadena o no. Si nuestro Lexer produce este token, al que llamaremos <code>Token.EOF</code> en el código, entonces podemos reescribir el método anterior de la siguiente forma:</p>
-<div class="sourceCode" id="cb25"><pre class="sourceCode cs code-with-copy"><code class="sourceCode cs"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="dt">bool</span> <span class="fu">Parse</span><span class="op">(</span>Token<span class="op">[]</span> tokens<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">this</span><span class="op">.</span><span class="fu">tokens</span> <span class="op">=</span> tokens<span class="op">;</span></span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>    nextToken <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
-<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">return</span> <span class="fu">E</span><span class="op">()</span> <span class="op">&amp;&amp;</span> <span class="fu">Match</span><span class="op">(</span>Token<span class="op">.</span><span class="fu">EOF</span><span class="op">);</span> <span class="co">// &lt;-- Este es el cambio</span></span>
-<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> parse(<span class="va">self</span>, tokens: <span class="bu">list</span>) <span class="op">-&gt;</span> <span class="bu">bool</span>:</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.tokens <span class="op">=</span> tokens</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.next_token <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="va">self</span>.e() <span class="kw">and</span> <span class="va">self</span>.match(Token.EOF)  <span class="co"># &lt;-- Este es el cambio</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Esta metodología para crear parsers recursivos descendentes puede ser aplicada fácilmente a cualquier gramática libre del contexto. Sin embargo, no todas las gramáticas pueden ser reconocidas de esta forma. Según la estructura de la gramática, es posible que el parser definido no funcione correctamente.</p>
 <p>Por ejemplo, para gramáticas ambigüas, el parser (si termina) dará alguna de las derivaciones extrema izquierda posibles, en función del orden en que hayan sido definidas las producciones. Esto se debe al uso de operadores con cortocircuito. Es posible modificar este tipo de parsers fácilmente para generar no solo la primera sino todas las derivaciones extrema izquierda disponibles, simplemente reemplazando los operadores <code>||</code> más externos.</p>
 <p>Consideremos ahora la siguiente gramática:</p>
 <pre><code>S -&gt; Sa | b</code></pre>
 <p>Para esta gramática, el parser recursivo descendente queda de la siguiente forma (simplificada):</p>
-<div class="sourceCode" id="cb27"><pre class="sourceCode cs code-with-copy"><code class="sourceCode cs"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="dt">bool</span> <span class="fu">S</span><span class="op">()</span> <span class="op">{</span></span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> c <span class="op">=</span> nextToken<span class="op">;</span></span>
-<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">return</span> <span class="fu">S</span><span class="op">()</span> <span class="op">&amp;&amp;</span> <span class="fu">Match</span><span class="op">(</span>Token<span class="op">.</span><span class="fu">A</span><span class="op">)</span> <span class="op">||</span> <span class="fu">Reset</span><span class="op">(</span>n<span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="fu">Match</span><span class="op">(</span>Token<span class="op">.</span><span class="fu">B</span><span class="op">);</span></span>
-<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> s(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">bool</span>:</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>    c <span class="op">=</span> <span class="va">self</span>.next_token</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="va">self</span>.s() <span class="kw">and</span> <span class="va">self</span>.match(Token.A) <span class="kw">or</span> <span class="va">self</span>.reset(n) <span class="kw">and</span> <span class="va">self</span>.match(Token.B)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>El problema evidente con este parser es que al intentar reconocer el símbolo <code>S</code> el algoritmo cae en una recursión infinita. Este tipo de gramáticas se denominan gramáticas con recursión izquierda, que definiremos así:</p>
 <blockquote class="blockquote">
 <p><strong>Definición:</strong> Una gramática libre del contexto <code>G=&lt;S,N,T,P&gt;</code> se dice recursiva izquierda si y solo si <code>S -*-&gt; Sw</code> (donde <code>w</code> es una forma oracional).</p>
@@ -452,8 +427,8 @@ X -&gt; a1X | a2X | ... | anX | epsilon</code></pre>
 <p>Para el caso más general de recursión izquierda indirecta, también existe un algoritmo para su eliminación, pero de momento no lo presentaremos :(.</p>
 <p>El algoritmo de parsing que hemos desarrollado resuelve, al menos de forma teórica, el problema de construir el árbol de derivación. Aunque el código presentado no construye explícitamente el árbol de derivación, es bastante fácil modificarlo al respecto. Sin embargo, aunque en principio el problema ha sido resuelto, el algoritmo recursivo descendente es extremadamente ineficiente. El problema es que, en principio, es necesario probar con todos los árboles de derivación posibles antes de encontrar el árbol correcto. De cierta forma, para resolver el problema de parsing lo que hemos hecho es buscar entre todos los posibles programas, cuál de ellos tiene una representación textual igual a la cadena deseada.</p>
 </section>
-<section id="parsing-predictivo-descendente" class="level2" data-number="5.2">
-<h2 data-number="5.2" class="anchored" data-anchor-id="parsing-predictivo-descendente"><span class="header-section-number">5.2</span> Parsing Predictivo Descendente</h2>
+<section id="parsing-predictivo-descendente" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="parsing-predictivo-descendente"><span class="header-section-number">2.2</span> Parsing Predictivo Descendente</h2>
 <p>Idealmente, quisiéramos un algoritmo de parsing que construya el árbol de derivación con un costo lineal con respecto a la cadena de entrada. Para ello, necesitamos poder “adivinar”, en cada método recursivo, cuál es la rama adecuada a la que descender. Con vistas a resolver este problema, consideremos nuevamente la gramática vista en la sección anterior:</p>
 <pre><code>E -&gt; T | T + E
 T -&gt; int * T | int | (E)</code></pre>
@@ -514,7 +489,7 @@ E -*-&gt; int * ( int + int ) X -*-&gt; int * ( int + int )</code></pre>
 <p>Si para las preguntas anteriores obtenemos una sola producción como respuesta, entonces podemos estar seguros de la decisión a tomar. En caso de que obtengamos más de una respuesta, nuestro algoritmo no podrá decidir qué producción tomar, y será inevitable el <em>backtrack</em>. Para encontrar una respuesta a estas preguntas, intentemos formalizar estos conceptos de “<code>X</code> puede derivar en…” y “lo que venga detrás de <code>X</code>…”.</p>
 <p>Llamaremos <code>First(W)</code> al conjunto de todos los terminales que pueden ser generados por <code>W</code> como primer elemento (siendo <code>W</code> una forma oracional cualquiera, no solamente un no-terminal). Formalmente:</p>
 <blockquote class="blockquote">
-<p><strong>Definición</strong>: Sea <span class="math inline">\(G=&lt;S,N,T,P&gt;\)</span> una gramática libre del contexto, <span class="math inline">\(W \in { N \cup T }^*\)</span> una forma oracional, y <span class="math inline">\(x \in T\)</span> un terminal. Decimos que <span class="math inline">\(x \in First(W)\)</span> si y solo si <span class="math inline">\(W \prs xZ\)</span> (donde <span class="math inline">\(Z \in \{ N \cup T \}^*\)</span> es otra forma oracional).</p>
+<p><strong>Definición</strong>: Sea <span class="math inline">\(G=&lt;S,N,T,P&gt;\)</span> una gramática libre del contexto, <span class="math inline">\(W \in { N \cup T }^*\)</span> una forma oracional, y <span class="math inline">\(x \in T\)</span> un terminal. Decimos que <span class="math inline">\(x \in First(W)\)</span> si y solo si <span class="math inline">\(W \rightarrow^* xZ\)</span> (donde <span class="math inline">\(Z \in \{ N \cup T \}^*\)</span> es otra forma oracional).</p>
 </blockquote>
 <p>Este concepto captura formalmente la noción de “comenzar por”. De forma intuitiva, si logramos computar el conjunto <code>First(W)</code> para todas las producciones <code>X -&gt; W</code> de nuestra gramática, y cada uno de estos conjuntos de las producciones del mismo símbolo son disjuntos dos a dos, entonces podremos decir inequívocamente qué producción aplicar para generar el terminal que toca (o cuando no es posible generarlo). Notemos que fue necesario definir <code>First(W)</code> no solo para un no-terminal, sino para una forma oracional en general, pues necesitamos computarlo en toda parte derecha de una producción.</p>
 <p>Por otro lado, la noción de “lo que viene detrás” se formaliza en un concepto similar, denominado <code>Follow(X)</code>. En este caso solo necesitamos definirlo para un no-terminal, pues solo nos interesan las producciones <code>X -&gt; epsilon</code>. Informalmente diremos que el <code>Follow(X)</code> son todos aquellos terminales que pueden aparecer en cualquier forma oracional, detrás de un no-terminal <code>X</code>. Formalmente:</p>
@@ -523,139 +498,117 @@ E -*-&gt; int * ( int + int ) X -*-&gt; int * ( int + int )</code></pre>
 </blockquote>
 <p>La definición de <code>Follow(X)</code> básicamente nos dice que si en algún momento el terminal que queremos generar <code>x</code> está justo detrás del no-terminal <code>X</code> que toca expandir, entonces <code>X -&gt; epsilon</code> es una producción válida a aplicar, porque existe la posibilidad de que otro no-terminal genere a <code>x</code> justo en esa posición (aunque en la cadena particular que se está reconociendo puede que esto no sea posible).</p>
 <p>Supongamos entonces que tenemos todos estos conjuntos calculados (o potencialmente calculables en cualquier momento). ¿Cómo podemos utilizarlos para guiar la búsqueda del árbol de derivación correcto? Veamos como podría quedar el método recursivo descendente para generar <code>T</code> en esta nueva gramática:</p>
-<div class="sourceCode" id="cb46"><pre class="sourceCode cs code-with-copy"><code class="sourceCode cs"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="dt">bool</span> <span class="fu">T</span><span class="op">()</span> <span class="op">{</span></span>
-<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">// T -&gt; int Y</span></span>
-<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">if</span> <span class="op">(</span>tokens<span class="op">[</span>currToken<span class="op">]</span> <span class="op">==</span> Token<span class="op">.</span><span class="fu">Int</span><span class="op">)</span></span>
-<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>        <span class="kw">return</span> <span class="fu">Match</span><span class="op">(</span>Token<span class="op">.</span><span class="fu">Int</span><span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="fu">Y</span><span class="op">();</span></span>
-<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a>    <span class="co">// T -&gt; ( E )</span></span>
-<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">else</span> <span class="kw">if</span> <span class="op">(</span>tokens<span class="op">[</span>currToken<span class="op">]</span> <span class="op">==</span> Token<span class="op">.</span><span class="fu">Open</span><span class="op">)</span></span>
-<span id="cb46-8"><a href="#cb46-8" aria-hidden="true" tabindex="-1"></a>        <span class="kw">return</span> <span class="fu">Match</span><span class="op">(</span>Token<span class="op">.</span><span class="fu">Open</span><span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="fu">E</span><span class="op">()</span> <span class="op">&amp;&amp;</span> <span class="fu">Match</span><span class="op">(</span>Token<span class="op">.</span><span class="fu">Close</span><span class="op">);</span></span>
-<span id="cb46-9"><a href="#cb46-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-10"><a href="#cb46-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">return</span> <span class="kw">false</span><span class="op">;</span></span>
-<span id="cb46-11"><a href="#cb46-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> t(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">bool</span>:</span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># T -&gt; int Y</span></span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="va">self</span>.tokens[<span class="va">self</span>.curr_token] <span class="op">==</span> Token.Int:</span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.match(Token.Int) <span class="kw">and</span> <span class="va">self</span>.y()</span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># T -&gt; ( E )</span></span>
+<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> <span class="va">self</span>.tokens[<span class="va">self</span>.curr_token] <span class="op">==</span> Token.Open:</span>
+<span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.match(Token.Open) <span class="kw">and</span> <span class="va">self</span>.e() <span class="kw">and</span> <span class="va">self</span>.match(Token.Close)</span>
+<span id="cb45-9"><a href="#cb45-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-10"><a href="#cb45-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="va">False</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Como <code>T</code> siempre genera un token, es fácil decidir qué camino escoger. Por otro lado, en la expansión de <code>X</code>, es posible que sea necesario escoger <code>X -&gt; epsilon</code>. En este caso, el método recursivo sería:</p>
-<div class="sourceCode" id="cb47"><pre class="sourceCode cs code-with-copy"><code class="sourceCode cs"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="dt">bool</span> <span class="fu">X</span><span class="op">()</span> <span class="op">{</span></span>
-<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">// X -&gt; + E</span></span>
-<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">if</span> <span class="op">(</span>tokens<span class="op">[</span>nextToken<span class="op">]</span> <span class="op">==</span> Token<span class="op">.</span><span class="fu">Plus</span><span class="op">)</span></span>
-<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>        <span class="kw">return</span> <span class="fu">Match</span><span class="op">(</span>Token<span class="op">.</span><span class="fu">Plus</span><span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="fu">E</span><span class="op">()</span></span>
-<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a>    <span class="co">// X -&gt; epsilon</span></span>
-<span id="cb47-7"><a href="#cb47-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">else</span> <span class="kw">if</span> <span class="op">(</span><span class="fu">Follow</span><span class="op">(</span><span class="st">"X"</span><span class="op">).</span><span class="fu">Contains</span><span class="op">(</span>tokens<span class="op">[</span>currToken<span class="op">]))</span></span>
-<span id="cb47-8"><a href="#cb47-8" aria-hidden="true" tabindex="-1"></a>        <span class="kw">return</span> <span class="kw">true</span><span class="op">;</span></span>
-<span id="cb47-9"><a href="#cb47-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb47-10"><a href="#cb47-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">return</span> <span class="kw">false</span><span class="op">;</span></span>
-<span id="cb47-11"><a href="#cb47-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> x(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">bool</span>:</span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># X -&gt; + E</span></span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="va">self</span>.tokens[<span class="va">self</span>.next_token] <span class="op">==</span> Token.Plus:</span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.match(Token.Plus) <span class="kw">and</span> <span class="va">self</span>.e()</span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># X -&gt; epsilon</span></span>
+<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> Token.EOF <span class="kw">in</span> <span class="va">self</span>.follow[<span class="st">"X"</span>]:</span>
+<span id="cb46-8"><a href="#cb46-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">True</span></span>
+<span id="cb46-9"><a href="#cb46-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-10"><a href="#cb46-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="va">False</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>En el caso de <code>X -&gt; epsilon</code>, simplemente retornamos <code>true</code> de inmediato y no consumimos el terminal correspondiente.</p>
 <p>De forma general, podemos escribir cualquier método recursivo descendente de la siguiente forma (asumimos algunos métodos y clases utilitarios que no presentaremos formalmente):</p>
-<div class="sourceCode" id="cb48"><pre class="sourceCode cs code-with-copy"><code class="sourceCode cs"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="dt">bool</span> <span class="fu">Expand</span><span class="op">(</span>NonTerminal N<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">foreach</span><span class="op">(</span><span class="dt">var</span> p <span class="kw">in</span> N<span class="op">.</span><span class="fu">Productions</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>        <span class="kw">if</span> <span class="op">(!</span>p<span class="op">.</span><span class="fu">IsEpsilon</span> <span class="op">&amp;&amp;</span> <span class="fu">First</span><span class="op">(</span>p<span class="op">).</span><span class="fu">Contains</span><span class="op">(</span>tokens<span class="op">[</span>nextToken<span class="op">]))</span></span>
-<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a>            <span class="kw">return</span> <span class="fu">MatchProduction</span><span class="op">(</span>p<span class="op">);</span></span>
-<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a>        <span class="kw">if</span> <span class="op">(</span>p<span class="op">.</span><span class="fu">IsEpsilon</span> <span class="op">&amp;&amp;</span> <span class="fu">Follow</span><span class="op">(</span>N<span class="op">).</span><span class="fu">Contains</span><span class="op">(</span>tokens<span class="op">[</span>nextToken<span class="op">]))</span></span>
-<span id="cb48-7"><a href="#cb48-7" aria-hidden="true" tabindex="-1"></a>            <span class="kw">return</span> <span class="kw">true</span><span class="op">;</span></span>
-<span id="cb48-8"><a href="#cb48-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb48-9"><a href="#cb48-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb48-10"><a href="#cb48-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">return</span> <span class="kw">false</span><span class="op">;</span></span>
-<span id="cb48-11"><a href="#cb48-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb47"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> expand(<span class="va">self</span>, n: NonTerminal) <span class="op">-&gt;</span> <span class="bu">bool</span>:</span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> p <span class="kw">in</span> n.productions:</span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="kw">not</span> p.is_epsilon <span class="kw">and</span> <span class="va">self</span>.first(p).contains(<span class="va">self</span>.tokens[<span class="va">self</span>.next_token]):</span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> <span class="va">self</span>.match_production(p)</span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> p.is_epsilon <span class="kw">and</span> <span class="va">self</span>.follow[n].contains(<span class="va">self</span>.tokens[<span class="va">self</span>.next_token]):</span>
+<span id="cb47-7"><a href="#cb47-7" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> <span class="va">True</span></span>
+<span id="cb47-8"><a href="#cb47-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-9"><a href="#cb47-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="va">False</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>El método <code>MatchProduction</code> puede a grandes razgos implementarse de la siguiente forma:</p>
-<div class="sourceCode" id="cb49"><pre class="sourceCode cs code-with-copy"><code class="sourceCode cs"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="dt">bool</span> <span class="fu">MatchProduction</span><span class="op">(</span>Production p<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">foreach</span><span class="op">(</span><span class="dt">var</span> symbol <span class="kw">in</span> p<span class="op">.</span><span class="fu">Symbols</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>        <span class="kw">if</span> <span class="op">(</span>symbol<span class="op">.</span><span class="fu">IsTerminal</span> <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="fu">Match</span><span class="op">(</span>symbol <span class="kw">as</span> Token<span class="op">))</span></span>
-<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a>            <span class="kw">return</span> <span class="kw">false</span><span class="op">;</span></span>
-<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a>        <span class="kw">if</span> <span class="op">(!</span>symbol<span class="op">.</span><span class="fu">IsTerminal</span> <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="fu">Expand</span><span class="op">(</span>symbol <span class="kw">as</span> NonTerminal<span class="op">))</span></span>
-<span id="cb49-7"><a href="#cb49-7" aria-hidden="true" tabindex="-1"></a>            <span class="kw">return</span> <span class="kw">false</span><span class="op">;</span></span>
-<span id="cb49-8"><a href="#cb49-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb49-9"><a href="#cb49-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-10"><a href="#cb49-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">return</span> <span class="kw">true</span><span class="op">;</span></span>
-<span id="cb49-11"><a href="#cb49-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb48"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> match_production(<span class="va">self</span>, p: Production) <span class="op">-&gt;</span> <span class="bu">bool</span>:</span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> symbol <span class="kw">in</span> p.symbols:</span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> symbol.is_terminal <span class="kw">and</span> <span class="kw">not</span> <span class="va">self</span>.match(symbol):</span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> <span class="va">False</span></span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="kw">not</span> symbol.is_terminal <span class="kw">and</span> <span class="kw">not</span> <span class="va">self</span>.expand(symbol):</span>
+<span id="cb48-7"><a href="#cb48-7" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> <span class="va">False</span></span>
+<span id="cb48-8"><a href="#cb48-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-9"><a href="#cb48-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="va">True</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>En todos estos casos hemos asumido que la primera producción aplicable era la única posible. Para ello deben cumplirse ciertas restricciones entre los conjuntos <code>First</code> y <code>Follow</code> que formalizaremos a continuación.</p>
 </section>
-<section id="gramáticas-ll1" class="level2" data-number="5.3">
-<h2 data-number="5.3" class="anchored" data-anchor-id="gramáticas-ll1"><span class="header-section-number">5.3</span> Gramáticas LL(1)</h2>
+<section id="gramáticas-ll1" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="gramáticas-ll1"><span class="header-section-number">2.3</span> Gramáticas LL(1)</h2>
 <p>Llamaremos gramáticas LL(1) justamente a aquellas gramáticas para las cuales el proceso de cómputo de <code>First</code> y <code>Follow</code> descrito informalmente en la sección anterior nos permite construir un parser que nunca tenga que hacer <em>backtrack</em>. El nombre LL(1) significa <em>left-to-right left-derivation look-ahead 1</em>. Es decir, la cadena se analiza de izquierda a derecha, se construye una derivación extrema izquierda, y se analiza un solo <em>token</em> para decidir que producción aplicar. De forma general, existen las gramáticas LL(k), donde son necesarios k <em>tokens</em> para poder predecir que producción aplicar. Aunque los principios son los mismos, el proceso de construcción de estos conjuntos es más complejo, y por lo tanto no analizaremos estas gramáticas por el momento :(.</p>
 <p>Para poder formalizar este concepto, será conveniente primero encontrar algoritmos explícitos para computar los conjuntos <code>First</code> y <code>Follow</code>. Comencemos por el <code>First</code> ;). Veamos primero algunos hechos interesantes que se cumplen en este conjunto, y luego veremos cómo se diseña un algoritmo para su cómputo. No presentaremos demostración para estos hechos, pues la mayoría son intuitivos.</p>
 <ul>
-<li>Si <span class="math inline">\(X \pr W1 | W2 | \ldots | Wn\)</span> entonces por definición, <span class="math inline">\(First(X) = \cup First(W_i)\)</span>.</li>
-<li>Si <span class="math inline">\(X \prs \ep\)</span> entonces <span class="math inline">\(\ep \in First(X)\)</span>.</li>
+<li>Si <span class="math inline">\(X \rightarrow W1 | W2 | \ldots | Wn\)</span> entonces por definición, <span class="math inline">\(First(X) = \cup First(W_i)\)</span>.</li>
+<li>Si <span class="math inline">\(X \rightarrow^* \epsilon\)</span> entonces <span class="math inline">\(\epsilon \in First(X)\)</span>.</li>
 <li>Si <span class="math inline">\(W = xZ\)</span> donde <span class="math inline">\(x\)</span> es un terminal, entonces trivialmente <span class="math inline">\(First(W) = { x }\)</span>.</li>
 <li>Si <span class="math inline">\(W = YZ\)</span> donde <span class="math inline">\(Y\)</span> es un no-terminal y <span class="math inline">\(Z\)</span> una forma oracional, entonces <span class="math inline">\(First(Y) \subseteq First(W)\)</span>.</li>
-<li>Si <span class="math inline">\(W = YZ\)</span> y <span class="math inline">\(Y \prs \ep\)</span> entonces <span class="math inline">\(First(Z) \subseteq First(W)\)</span>.</li>
+<li>Si <span class="math inline">\(W = YZ\)</span> y <span class="math inline">\(Y \rightarrow^* \epsilon\)</span> entonces <span class="math inline">\(First(Z) \subseteq First(W)\)</span>.</li>
 </ul>
 <p>Las observaciones anteriores nos permiten diseñar un algoritmo para calcular todos los conjuntos <code>First(X)</code> para cada no-terminal <code>X</code>. Como de forma general pueden existir producciones recursivas, calcularemos todos los conjuntos <code>First</code> a la vez, aplicando cada una de las “reglas” anteriores, hasta que no se modifique ninguno de los conjuntos <code>First</code>. Nuevamente abusaremos de la imaginación y creatividad para introducir métodos y clases utilitarias sin definirlos de manera formal.</p>
-<div class="sourceCode" id="cb50"><pre class="sourceCode cs code-with-copy"><code class="sourceCode cs"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>Firsts <span class="fu">CalculateFirsts</span><span class="op">(</span>Grammar G<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">var</span> Firsts <span class="op">=</span> <span class="kw">new</span> <span class="fu">Firsts</span><span class="op">();</span> <span class="co">// Parecido a un Diccionario</span></span>
-<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Calculamos el First de cada terminal</span></span>
-<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">foreach</span><span class="op">(</span><span class="dt">var</span> t <span class="kw">in</span> G<span class="op">.</span><span class="fu">Terminals</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a>        Firsts<span class="op">[</span>t<span class="op">]</span> <span class="op">=</span> <span class="kw">new</span> <span class="fu">FirstSet</span><span class="op">()</span> <span class="op">{</span> t <span class="op">};</span></span>
-<span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb50-8"><a href="#cb50-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">foreach</span><span class="op">(</span><span class="dt">var</span> T <span class="kw">in</span> G<span class="op">.</span><span class="fu">NonTerminals</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb50-9"><a href="#cb50-9" aria-hidden="true" tabindex="-1"></a>        Firsts<span class="op">[</span>T<span class="op">]</span> <span class="op">=</span> <span class="kw">new</span> <span class="fu">FirstSet</span><span class="op">();</span> <span class="co">// Parecido a un HashSet</span></span>
-<span id="cb50-10"><a href="#cb50-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb50-11"><a href="#cb50-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb50-12"><a href="#cb50-12" aria-hidden="true" tabindex="-1"></a>    <span class="dt">bool</span> changed<span class="op">;</span></span>
-<span id="cb50-13"><a href="#cb50-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb50-14"><a href="#cb50-14" aria-hidden="true" tabindex="-1"></a>    <span class="kw">do</span> <span class="op">{</span></span>
-<span id="cb50-15"><a href="#cb50-15" aria-hidden="true" tabindex="-1"></a>        changed <span class="op">=</span> <span class="kw">false</span><span class="op">;</span></span>
-<span id="cb50-16"><a href="#cb50-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb50-17"><a href="#cb50-17" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Vamos por cada producción</span></span>
-<span id="cb50-18"><a href="#cb50-18" aria-hidden="true" tabindex="-1"></a>        <span class="kw">foreach</span><span class="op">(</span><span class="dt">var</span> p <span class="kw">in</span> G<span class="op">.</span><span class="fu">Productions</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb50-19"><a href="#cb50-19" aria-hidden="true" tabindex="-1"></a>            <span class="co">// X -&gt; W</span></span>
-<span id="cb50-20"><a href="#cb50-20" aria-hidden="true" tabindex="-1"></a>            <span class="dt">var</span> X <span class="op">=</span> p<span class="op">.</span><span class="fu">Left</span><span class="op">;</span></span>
-<span id="cb50-21"><a href="#cb50-21" aria-hidden="true" tabindex="-1"></a>            <span class="dt">var</span> W <span class="op">=</span> p<span class="op">.</span><span class="fu">Right</span><span class="op">;</span></span>
-<span id="cb50-22"><a href="#cb50-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb50-23"><a href="#cb50-23" aria-hidden="true" tabindex="-1"></a>            <span class="kw">if</span> <span class="op">(</span>p<span class="op">.</span><span class="fu">IsEpsilon</span><span class="op">)</span> <span class="op">{</span> <span class="co">// X -&gt; epsilon</span></span>
-<span id="cb50-24"><a href="#cb50-24" aria-hidden="true" tabindex="-1"></a>                changed <span class="op">=</span> Firsts<span class="op">[</span>X<span class="op">].</span><span class="fu">Add</span><span class="op">(</span>epsilon<span class="op">);</span></span>
-<span id="cb50-25"><a href="#cb50-25" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
-<span id="cb50-26"><a href="#cb50-26" aria-hidden="true" tabindex="-1"></a>            <span class="kw">else</span> <span class="op">{</span></span>
-<span id="cb50-27"><a href="#cb50-27" aria-hidden="true" tabindex="-1"></a>                <span class="dt">bool</span> allEpsilon <span class="op">=</span> <span class="kw">true</span><span class="op">;</span></span>
-<span id="cb50-28"><a href="#cb50-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb50-29"><a href="#cb50-29" aria-hidden="true" tabindex="-1"></a>                <span class="kw">foreach</span><span class="op">(</span><span class="dt">var</span> s <span class="kw">in</span> W<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb50-30"><a href="#cb50-30" aria-hidden="true" tabindex="-1"></a>                    <span class="co">// Agregamos todo en el First(s)</span></span>
-<span id="cb50-31"><a href="#cb50-31" aria-hidden="true" tabindex="-1"></a>                    changed <span class="op">=</span> Firsts<span class="op">[</span>X<span class="op">].</span><span class="fu">AddAll</span><span class="op">(</span>Firsts<span class="op">[</span>s<span class="op">]);</span></span>
-<span id="cb50-32"><a href="#cb50-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb50-33"><a href="#cb50-33" aria-hidden="true" tabindex="-1"></a>                    <span class="co">// Si s_i deriva en epsilon,</span></span>
-<span id="cb50-34"><a href="#cb50-34" aria-hidden="true" tabindex="-1"></a>                    <span class="co">// agregamos también el First(s_i+1)</span></span>
-<span id="cb50-35"><a href="#cb50-35" aria-hidden="true" tabindex="-1"></a>                    <span class="kw">if</span> <span class="op">(!</span>Firsts<span class="op">[</span>s<span class="op">].</span><span class="fu">Contains</span><span class="op">(</span>epsilon<span class="op">))</span> <span class="op">{</span></span>
-<span id="cb50-36"><a href="#cb50-36" aria-hidden="true" tabindex="-1"></a>                        allEpsilon <span class="op">=</span> <span class="kw">false</span><span class="op">;</span></span>
-<span id="cb50-37"><a href="#cb50-37" aria-hidden="true" tabindex="-1"></a>                        <span class="kw">break</span><span class="op">;</span></span>
-<span id="cb50-38"><a href="#cb50-38" aria-hidden="true" tabindex="-1"></a>                    <span class="op">}</span></span>
-<span id="cb50-39"><a href="#cb50-39" aria-hidden="true" tabindex="-1"></a>                <span class="op">}</span></span>
-<span id="cb50-40"><a href="#cb50-40" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb50-41"><a href="#cb50-41" aria-hidden="true" tabindex="-1"></a>                <span class="co">// Si todos los s_i derivan en epsilon</span></span>
-<span id="cb50-42"><a href="#cb50-42" aria-hidden="true" tabindex="-1"></a>                <span class="co">// entonces epsilon pertenece al First(X)</span></span>
-<span id="cb50-43"><a href="#cb50-43" aria-hidden="true" tabindex="-1"></a>                <span class="kw">if</span> <span class="op">(</span>allEpsilon<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb50-44"><a href="#cb50-44" aria-hidden="true" tabindex="-1"></a>                    changed <span class="op">=</span> Firsts<span class="op">[</span>X<span class="op">].</span><span class="fu">Add</span><span class="op">(</span>epsilon<span class="op">);</span></span>
-<span id="cb50-45"><a href="#cb50-45" aria-hidden="true" tabindex="-1"></a>                <span class="op">}</span></span>
-<span id="cb50-46"><a href="#cb50-46" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
-<span id="cb50-47"><a href="#cb50-47" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
-<span id="cb50-48"><a href="#cb50-48" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span> <span class="kw">while</span> <span class="op">(</span>changed<span class="op">);</span></span>
-<span id="cb50-49"><a href="#cb50-49" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb50-50"><a href="#cb50-50" aria-hidden="true" tabindex="-1"></a>    <span class="kw">return</span> Firsts<span class="op">;</span></span>
-<span id="cb50-51"><a href="#cb50-51" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb49"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> calculate_firsts(g: Grammar) <span class="op">-&gt;</span> Firsts:</span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>    firsts <span class="op">=</span> Firsts()</span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> t <span class="kw">in</span> g.terminals:</span>
+<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a>        firsts[t] <span class="op">=</span> {t}</span>
+<span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> T <span class="kw">in</span> g.non_terminals:</span>
+<span id="cb49-7"><a href="#cb49-7" aria-hidden="true" tabindex="-1"></a>        firsts[T] <span class="op">=</span> <span class="bu">set</span>()</span>
+<span id="cb49-8"><a href="#cb49-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-9"><a href="#cb49-9" aria-hidden="true" tabindex="-1"></a>    changed <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb49-10"><a href="#cb49-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-11"><a href="#cb49-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> changed:</span>
+<span id="cb49-12"><a href="#cb49-12" aria-hidden="true" tabindex="-1"></a>        changed <span class="op">=</span> <span class="va">False</span></span>
+<span id="cb49-13"><a href="#cb49-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-14"><a href="#cb49-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> p <span class="kw">in</span> g.productions:</span>
+<span id="cb49-15"><a href="#cb49-15" aria-hidden="true" tabindex="-1"></a>            X <span class="op">=</span> p.left</span>
+<span id="cb49-16"><a href="#cb49-16" aria-hidden="true" tabindex="-1"></a>            W <span class="op">=</span> p.right</span>
+<span id="cb49-17"><a href="#cb49-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-18"><a href="#cb49-18" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> p.is_epsilon:</span>
+<span id="cb49-19"><a href="#cb49-19" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> epsilon <span class="kw">not</span> <span class="kw">in</span> firsts[X]:</span>
+<span id="cb49-20"><a href="#cb49-20" aria-hidden="true" tabindex="-1"></a>                    firsts[X].add(epsilon)</span>
+<span id="cb49-21"><a href="#cb49-21" aria-hidden="true" tabindex="-1"></a>                    changed <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb49-22"><a href="#cb49-22" aria-hidden="true" tabindex="-1"></a>            <span class="cf">else</span>:</span>
+<span id="cb49-23"><a href="#cb49-23" aria-hidden="true" tabindex="-1"></a>                all_epsilon <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb49-24"><a href="#cb49-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-25"><a href="#cb49-25" aria-hidden="true" tabindex="-1"></a>                <span class="cf">for</span> s <span class="kw">in</span> W:</span>
+<span id="cb49-26"><a href="#cb49-26" aria-hidden="true" tabindex="-1"></a>                    new_symbols <span class="op">=</span> firsts[s] <span class="op">-</span> firsts[X]</span>
+<span id="cb49-27"><a href="#cb49-27" aria-hidden="true" tabindex="-1"></a>                    <span class="cf">if</span> new_symbols:</span>
+<span id="cb49-28"><a href="#cb49-28" aria-hidden="true" tabindex="-1"></a>                        firsts[X].update(new_symbols)</span>
+<span id="cb49-29"><a href="#cb49-29" aria-hidden="true" tabindex="-1"></a>                        changed <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb49-30"><a href="#cb49-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-31"><a href="#cb49-31" aria-hidden="true" tabindex="-1"></a>                    <span class="cf">if</span> epsilon <span class="kw">not</span> <span class="kw">in</span> firsts[s]:</span>
+<span id="cb49-32"><a href="#cb49-32" aria-hidden="true" tabindex="-1"></a>                        all_epsilon <span class="op">=</span> <span class="va">False</span></span>
+<span id="cb49-33"><a href="#cb49-33" aria-hidden="true" tabindex="-1"></a>                        <span class="cf">break</span></span>
+<span id="cb49-34"><a href="#cb49-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-35"><a href="#cb49-35" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> all_epsilon <span class="kw">and</span> epsilon <span class="kw">not</span> <span class="kw">in</span> firsts[X]:</span>
+<span id="cb49-36"><a href="#cb49-36" aria-hidden="true" tabindex="-1"></a>                    firsts[X].add(epsilon)</span>
+<span id="cb49-37"><a href="#cb49-37" aria-hidden="true" tabindex="-1"></a>                    changed <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb49-38"><a href="#cb49-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-39"><a href="#cb49-39" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> firsts</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>El algoritmo anterior computa todos los conjuntos <code>First</code> de todos los terminales y no-terminales a la vez. Hemos supuesto la existencia de estructuras de datos <code>Firsts</code> y <code>FirstSet</code> con operaciones convenientes para ello. Estas estructuras se implementan fácilmente usando diccionarios y conjuntos. Una vez obtenidos todos los <code>First</code> anteriores, podemos calcular fácilmente el <code>First</code> de cualquier forma oracional.</p>
-<div class="sourceCode" id="cb51"><pre class="sourceCode cs code-with-copy"><code class="sourceCode cs"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>FirstSet <span class="fu">CalculateFirst</span><span class="op">(</span>Symbol<span class="op">[]</span> p<span class="op">,</span> Firsts firsts<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>    FirstSet result <span class="op">=</span> <span class="kw">new</span> <span class="fu">FirstSet</span><span class="op">();</span></span>
-<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">bool</span> allEpsilon <span class="op">=</span> <span class="kw">true</span><span class="op">;</span></span>
-<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">foreach</span><span class="op">(</span><span class="dt">var</span> s <span class="kw">in</span> p<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb51-6"><a href="#cb51-6" aria-hidden="true" tabindex="-1"></a>        result<span class="op">.</span><span class="fu">AddAll</span><span class="op">(</span>Firsts<span class="op">[</span>s<span class="op">]);</span></span>
-<span id="cb51-7"><a href="#cb51-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb51-8"><a href="#cb51-8" aria-hidden="true" tabindex="-1"></a>        <span class="kw">if</span> <span class="op">(!</span>Firsts<span class="op">[</span>s<span class="op">].</span><span class="fu">Contains</span><span class="op">(</span>epsilon<span class="op">))</span> <span class="op">{</span></span>
-<span id="cb51-9"><a href="#cb51-9" aria-hidden="true" tabindex="-1"></a>            allEpsilon <span class="op">=</span> <span class="kw">false</span><span class="op">;</span></span>
-<span id="cb51-10"><a href="#cb51-10" aria-hidden="true" tabindex="-1"></a>            <span class="kw">break</span><span class="op">;</span></span>
-<span id="cb51-11"><a href="#cb51-11" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
-<span id="cb51-12"><a href="#cb51-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb51-13"><a href="#cb51-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb51-14"><a href="#cb51-14" aria-hidden="true" tabindex="-1"></a>    <span class="kw">if</span> <span class="op">(</span>allEpsilon<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb51-15"><a href="#cb51-15" aria-hidden="true" tabindex="-1"></a>        result<span class="op">.</span><span class="fu">Add</span><span class="op">(</span>epsilon<span class="op">);</span></span>
-<span id="cb51-16"><a href="#cb51-16" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb51-17"><a href="#cb51-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb51-18"><a href="#cb51-18" aria-hidden="true" tabindex="-1"></a>    <span class="kw">return</span> result<span class="op">;</span></span>
-<span id="cb51-19"><a href="#cb51-19" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb50"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> calculate_first(p: <span class="bu">list</span>, firsts: Firsts) <span class="op">-&gt;</span> <span class="bu">set</span>:</span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>    result <span class="op">=</span> <span class="bu">set</span>()</span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>    all_epsilon <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> s <span class="kw">in</span> p:</span>
+<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a>        result.update(firsts[s])</span>
+<span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-8"><a href="#cb50-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> epsilon <span class="kw">not</span> <span class="kw">in</span> firsts[s]:</span>
+<span id="cb50-9"><a href="#cb50-9" aria-hidden="true" tabindex="-1"></a>            all_epsilon <span class="op">=</span> <span class="va">False</span></span>
+<span id="cb50-10"><a href="#cb50-10" aria-hidden="true" tabindex="-1"></a>            <span class="cf">break</span></span>
+<span id="cb50-11"><a href="#cb50-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-12"><a href="#cb50-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> all_epsilon:</span>
+<span id="cb50-13"><a href="#cb50-13" aria-hidden="true" tabindex="-1"></a>        result.add(epsilon)</span>
+<span id="cb50-14"><a href="#cb50-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-15"><a href="#cb50-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> result</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Básicamente este nuevo algoritmo consiste en repetir la parte más interna del algoritmo anterior, así que no son necesarias más explicaciones.</p>
 <p>Pasemos entonces a calcular el conjunto <code>Follow</code> de cada no-terminal. Para ello, veamos también algunos hechos que nos ayudarán a entender como está formado este conjunto:</p>
 <ul>
@@ -665,42 +618,40 @@ E -*-&gt; int * ( int + int ) X -*-&gt; int * ( int + int )</code></pre>
 <li>Si <code>X -&gt; WAZ</code> y <code>Z -*-&gt; epsilon</code> (o igualmente <code>epsilon</code> está en el <code>First(Z)</code>), entonces <code>Follow(X) \subseteq Follow(A)</code>.</li>
 </ul>
 <p>De la misma forma que en el caso del conjunto <code>First</code>, dado que las relaciones entre los <code>Follow</code> de cualquier par de no-terminales pueden ser recursivas, diseñaremos un algoritmo que los computa a todos a la misma vez:</p>
-<div class="sourceCode" id="cb52"><pre class="sourceCode cs code-with-copy"><code class="sourceCode cs"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>Follows <span class="fu">CalculateFollows</span><span class="op">(</span>Grammar G<span class="op">,</span> Firsts firsts<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">var</span> Follows <span class="op">=</span> <span class="kw">new</span> <span class="fu">Follows</span><span class="op">();</span></span>
-<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a>    Follows<span class="op">[</span>S<span class="op">]</span> <span class="op">=</span> <span class="kw">new</span> <span class="fu">FollowSet</span><span class="op">()</span> <span class="op">{</span> Token<span class="op">.</span><span class="fu">EOF</span> <span class="op">};</span></span>
-<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-6"><a href="#cb52-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">foreach</span><span class="op">(</span><span class="dt">var</span> X <span class="kw">in</span> G<span class="op">.</span><span class="fu">NonTerminals</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb52-7"><a href="#cb52-7" aria-hidden="true" tabindex="-1"></a>        Follows<span class="op">[</span>X<span class="op">]</span> <span class="op">=</span> <span class="kw">new</span> <span class="fu">FollowSet</span><span class="op">();</span></span>
-<span id="cb52-8"><a href="#cb52-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb52-9"><a href="#cb52-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-10"><a href="#cb52-10" aria-hidden="true" tabindex="-1"></a>    <span class="dt">bool</span> changed<span class="op">;</span></span>
-<span id="cb52-11"><a href="#cb52-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-12"><a href="#cb52-12" aria-hidden="true" tabindex="-1"></a>    <span class="kw">do</span> <span class="op">{</span></span>
-<span id="cb52-13"><a href="#cb52-13" aria-hidden="true" tabindex="-1"></a>        changed <span class="op">=</span> <span class="kw">false</span><span class="op">;</span></span>
-<span id="cb52-14"><a href="#cb52-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-15"><a href="#cb52-15" aria-hidden="true" tabindex="-1"></a>        <span class="kw">foreach</span><span class="op">(</span><span class="dt">var</span> p <span class="kw">in</span> G<span class="op">.</span><span class="fu">Productions</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb52-16"><a href="#cb52-16" aria-hidden="true" tabindex="-1"></a>            <span class="co">// X -&gt; W</span></span>
-<span id="cb52-17"><a href="#cb52-17" aria-hidden="true" tabindex="-1"></a>            <span class="dt">var</span> X <span class="op">=</span> p<span class="op">.</span><span class="fu">First</span><span class="op">;</span></span>
-<span id="cb52-18"><a href="#cb52-18" aria-hidden="true" tabindex="-1"></a>            <span class="dt">var</span> W <span class="op">=</span> p<span class="op">.</span><span class="fu">Last</span><span class="op">;</span></span>
-<span id="cb52-19"><a href="#cb52-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-20"><a href="#cb52-20" aria-hidden="true" tabindex="-1"></a>            <span class="kw">for</span><span class="op">(</span><span class="dt">int</span> i<span class="op">=</span><span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> W<span class="op">.</span><span class="fu">Length</span><span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
-<span id="cb52-21"><a href="#cb52-21" aria-hidden="true" tabindex="-1"></a>                <span class="dt">var</span> S <span class="op">=</span> W<span class="op">[</span>i<span class="op">];</span></span>
-<span id="cb52-22"><a href="#cb52-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-23"><a href="#cb52-23" aria-hidden="true" tabindex="-1"></a>                <span class="kw">if</span> <span class="op">(</span>S<span class="op">.</span><span class="fu">IsTerminal</span><span class="op">)</span></span>
-<span id="cb52-24"><a href="#cb52-24" aria-hidden="true" tabindex="-1"></a>                    <span class="kw">continue</span><span class="op">;</span></span>
-<span id="cb52-25"><a href="#cb52-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-26"><a href="#cb52-26" aria-hidden="true" tabindex="-1"></a>                <span class="dt">var</span> first <span class="op">=</span> <span class="fu">CalculateFirst</span><span class="op">(</span>W<span class="op">.</span><span class="fu">Sufix</span><span class="op">(</span>i<span class="op">+</span><span class="dv">1</span><span class="op">));</span></span>
-<span id="cb52-27"><a href="#cb52-27" aria-hidden="true" tabindex="-1"></a>                changed <span class="op">=</span> Follows<span class="op">[</span>S<span class="op">].</span><span class="fu">AddAll</span><span class="op">(</span>first<span class="op">.</span><span class="fu">Remove</span><span class="op">(</span>epsilon<span class="op">));</span></span>
-<span id="cb52-28"><a href="#cb52-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-29"><a href="#cb52-29" aria-hidden="true" tabindex="-1"></a>                <span class="kw">if</span> <span class="op">(</span>first<span class="op">.</span><span class="fu">Contains</span><span class="op">(</span>epsilon<span class="op">)</span> <span class="op">||</span> i <span class="op">==</span> W<span class="op">.</span><span class="fu">Length</span> <span class="op">-</span> <span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb52-30"><a href="#cb52-30" aria-hidden="true" tabindex="-1"></a>                    changed <span class="op">=</span> Follows<span class="op">[</span>S<span class="op">].</span><span class="fu">AddAll</span><span class="op">(</span>Follows<span class="op">[</span>X<span class="op">]);</span></span>
-<span id="cb52-31"><a href="#cb52-31" aria-hidden="true" tabindex="-1"></a>                <span class="op">}</span></span>
-<span id="cb52-32"><a href="#cb52-32" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
-<span id="cb52-33"><a href="#cb52-33" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
-<span id="cb52-34"><a href="#cb52-34" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-35"><a href="#cb52-35" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span> <span class="kw">while</span> <span class="op">(</span>changed<span class="op">);</span></span>
-<span id="cb52-36"><a href="#cb52-36" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb51"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> calculate_follows(g: Grammar, firsts: Firsts) <span class="op">-&gt;</span> Follows:</span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>    follows <span class="op">=</span> Follows()</span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a>    follows[g.start] <span class="op">=</span> {Token.EOF}</span>
+<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-6"><a href="#cb51-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> X <span class="kw">in</span> g.non_terminals:</span>
+<span id="cb51-7"><a href="#cb51-7" aria-hidden="true" tabindex="-1"></a>        follows[X] <span class="op">=</span> <span class="bu">set</span>()</span>
+<span id="cb51-8"><a href="#cb51-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-9"><a href="#cb51-9" aria-hidden="true" tabindex="-1"></a>    changed <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb51-10"><a href="#cb51-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-11"><a href="#cb51-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> changed:</span>
+<span id="cb51-12"><a href="#cb51-12" aria-hidden="true" tabindex="-1"></a>        changed <span class="op">=</span> <span class="va">False</span></span>
+<span id="cb51-13"><a href="#cb51-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-14"><a href="#cb51-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> p <span class="kw">in</span> g.productions:</span>
+<span id="cb51-15"><a href="#cb51-15" aria-hidden="true" tabindex="-1"></a>            X <span class="op">=</span> p.left</span>
+<span id="cb51-16"><a href="#cb51-16" aria-hidden="true" tabindex="-1"></a>            W <span class="op">=</span> p.right</span>
+<span id="cb51-17"><a href="#cb51-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-18"><a href="#cb51-18" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> i, s <span class="kw">in</span> <span class="bu">enumerate</span>(W):</span>
+<span id="cb51-19"><a href="#cb51-19" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> s.is_terminal:</span>
+<span id="cb51-20"><a href="#cb51-20" aria-hidden="true" tabindex="-1"></a>                    <span class="cf">continue</span></span>
+<span id="cb51-21"><a href="#cb51-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-22"><a href="#cb51-22" aria-hidden="true" tabindex="-1"></a>                first <span class="op">=</span> calculate_first(W[i<span class="op">+</span><span class="dv">1</span>:], firsts)</span>
+<span id="cb51-23"><a href="#cb51-23" aria-hidden="true" tabindex="-1"></a>                new_symbols <span class="op">=</span> first <span class="op">-</span> {epsilon} <span class="op">-</span> follows[s]</span>
+<span id="cb51-24"><a href="#cb51-24" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> new_symbols:</span>
+<span id="cb51-25"><a href="#cb51-25" aria-hidden="true" tabindex="-1"></a>                    follows[s].update(new_symbols)</span>
+<span id="cb51-26"><a href="#cb51-26" aria-hidden="true" tabindex="-1"></a>                    changed <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb51-27"><a href="#cb51-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-28"><a href="#cb51-28" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> epsilon <span class="kw">in</span> first <span class="kw">or</span> i <span class="op">==</span> <span class="bu">len</span>(W) <span class="op">-</span> <span class="dv">1</span>:</span>
+<span id="cb51-29"><a href="#cb51-29" aria-hidden="true" tabindex="-1"></a>                    new_symbols <span class="op">=</span> follows[X] <span class="op">-</span> follows[s]</span>
+<span id="cb51-30"><a href="#cb51-30" aria-hidden="true" tabindex="-1"></a>                    <span class="cf">if</span> new_symbols:</span>
+<span id="cb51-31"><a href="#cb51-31" aria-hidden="true" tabindex="-1"></a>                        follows[s].update(new_symbols)</span>
+<span id="cb51-32"><a href="#cb51-32" aria-hidden="true" tabindex="-1"></a>                        changed <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb51-33"><a href="#cb51-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-34"><a href="#cb51-34" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> follows</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Una vez tenemos todos los conjuntos <code>First</code> y <code>Follow</code> calculados, podemos decir formalmente en qué consiste una gramática LL(1). Para ello, construiremos una tabla <code>T</code>, donde asociaremos a cada par no-terminal <code>X</code> / token <code>t</code> una producción (a lo sumo). Dicha producción es la única que tiene sentido aplicar si se debe expandir el no-terminal <code>X</code> y el token actual es <code>t</code>.</p>
 <p>Las reglas generales para generar esta tabla son las siguientes:</p>
 <ol type="1">
@@ -747,23 +698,23 @@ Follow(Y) = { +, $, ) }</code></pre>
 <thead>
 <tr class="header">
 <th></th>
-<th style="text-align: center;">int</th>
-<th style="text-align: center;">+</th>
-<th style="text-align: center;">*</th>
-<th style="text-align: center;">(</th>
-<th style="text-align: center;">)</th>
-<th style="text-align: center;">$</th>
+<th>int</th>
+<th>+</th>
+<th>*</th>
+<th>(</th>
+<th>)</th>
+<th>$</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>E</td>
-<td style="text-align: center;">T X</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;">T X</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
+<td><strong>E</strong></td>
+<td>T X</td>
+<td></td>
+<td></td>
+<td>T X</td>
+<td></td>
+<td></td>
 </tr>
 </tbody>
 </table>
@@ -772,23 +723,23 @@ Follow(Y) = { +, $, ) }</code></pre>
 <thead>
 <tr class="header">
 <th></th>
-<th style="text-align: center;">int</th>
-<th style="text-align: center;">+</th>
-<th style="text-align: center;">*</th>
-<th style="text-align: center;">(</th>
-<th style="text-align: center;">)</th>
-<th style="text-align: center;">$</th>
+<th>int</th>
+<th>+</th>
+<th>*</th>
+<th>(</th>
+<th>)</th>
+<th>$</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>T</td>
-<td style="text-align: center;">int Y</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;">( E )</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
+<td><strong>T</strong></td>
+<td>int Y</td>
+<td></td>
+<td></td>
+<td>(E)</td>
+<td></td>
+<td></td>
 </tr>
 </tbody>
 </table>
@@ -797,48 +748,48 @@ Follow(Y) = { +, $, ) }</code></pre>
 <thead>
 <tr class="header">
 <th></th>
-<th style="text-align: center;">int</th>
-<th style="text-align: center;">+</th>
-<th style="text-align: center;">*</th>
-<th style="text-align: center;">(</th>
-<th style="text-align: center;">)</th>
-<th style="text-align: center;">$</th>
+<th>int</th>
+<th>+</th>
+<th>*</th>
+<th>(</th>
+<th>)</th>
+<th>$</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>X</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;">+ E</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
+<td><strong>X</strong></td>
+<td></td>
+<td>+E</td>
+<td></td>
+<td></td>
+<td><span class="math inline">\(\epsilon\)</span></td>
+<td><span class="math inline">\(\epsilon\)</span></td>
 </tr>
 </tbody>
 </table>
-<p>Finalmente para el no-terminal <code>Y</code>, la producción <code>Y -&gt; * T</code> es trivial, y la producción <code>Y -&gt; \epilon</code> se aplica para <code>+</code>, <code>$</code> y <code>)</code>.</p>
+<p>Finalmente para el no-terminal <code>Y</code>, la producción <code>Y -&gt; * T</code> es trivial, y la producción <code>Y -&gt; $\epsilon$</code> se aplica para <code>+</code>, <code>$</code> y <code>)</code>.</p>
 <table class="caption-top table">
 <thead>
 <tr class="header">
 <th></th>
-<th style="text-align: center;">int</th>
-<th style="text-align: center;">+</th>
-<th style="text-align: center;">*</th>
-<th style="text-align: center;">(</th>
-<th style="text-align: center;">)</th>
-<th style="text-align: center;">$</th>
+<th>int</th>
+<th>+</th>
+<th>*</th>
+<th>(</th>
+<th>)</th>
+<th>$</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>Y</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;">* T</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
+<td><strong>Y</strong></td>
+<td></td>
+<td><span class="math inline">\(\epsilon\)</span></td>
+<td>*T</td>
+<td></td>
+<td><span class="math inline">\(\epsilon\)</span></td>
+<td><span class="math inline">\(\epsilon\)</span></td>
 </tr>
 </tbody>
 </table>
@@ -847,89 +798,84 @@ Follow(Y) = { +, $, ) }</code></pre>
 <thead>
 <tr class="header">
 <th></th>
-<th style="text-align: center;">int</th>
-<th style="text-align: center;">+</th>
-<th style="text-align: center;">*</th>
-<th style="text-align: center;">(</th>
-<th style="text-align: center;">)</th>
-<th style="text-align: center;">$</th>
+<th>int</th>
+<th>+</th>
+<th>*</th>
+<th>(</th>
+<th>)</th>
+<th>$</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>E</td>
-<td style="text-align: center;">T X</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;">T X</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
+<td><strong>E</strong></td>
+<td>T X</td>
+<td></td>
+<td></td>
+<td>T X</td>
+<td></td>
+<td></td>
 </tr>
 <tr class="even">
-<td>T</td>
-<td style="text-align: center;">int Y</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;">( E )</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
+<td><strong>T</strong></td>
+<td>int Y</td>
+<td></td>
+<td></td>
+<td>(E)</td>
+<td></td>
+<td></td>
 </tr>
 <tr class="odd">
-<td>X</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;">+ E</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
+<td><strong>X</strong></td>
+<td></td>
+<td>+E</td>
+<td></td>
+<td></td>
+<td><span class="math inline">\(\epsilon\)</span></td>
+<td><span class="math inline">\(\epsilon\)</span></td>
 </tr>
 <tr class="even">
-<td>Y</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;">* T</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
+<td><strong>Y</strong></td>
+<td></td>
+<td><span class="math inline">\(\epsilon\)</span></td>
+<td>*T</td>
+<td></td>
+<td><span class="math inline">\(\epsilon\)</span></td>
+<td><span class="math inline">\(\epsilon\)</span></td>
 </tr>
 </tbody>
 </table>
 </section>
-<section id="parsing-descendente-no-recursivo" class="level2" data-number="5.4">
-<h2 data-number="5.4" class="anchored" data-anchor-id="parsing-descendente-no-recursivo"><span class="header-section-number">5.4</span> Parsing Descendente No Recursivo</h2>
+<section id="parsing-descendente-no-recursivo" class="level2" data-number="2.4">
+<h2 data-number="2.4" class="anchored" data-anchor-id="parsing-descendente-no-recursivo"><span class="header-section-number">2.4</span> Parsing Descendente No Recursivo</h2>
 <p>Una vez obtenida la tabla LL(1) podemos escribir un algoritmo de parsing descendente no recursivo. La idea general consiste en emplear una pila de símbolos, donde iremos construyendo la forma oracional que eventualmente derivará en la cadena a reconocer. Si leemos la pila desde el tope hasta el fondo, en todo momento tendremos una forma oracional que debe generar la parte de la cadena no reconocida.</p>
 <p>El símbolo en el tope de la pila representa el terminal o no-terminal a analizar. En caso de ser un terminal, debe coincidir con el token analizado. En caso de ser un no-terminal, se consulta la tabla LL(1) y se ejecuta la producción correspondiente, insertando en la pila (en orden inverso) la forma oracional en que deriva el no-terminal extraído:</p>
-<div class="sourceCode" id="cb58"><pre class="sourceCode cs code-with-copy"><code class="sourceCode cs"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="dt">bool</span> <span class="fu">NonRecursiveParse</span><span class="op">(</span>Grammar G<span class="op">,</span> Token<span class="op">[]</span> tokens<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a>    Stack<span class="op">&lt;</span>Symbol<span class="op">&gt;</span> stack <span class="op">=</span> <span class="kw">new</span> Stack<span class="op">&lt;</span>Symbol<span class="op">&gt;()</span> <span class="op">{</span> G<span class="op">.</span><span class="fu">Start</span> <span class="op">};</span></span>
-<span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> nextToken <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
-<span id="cb58-4"><a href="#cb58-4" aria-hidden="true" tabindex="-1"></a>    LLTable table <span class="op">=</span> <span class="fu">BuildLLTable</span><span class="op">(</span>G<span class="op">);</span></span>
-<span id="cb58-5"><a href="#cb58-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb58-6"><a href="#cb58-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">while</span> <span class="op">(</span>stack<span class="op">.</span><span class="fu">Count</span> <span class="op">&gt;</span> <span class="dv">0</span> <span class="op">&amp;&amp;</span> nextToken <span class="op">&lt;</span> tokens<span class="op">.</span><span class="fu">Length</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb58-7"><a href="#cb58-7" aria-hidden="true" tabindex="-1"></a>        <span class="dt">var</span> symbol <span class="op">=</span> stack<span class="op">.</span><span class="fu">Pop</span><span class="op">();</span></span>
-<span id="cb58-8"><a href="#cb58-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb58-9"><a href="#cb58-9" aria-hidden="true" tabindex="-1"></a>        <span class="kw">if</span> <span class="op">(</span>symbol<span class="op">.</span><span class="fu">IsTerminal</span> <span class="op">&amp;&amp;</span> tokens<span class="op">[</span>nextToken<span class="op">++]</span> <span class="op">!=</span> symbol<span class="op">.</span><span class="fu">Value</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb58-10"><a href="#cb58-10" aria-hidden="true" tabindex="-1"></a>            <span class="kw">return</span> <span class="kw">false</span><span class="op">;</span></span>
-<span id="cb58-11"><a href="#cb58-11" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
-<span id="cb58-12"><a href="#cb58-12" aria-hidden="true" tabindex="-1"></a>        <span class="kw">else</span> <span class="kw">if</span> <span class="op">(</span>symbol<span class="op">.</span><span class="fu">IsNonTerminal</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb58-13"><a href="#cb58-13" aria-hidden="true" tabindex="-1"></a>            <span class="dt">var</span> prod <span class="op">=</span> LLTable<span class="op">[</span>symbol<span class="op">,</span> tokens<span class="op">[</span>nextToken<span class="op">]];</span></span>
-<span id="cb58-14"><a href="#cb58-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb58-15"><a href="#cb58-15" aria-hidden="true" tabindex="-1"></a>            <span class="kw">if</span> <span class="op">(</span>prod <span class="op">==</span> <span class="kw">null</span><span class="op">)</span></span>
-<span id="cb58-16"><a href="#cb58-16" aria-hidden="true" tabindex="-1"></a>                <span class="kw">return</span> <span class="kw">false</span><span class="op">;</span></span>
-<span id="cb58-17"><a href="#cb58-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb58-18"><a href="#cb58-18" aria-hidden="true" tabindex="-1"></a>            <span class="kw">for</span><span class="op">(</span><span class="dt">var</span> s <span class="kw">in</span> prod<span class="op">.</span><span class="fu">Reverse</span><span class="op">())</span> <span class="op">{</span></span>
-<span id="cb58-19"><a href="#cb58-19" aria-hidden="true" tabindex="-1"></a>                stack<span class="op">.</span><span class="fu">Push</span><span class="op">(</span>s<span class="op">);</span></span>
-<span id="cb58-20"><a href="#cb58-20" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
-<span id="cb58-21"><a href="#cb58-21" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
-<span id="cb58-22"><a href="#cb58-22" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb58-23"><a href="#cb58-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb58-24"><a href="#cb58-24" aria-hidden="true" tabindex="-1"></a>    <span class="kw">return</span> stack<span class="op">.</span><span class="fu">Count</span> <span class="op">==</span> <span class="dv">0</span> <span class="op">&amp;&amp;</span> nextToken <span class="op">==</span> tokens<span class="op">.</span><span class="fu">Length</span><span class="op">;</span></span>
-<span id="cb58-25"><a href="#cb58-25" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb57"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> non_recursive_parse(<span class="va">self</span>, g: Grammar, tokens: <span class="bu">list</span>) <span class="op">-&gt;</span> <span class="bu">bool</span>:</span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>    stack <span class="op">=</span> [g.start]</span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a>    next_token <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a>    table <span class="op">=</span> build_ll_table(g)</span>
+<span id="cb57-5"><a href="#cb57-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-6"><a href="#cb57-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> stack <span class="kw">and</span> next_token <span class="op">&lt;</span> <span class="bu">len</span>(tokens):</span>
+<span id="cb57-7"><a href="#cb57-7" aria-hidden="true" tabindex="-1"></a>        symbol <span class="op">=</span> stack.pop()</span>
+<span id="cb57-8"><a href="#cb57-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-9"><a href="#cb57-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> symbol.is_terminal <span class="kw">and</span> tokens[next_token] <span class="op">!=</span> symbol.value:</span>
+<span id="cb57-10"><a href="#cb57-10" aria-hidden="true" tabindex="-1"></a>            next_token <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb57-11"><a href="#cb57-11" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> <span class="va">False</span></span>
+<span id="cb57-12"><a href="#cb57-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">elif</span> symbol.is_non_terminal:</span>
+<span id="cb57-13"><a href="#cb57-13" aria-hidden="true" tabindex="-1"></a>            prod <span class="op">=</span> table[(symbol, tokens[next_token])]</span>
+<span id="cb57-14"><a href="#cb57-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-15"><a href="#cb57-15" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> prod <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb57-16"><a href="#cb57-16" aria-hidden="true" tabindex="-1"></a>                <span class="cf">return</span> <span class="va">False</span></span>
+<span id="cb57-17"><a href="#cb57-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-18"><a href="#cb57-18" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> s <span class="kw">in</span> <span class="bu">reversed</span>(prod):</span>
+<span id="cb57-19"><a href="#cb57-19" aria-hidden="true" tabindex="-1"></a>                stack.append(s)</span>
+<span id="cb57-20"><a href="#cb57-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-21"><a href="#cb57-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">len</span>(stack) <span class="op">==</span> <span class="dv">0</span> <span class="kw">and</span> next_token <span class="op">==</span> <span class="bu">len</span>(tokens)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>En la práctica la mayoría de las gramáticas interesantes no son LL(1). Sin embargo, con suficiente esfuerzo pueden lograrse gramáticas LL(k) para un valor k &gt; 1, que también pueden ser parseadas con técnicas similares. Por otro lado, para gramáticas suficientemente simples (como las expresiones aritméticas) este parser es muy eficiente, y fácil de implementar.</p>
 <p>Finalmente, en el caso que la gramática no sea LL(1), este análisis nos permite reducir al mínimo necesario la cantidad de producciones a probar en cada terminal. La tabla LL(1) en estos casos pudiera tener más de una producción en cada entrada, y en esos casos implementaríamos un parser recursivo que solamente probara aquellas producciones listadas en la tabla. De esta forma, podemos obtener el parser (descendiente) más eficiente posible, sin perder en expresividad.</p>
 <p>De todas formas las gramáticas LL(1) son un conjunto estrictamente menor que las gramáticas libres del contexto. Más adelante veremos estrategias de parsing basadas en principios similares que permiten reconocer lenguajes y gramáticas más expresivas.</p>
 
 
-</section>
 </section>
 
 </main> <!-- /main -->
@@ -1334,13 +1280,13 @@ Follow(Y) = { +, $, ) }</code></pre>
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./chap1.html" class="pagination-link" aria-label="---">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">—</span></span>
+      <a href="./chap1.html" class="pagination-link" aria-label="Análisis Lexicográfico">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Análisis Lexicográfico</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./chap3.html" class="pagination-link" aria-label="---">
-        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">—</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./chap3.html" class="pagination-link" aria-label="Parsing Ascendente">
+        <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Parsing Ascendente</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
