@@ -1,13 +1,13 @@
 ---
-title: "Introducción a la Compilación"
-format: revealjs
+title: "¿Qué esperan aprender en Compilación?"
+format: beamer
 ---
 
-# Introducción a la Compilación
+# ¿Qué esperan aprender en Compilación?
 
-## ¿Qué esperan aprender en la asignatura?
+## ¿Qué esperan aprender en Compilación?
 
-. . .
+
 
 - Reconocer problemas típicos de compilación y teoría de lenguajes.
 - Crear reconocedores y generadores de lenguajes.
@@ -21,7 +21,8 @@ format: revealjs
 
 ## ¿Por qué hizo falta esta ciencia?
 
-> Al principio, no había compiladores...
+*Al principio, no había compiladores...*
+
 
 ### Primeros pasos
 
@@ -30,11 +31,13 @@ format: revealjs
 - 1958: ALGOL, Friedrich Bauer
 - 1960: COBOL, Grace Hooper (primer compilador "multiplataforma" para UNIVAC II y RCA 501)
 
+\
+
 > En este punto, los compiladores se volvieron demasiado complicados para hacerlos a mano, y hubo que "hacer ciencia"...
 
 ## ¿Qué estudia entonces la compilación?
 
-. . .
+
 
 > **¿Cómo hablar con las computadoras?**
 
@@ -55,45 +58,45 @@ format: revealjs
 
 ## ¿Qué es un compilador?
 
-> Depende de a quién le preguntes...
+*Depende de a quién le preguntes...*
 
-\ ![](../graphics/mountain.svg){ width=100% }
+\ ![](graphics/mountain.pdf){ width=100% }
 
 ## ¿Qué vamos a aprender en el curso?
 
 ### Tema 1: Lenguajes
 
-- Teoría de lenguajes formales (autómatas, gramáticas, ...)
+- Teoría de lenguajes formales
 - Algoritmos de reconocimiento y _parsing_
+- Computabilidad
 
 ### Tema 2: Semántica
 
 - Contextos y consistencia del uso de símbolos
-- Consistencia e inferencia de tipos
+- Sistemas de tipos
+- Verificación de correctitud
 
 ### Tema 3: Arquitectura
 
 - Generación de código de máquina
-- Máquinas virtuales, manejo de memoria
+- Máquinas virtuales y manejo de memoria
 - Optimización de código
 
 ## ¿Cómo lo vamos a aprender?
 
-> Este curso no es _top-down_ ni _bottom-up_, sino todo lo contrario ;)
-
-### Algunas reglas básicas
-
 - La guía del curso es la construcción de un compilador
-- En las clases prácticas **hay** que programar
 - Desde el primer día estaremos compilando "algo"
-- Cada clase práctica añadiremos algo nuevo al lenguaje
+- Cada conferencia añadiremos algo nuevo al lenguaje
 - Las conferencias no lo dicen todo
+- En las clases prácticas aprenderán también herramientas y técnicas prácticas
 - Los contenidos se introducen a medida que se complejizan las clases prácticas
+- Tendrán que programar mucho por su cuenta
 
 ## ¿Cómo lo vamos a aprender?
 
-> Durante todo el curso nos basaremos en el lenguaje **COOL** (Class Object-Oriented Language)
+Diseñaremos un lenguaje de programación de propósito general llamado **HULK** (Havana University Language for Kompilers):
 
+- Lenguaje didáctico e incremental
 - Orientado a objetos
 - Herencia simple, polimorfismo
 - Clases, atributos y métodos
@@ -105,47 +108,39 @@ format: revealjs
 - Casi todo es una expresión
 - Casting explícito
 - Recolección de basura
-
-## ¿Cómo lo vamos a aprender?
-
-### Un "Hola Mundo" algo edulcorado en **COOL**
-
-```ruby
-class Message inherits IO {
-    sayHello(who: String) : Object {
-        let greeting: String <- "Hello " in {
-            out_string(greeting);
-            out_string(who);
-        }
-    };
-};
-
-class Main {
-    main(): Object {
-        new Message.sayHello("World!")
-    };
-};
-```
+- Muy extensible
 
 ## ¿Cómo lo vamos a evaluar?
 
-- El examen final tiene 6 preguntas, 2 de cada tema.
-- En cada pregunta se puede obtener **suficiente** o **excelente**
-- Es imprescindible obtener **suficiente** en las 6 preguntas para aprobar.
-- Es necesario obtener **excelente** en las 6 preguntas para terminar con 5.
+Tendremos 3 exámenes parciales, un examen final, y un proyecto.
 
-##  Pero no es tan difícil
+- El examen final evalúa todos los temas.
+- En cada tema se puede obtener **suficiente** o **excelente**
+- Es imprescindible obtener **suficiente** en todos los temas para aprobar.
+- Es necesario obtener **excelente** en todos los temas para terminar con 5.
+- Los exámenes parciales pueden convalidar parcial o totalmente para el examen final.
+- Tener un buen desempeño en las clases prácticas puede convalidar un tema.
 
-- Durante el curso hay 3 examenes parciales y 3 proyectos.
-- Un proyecto con **excelente** convalida ambas preguntas del tema con **excelente**.
-- Un examen parcial con **excelente** convalida una pregunta del tema con **excelente** y otra con **suficiente**.
-- Un proyecto con **suficiente** convalida con suficiente ambas preguntas del tema.
-- Un examen parcial con **suficiente** convalida una pregunta del tema con **suficiente**.
-- Excepcionalmente, los estudiantes con un desempeño impecable en clases prácticas pueden recibir bonificaciones adicionales.
+## Sobre el proyecto
+
+El proyecto consiste en implementar un DSL (Domain Specific Language)
+para una aplicación de su elección.
+
+- Equipos de 3 personas.
+- Se desarrollará y entregará en GitHub.
+- Puede ser combinado con proyectos de otras asignaturas.
+
+El DSL diseñado tiene que cumplir:
+
+- Ser un lenguaje Turing-completo (ya aprenderán lo que significa eso).
+- Sintaxis apropiada para el dominio escogido (no vale simplemente reimplementar Python).
+- Tener alguna funcionalidad interesante en la fase de verificación semántica.
 
 ## Para la clase práctica
 
-> Vamos a hacer un evaluador de expresiones
+**Vamos a hacer un evaluador de expresiones.**
+
+\
 
 ### Requisitos
 
@@ -162,3 +157,8 @@ class Main {
 - Nunca es demasiado tarde para tener éxito, pero cada vez cuesta más.
 - Cualquiera se cae una, dos, tres veces, pero hay que levantarse.
 
+## Bibliografía
+
+{ width=29% }
+{ width=32% }
+{ width=35.1% }

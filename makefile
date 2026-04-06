@@ -1,6 +1,11 @@
 # Compilers Course - Quarto Build System
 
+export QUARTO_TECH_PREVIEW=1
+
 .PHONY: all book book-html book-pdf slides slides-pdf slides-html publish clean
+
+# All
+all: book slides
 
 # Book targets
 book: book-html book-pdf
@@ -12,20 +17,14 @@ book-pdf:
 	cd content && uv run quarto render --to pdf
 
 # Slides targets
-slides: slides-html slides-pdf
-
-slides-html:
-	cd slides && for f in *.qmd; do uv run quarto render "$$f" --to revealjs; done
+slides: slides-pdf
 
 slides-pdf:
-	cd slides && for f in *.qmd; do uv run quarto render "$$f" --to pdf; done
+	cd slides && for f in *.qmd; do uv run quarto render "$$f" --to beamer; done
 
 # Publish to GitHub Pages
 publish:
 	cd content && uv run quarto publish gh-pages
-
-# All
-all: book slides
 
 # Clean
 clean:

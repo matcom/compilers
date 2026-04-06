@@ -1,3 +1,8 @@
 # Quarto output
 _book/
 _freeze/
+
+/.quarto/
+*_files
+*.aux
+*.pdf

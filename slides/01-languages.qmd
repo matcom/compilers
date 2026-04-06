@@ -1,29 +1,17 @@
 ---
-title: "Introducción a la Compilación: Lenguajes"
-format: revealjs
+title: "¿Qué es un lenguaje?"
+format: beamer
 ---
 
-# Introducción a la Compilación: Lenguajes
+# ¿Qué es un lenguaje?
 
-``` {python}
 
-import sys
-import os
 
-sys.path.append(os.path.abspath(os.curdir))
+**Definición**: Un lenguaje $L$ es un conjunto de cadenas sobre un alfabeto $V$.
 
-from source.trees import Tree
-```
 
-## ¿Qué es un lenguaje?
 
-. . .
-
-> **Definición**: Un lenguaje $L$ es un conjunto de cadenas sobre un alfabeto $V$.
-
-. . .
-
-### Ejemplos
+## Ejemplos
 
 - $L_1 = \{s \in \{a,b\}^* | \#_a(s) = \#_b(s) \}$
 - $L_2 = \{s \in \{a,b\}^* | \#_a(s) \neq \#_b(s) \}$
@@ -31,20 +19,25 @@ from source.trees import Tree
 - $L_4 = \{s \in \{0,1\}^* | s\textrm{ es un número primo} \}$
 - $L_5 = \{s \in Unicode^* | s\textrm{ es un programa de C\# válido} \}$
 
-## ¿Cómo definir un lenguaje formalmente?
+# ¿Cómo definir un lenguaje formalmente?
 
 De forma que sea fácil (computacionalmente):
 
-- Decir si una cadena $s$ pertenece o no (**problema de la palabra**).
+- Decir si una cadena $s$ pertenece o no (*problema de la palabra*).
 - Enumerar todas las cadenas del lenguaje (aún si es infinito).
 
-> ¿Es esto posible para todo lenguaje?
+¿Es esto posible para todo lenguaje?
 
-. . .
+
 
 **Ej:** Sea $L$ el lenguaje de todos los programas de C\# que imprimen `"Hola Mundo"` ;)
 
-## Una definición constructiva de lenguaje
+
+
+**Pregunta:** ¿Son estas dos operaciones (enumerar y reconocer) equivalentes? ¿Si tengo una ya tengo la otra?
+
+
+# Una definición constructiva de lenguaje
 
 Tomemos el lenguaje $L_1$ e intentemos generar **todas** sus cadenas (recursivamente):
 
@@ -56,11 +49,13 @@ def generate():
         yield "a" + s + "b"
 ```
 
+
+
 A este tipo de lenguajes les llamamos **recursivamente enumerables** o **Turing-computables**.
 
 Podemos definir $L_1$ como el lenguaje de todas las cadenas que salen del método `generate`.
 
-## Formalizando esta idea
+# Formalizando esta idea
 
 **Definición:** Una gramática *libre del contexto* es una tupla $G = <T,N,S,P>$ donde:
 
@@ -70,7 +65,7 @@ Podemos definir $L_1$ como el lenguaje de todas las cadenas que salen del métod
 - $P$ es un conjunto de **producciones** de la forma $A \rightarrow \alpha$ donde
   $A \in N$ y $\alpha \in \{T \times N\}^+$ o $\alpha = \epsilon$.
 
-. . .
+
 
 **Ejemplo**:
 
@@ -79,7 +74,7 @@ $S \rightarrow a S b | \epsilon$
 - ¿Qué lenguaje define esta gramática?
 - ¿Cómo podemos estar seguros (formalmente seguros)?
 
-## ¿Qué lenguaje genera una gramática?
+# ¿Qué lenguaje genera una gramática?
 
 - Una forma oracional es una expresión $\alpha \in \{T \times N\}^+$.
 - Una oración es una expresión $\alpha \in \{T\}^+$, es decir, una cadena.
@@ -95,7 +90,7 @@ una secuencia de derivaciones $S \rightarrow \alpha_1 \rightarrow \ldots \alpha_
 - $aaSbb \rightarrow a a b b$ ($P_2$)
 - $aabb \in L(G)$
 
-## En forma de árbol
+# En forma de árbol
 
 **Definición:** Un árbol de derivación de una cadena $\omega$ es un árbol
 donde:
@@ -105,20 +100,9 @@ donde:
 - La raíz es $S$.
 - Cada nodo visto con sus hijos representa una derivación de un no-terminal es una forma oracional.
 
-``` {python}
-#| output: asis
+{ width=50% }
 
-Tree("S",
-    Tree("a"),
-    Tree("S",
-        Tree("a"),
-        Tree("b")
-        ),
-    Tree("b")
-).print(float=False, width="35%")
-```
-
-## Demostrando el lenguaje que genera una gramática
+# Demostrando el lenguaje que genera una gramática
 
 Para demostrar que $L(G) = L$ necesitamos demostrar $L(G) \subseteq L$ y $L \subseteq L(G)$.
 
@@ -127,23 +111,29 @@ Para demostrar que $L(G) = L$ necesitamos demostrar $L(G) \subseteq L$ y $L \sub
 
 **No se te olvide ver en pizarra el ejemplo!**
 
-## ¿Para qué sirve todo esto?
+# ¿Para qué sirve todo esto?
 
 Si tenemos una **gramática** para nuestro lenguaje,
 y un algoritmo para obtener un **árbol de derivación**
 de cualquier cadena, tenemos el problema de _parsing_ resuelto!
 
-. . .
 
-### Una gramática de expresiones
+
+\
+
+## Una gramática de expresiones
 
 $E \rightarrow E + E | E - E | E * E | E / E | (E) | n$
 
-> ¿De cuántas formas distintas puedo generar $n * n + n$?
+\
 
-A estas gramáticas les llamaremos **ambiguas**, evidentemente, queremos gramáticas **no ambiguas** (¿por qué?).
+¿De cuántas formas distintas puedo generar $n * n + n$?
 
-## Formalizando
+
+
+A estas gramáticas les llamaremos **ambiguas**. Evidentemente, queremos gramáticas **no ambiguas** (¿por qué?).
+
+# Formalizando
 
 - Llamaremos **parsing izquierdo** o secuencia de derivaciones extrema izquierda,
 a una secuencia de derivaciones, donde siempre se sustituye primero el no-terminal más a la izquierda.
@@ -153,7 +143,7 @@ a una secuencia de derivaciones, donde siempre se sustituye primero el no-termin
 **Definición:** una gramática es **ambigua** si existe al menos una cadena con dos (o más) derivaciones extrema izquierda (derecha)
 posibles. Si esto no sucede para *ninguna* cadena, la gramática es **no ambigua**.
 
-## El problema de *parsing*
+# El problema de *parsing*
 
 - Dada una gramática $G$, y una cadena $\omega$, el problema fundamental
 que nos interesa será el *parsing*, que consiste en decir si $\omega \in L(G)$,
@@ -162,12 +152,17 @@ y en caso positivo, dar un **árbol de derivación** para $\omega$.
 obtener un algoritmo que construya este árbol de derivación para toda cadena $\omega$.
 - Al algoritmo más sencillo que se nos puede ocurrir le llamaremos *parsing recursivo descendente*.
 
-## Parsing Recursivo Descendente
+# Parsing Recursivo Descendente
 
 - La idea fundamental consiste en construir recursivamente la secuencia de derivaciones,
-eligiendo convenientemente la producción que "tocaría" aplicar.
+eligiendo convenientemente la producción que "tocaría" aplicar (¿cómo?).
+
+
+
 - Si la gramática cumple ciertas características (que llamaremos por ahora LL(1)),
 será posible hacer esto sin *backtrack* en $O(|\omega|)$.
+
+
 
 **Ejemplo**:
 
@@ -177,7 +172,7 @@ $T \rightarrow F * T | F$
 
 $F \rightarrow (E) | n$
 
-## Un meta-algoritmo de parsing
+# Parsing Recursivo Descendente
 
 **Idea general:** Cada no-terminal se convierte en un método recursivo.
 Cada producción es una rama posible.
@@ -185,13 +180,29 @@ Cada producción es una rama posible.
 ```python
 def parse_E(tokens):
     t = parse_T(tokens)
-    if tokens and tokens[0] == '+':
-        tokens.pop(0)
-        e = parse_E(tokens)
-        return t + e
+    if tokens:
+        if tokens[0] == '+':
+            tokens.pop(0)
+            e = parse_E(tokens)
+            return SumExpr(t, e)
+        else:
+            raise ParsingError("Expected '+'")
     else:
         return t
 ```
 
-> Por ahora no podemos formalizar este algoritmo, pero vale la pena
-intentar hacerlo en clase práctica!
+¡El próximo paso será formalizar este algoritmo!
+
+# Concluyendo
+
+Hoy hemos dado un primer vistazo a una idea central en Compilación, que va a resonar en todo el curso:
+
+- Para resolver el problema de *parsing*, hemos creado un lenguaje declarativo de alto nivel (*gramáticas*), con el cual es posible (aunque todavía no sabemos cómo) construir automáticamente una máquina (formalmente un *autómata*) de parsing descrito en un lenguaje imperativo de bajo nivel.
+
+
+
+¡Esto es exactamente la noción básica de "compilar", pero aplicada al propio proceso de compilación!
+
+
+
+Intuitivamente, la idea que va a salir de aquí (y que demostraremos durante el curso) es que *los lenguajes y las máquinas son equivalentes*.

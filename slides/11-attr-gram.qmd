@@ -1,162 +1,99 @@
 ---
-title: "Construyendo el AST"
-format: revealjs
+title: "Evaluando expresiones"
+format: beamer
 ---
 
-% Gramáticas Atributadas
-% MSc. Alejandro Piad Morffis
-% MatCom, UH (CC BY-SA-NC 4.0)
+# Evaluando expresiones
 
-# Construyendo el AST
+## Recordemos la gramática LL de expresiones
 
-## Recordemos la gramática LR de expresiones
+    E -> T X
+    X -> + T X | - T X | epsilon
+    T -> F Y
+    Y -> * F Y | / F Y | epsilon
+    F -> ( E ) | i
 
-    E -> E + T
-       | E - T
-       | T
+## ¿Cómo evaluar una expresión cualquiera?
 
-    T -> T * F
-       | T / F
-       | F
+**Ej:** `i{3} * ( i{2} + i{5} )`
 
-    F -> ( E )
-       | i
+# Veamos el árbol de derivación (_déjalo en pizarra!_)
 
-# Jerarquía de AST
+{ height=90% }
 
-```cs
-public enum Op { Add, Sub, Mult, Div }
+# Implementando un evaluador de expresiones
 
-public abstract class Expression : {
-
-}
-
-public class BinaryExpr : Expression {
-    public Op Operator;
-    public Expression Left;
-    public Expression Right
-}
-
-public class Number : Expression {
-    public float Value;
-}
+```python
+def eval(node, val=None):
+    if node.type == 'i':
+        return float(node.lex)
+    # ...
+    if node.type == 'E':
+        val = eval(node.children[0])
+        return eval(node.children[1], val)
+    if node.type == 'X':
+        if not node.children:
+            return val
+        if node.children[0].type == '+':
+            val = val + eval(node.children[1])
+        elif node.children[0] == '-':
+            val = val - eval(node.children[1])
+        return eval(node.children[2], tmp)
+    # ...
 ```
 
-# Árbol de derivación
+# ¿Qué hay de malo con este código?
 
-```cs
-public enum Symbol { E, T, add, sub, mult,
-                     div, i, left, right }
+- LL nos obliga a hacer malabares con los valores
+- Montón de ramas `if/else` similares
+- Para saber que producción se aplicó tengo que mirar los hijos
+- Para cualquier gramática LL va a ser algo igualmente horrible
+- En general es poco OO y bastante feo...
 
-public class Node {
-    public Symbol Symbol;
-    public List<Node> Children = new ...
-}
-```
 
-. . .
 
-```cs
-public class Node {
-    // ...
+## Parece código escrito por una máquina...
 
-    public Expression GetAST() {
-        // ...
-    }
-}
-```
+Para cada no-terminal en el árbol de derivación,
+según la producción aplicada, hay un código específico.
 
-# Producciones semánticamente significativas
+## ¿Podemos generalizar este proceso, y dejárselo a las máquinas?
 
-Podemos dividir las producciones en tres grupos:
+# Extendamos el concepto de gramática
 
-* las producciones que derivan en una expresión binaria;
-* las producciones que derivan en un solo no-terminal, incluyendo `F -> ( E )`; y
-* el símbolo `i` que es el único terminal con una función semántica asociada.
-
-# Producciones binarias
-
-```cs
-public Expression GetAST() {
-    // X -> Y o Z
-    if (Children.Count == 3 &&
-        Children[1].Symbol >= 2) {
-        return new BinaryExpr() {
-            Left  = Children[0].GetAST(),
-            Op    = GetOperator(Children[1]),
-            Right = Children[2].GetAST()
-        };
-    }
-}
-```
-
-# Producciones simples
-
-```cs
-public Expression GetAST() {
-    // ...
-    // X -> Y
-    else if (Children.Count == 1) {
-        return Children[0].GetAST();
-    }
-}
-```
-
-# Producción `F -> ( E )`
-
-```cs
-public Expression GetAST() {
-    // ...
-    // F -> ( E )
-    else if (Children.Count == 3 &&
-             Children[1].Symbol == Symbol.E) {
-        return Children[1].GetAST();
-    }
-}
-```
-
-# Producción `i`
-
-```cs
-public Expression GetAST() {
-    // ...
-    // i
-    else if (Children.Count == 0 &&
-             Symbol == Symbol.i) {
-        return new Number() {
-            Value = /* valor del token */
-        };
-    }
-
-    throw new InvalidParseTreeException("xP");
-}
-```
+    E -> T X      { X.val=T.exp, E.exp=X.exp }
+    X -> + T X    { X1.val=X0.val + T.exp, X0.exp=X1.exp }
+       | - T X    { X1.val=X0.val - T.exp, X0.exp=X1.exp }
+       | epsilon  { X0.exp=X0.val }
+    T -> F Y      { Y.val=F.exp, T.exp=Y.exp }
+    Y -> * F Y    { Y1.val=Y0.val * F.exp, Y0.exp=Y1.exp }
+       | / F Y    { Y1.val=Y0.val / F.exp, Y0.exp=Y1.exp }
+       | epsilon  { Y0.exp=Y0.val }
+    F -> ( E )    { F.exp=E.exp }
+       | i        { F.exp=i.exp }
 
 # Gramáticas atributadas
 
 Una **gramática atributada** es una tupla $<G,A,R>$, donde:
 
-* $G = <S,P,N,T>$ es una gramática libre del contexto,
-* $A$ es un conjunto de atributos de la forma $X \cdot a$
+- $G = <S,P,N,T>$ es una gramática libre del contexto,
+- $A$ es un conjunto de atributos de la forma $X \cdot a$
   donde $X \in N \cup T$ y $a$ es un identificador único entre todos los atributos del mismo símbolo, y
-* $R$ es un conjunto de reglas de la forma $<p_i, r_i>$ donde $p_i \in P$ es una producción $X \to Y_1, \ldots, Y_n$, y $r_i$ es una regla de la forma:
+- $R$ es un conjunto de reglas de la forma $<p_i, r_i>$ donde $p_i \in P$ es una producción $X \to Y_1, \ldots, Y_n$, y $r_i$ es una regla de la forma:
     1. $X \cdot a = f(Y_1 \cdot a_1, \ldots, Y_n \cdot a_n)$, o
     2. $Y_i \cdot a = f(X \cdot a_0, Y_1 \cdot a_1, \ldots, Y_n \cdot a_n)$.
 
     En el primer caso decimos que $a$ es un **atributo sintetizado**, y en el segundo caso, un **atributo heredado**.
 
-# Computando el AST
+# Intuitivamente...
 
-    E -> E + T { E0.ast = exp(+, E1.ast, T.ast) }
-       | E - T { E0.ast = exp(-, E1.ast, T.ast) }
-       | T     { E0.ast = T.ast }
+- En cada no-terminal hay atributos, que pueden almacenar algún valor
+- En cada terminal hay atributos que pone mágicamente el tokenizer
+- En cada producción hay un conjunto de reglas que invlucran a algunos de los atributos
 
-    T -> T * F { T0.ast = exp(*, T1.ast, F.ast) }
-       | T / F { T0.ast = exp(/, T1.ast, F.ast) }
-       | F     { T0.ast = F.ast }
+## Todavía no hemos dicho en qué orden evaluar los atributos
 
-    F -> ( E ) {  F.ast = E.ast }
-       | i     {  F.ast = n }
+De momento asumiremos que existe una forma de evaluarlos...
 
 # Resolviendo dependencias del contexto
 
@@ -202,31 +139,23 @@ Una **gramática atributada** es una tupla $<G,A,R>$, donde:
 
 ## Gramáticas más simples
 
-* Más fácil de entender
-* Más difícil de parsear
-* Cambios menos disruptores
+- Más fácil de entender
+- Más difícil de parsear
+- Cambios menos disruptores
 
 ## Gramáticas más complejas
 
-* Más difícil de entender
-* Más eficiente de parsear
-* Cambios más disruptores
+- Más difícil de entender
+- Más eficiente de parsear
+- Cambios más disruptores
 
 ## La **legibilidad** y la **mantenibilidad** cuentan !!
 
-# Computando el valor de los atributos
+# Computando el valor de los atributos (_en pizarra_)
 
 ## Sea la cadena `aabbcc`, tenemos un árbol de derivación
 
-         S
-       / | \
-      A  B  C
-     /| / \ |\
-    a A b B c C
-     /|  /|  /|
-    a A b B c C
-      |   |   |
-      e   e   e
+
 
 # Construyendo un *grafo de dependencia*
 
@@ -242,7 +171,13 @@ Una **gramática atributada** es una tupla $<G,A,R>$, donde:
 * saber si la cadena es evaluable, y
 * determinar un orden para evaluar los atributos.
 
+
+
 ## Decimos que la gramática es evaluable si y solo si el grafo de dependencia de todo árbol de derivación es un **DAG**.
+
+
+
+**Pregunta interesante:** ¿Se puede determinar a partir de la gramática si en todo árbol de derivación necesariamente tendremos un DAG?
 
 # Algunas gramáticas particulares son fáciles de evaluar:
 
@@ -250,7 +185,9 @@ Una **gramática atributada** es una tupla $<G,A,R>$, donde:
 
 Una gramática atributada es **s-atributada** si y solo si, para toda regla $r_i$ asociada a una producción $X \to Y_1, \ldots, Y_n$, se cumple que $r_i$ es de la forma $X \cdot a = f(Y_1 \cdot a_1, \ldots, Y_n \cdot a_n)$.
 
-. . .
+
+
+
 
 ## Gramáticas **l-atributadas**:
 
@@ -259,43 +196,36 @@ Una gramática atributada es **l-atributada** si y solo si toda regla $r_i$ asoc
 1. $X \cdot a = f(Y_1 \cdot a_1, \ldots, Y_n \cdot a_n)$, ó
 2. $Y_i \cdot a_i = f(X \cdot a, Y_1 \cdot a_1, \ldots, Y_{i-1} \cdot a_{i-1})$.
 
-# Evaluando atributos en el *parsing* LL
+# Evaluando atributos en el árbol de derivación
 
-    E -> T X      { X.hval = T.sval, E.sval = X.sval }
-    T -> i Y      { Y.hval = i.val,  T.sval = Y.sval }
-       | ( E )    { T.sval = E.sval }
-    X -> + E      { X.sval = X.hval + E.sval }
-       | - E      { X.sval = X.hval - E.sval }
-       | epsilon  { X.sval = X.hval }
-    Y -> * T      { Y.sval = Y.hval * T.sval }
-       | / T      { Y.sval = Y.hval / T.sval }
-       | epsilon  { Y.sval = Y.hval }
+- Los atributos **heredados** se evalúan top-down, left-to-right
+- Los atributos **sintetizados** se evalúan bottom-up
 
-# Evaluando atributos en el *parsing* LR
+## ¿Se puede hacer en un solo recorrido?
 
-    E -> E + T  { E0.val = E1.val + T.val }
-       | E - T  { E0.val = E1.val - T.val }
-       | T      { E0.val = T.val }
-    T -> T * F  { T0.val = T1.val * F.val }
-       | T / F  { T0.val = T1.val / F.val }
-       | F      { T0.val = F.val }
-    F -> i      {  F.val = i.val }
-       | ( E )  {  F.val = E.val }
 
-# The road so far
 
-* Definimos una gramática libre del contexto que capture las propiedades sintácticas del lenguaje, de la forma más "natural" posible (con la menor cantidad de producciones "superfluas").
-* Diseñamos un árbol de sintaxis abstracta con los tipos de nodos que representan exactamente las funciones semánticas de nuestro lenguaje.
-* Definimos las reglas semánticas que construyen el árbol de sintaxis abstracta, preferiblemente quedando una gramática s-atributada.
-* Construimos un *lexer* a partir de las expresiones regulares que definen a los tokens.
-* Construimos un *parser*, idealmente LALR (o LR si no es posible) que además de reconocer la cadena, nos evalúe y construya el AST durante el proceso de *parsing*.
-* Implementamos los predicados semánticos restantes sobre el AST construido.
+```
+E -> T X      { X.val=T.exp, E.exp=X.exp }
+X -> + T X    { X1.val=X0.val + T.exp, X0.exp=X1.exp }
+   | - T X    { X1.val=X0.val - T.exp, X0.exp=X1.exp }
+   | epsilon  { X0.exp=X0.val }
+T -> F Y      { Y.val=F.exp, T.exp=Y.exp }
+Y -> * F Y    { Y1.val=Y0.val * F.exp, Y0.exp=Y1.exp }
+   | / F Y    { Y1.val=Y0.val / F.exp, Y0.exp=Y1.exp }
+   | epsilon  { Y0.exp=Y0.val }
+F -> ( E )    { F.exp=E.exp }
+   | i        { F.exp=i.exp }
+```
 
-# Una tarea bastante fuerte
+# Conclusiones
 
-## Para aquellos de estómago fuerte...
+> - Nuevamente repetimos el patrón de resolver un problema diseñando un lenguaje declarativo de alto nivel y un mecanismo de bajo nivel que se construye automáticamente del lenguaje.
+> - En LL es posible evaluar las reglas semánticas durante el propio proceso de parsing, pero es horriblemente tortuoso. Ya veremos cuando lleguemos a LR.
+> - Las reglas semánticas sirven para mucho más que evaluar expresiones aritméticas.
 
-> 1. Diseñe una gramática para definir gramáticas atributadas (asuma que las reglas semánticas son "opacas" a su lenguaje, e.g., bloques de C# o Python).
-> 2. Construya un *parser* (a mano) para esta gramática.
-> 3. Construya un generador de *parsers* para la gramática de entrada, que genere un código en el lenguaje *host* que parsee y evalúe los atributos.
-> 4. Use este generador para hacer *bootstrap* a su gramática original.
+
+
+
+
+**Pregunta interesante:** ¿Existen lenguajes decidibles que no se puedan definir con gramáticas libres del contexto atributadas?

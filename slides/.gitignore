@@ -1,3 +1,18 @@
 # Quarto output
 _site/
 _freeze/
+
+/.quarto/
+
+# LaTeX
+*.aux
+*.log
+*.toc
+*.nav
+*.snm
+*.pre
+*.fdb_latexmk
+*.synctex*
+*.fls
+*.out
+*.pdf

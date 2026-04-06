@@ -1,14 +1,12 @@
 project:
   type: website
 
-format:
-  revealjs:
-    theme: default
-    transition: slide
-    slide-number: true
-  pdf:
-    default: true
-    pdf-engine: pdflatex
-
 execute:
-  enabled: false
+  enabled: true
+  freeze: true
+
+format:
+  beamer:
+    theme: CambridgeUS
+    navigation: frame
+    latex_engine: pdflatex
