@@ -28,9 +28,10 @@ jobs:
         run: uv sync
 
       - name: Install Quarto
-        uses: quarto-dev/setup-quarto@v1
-        with:
-          version: 1.6.0
+        run: |
+          wget https://github.com/quarto-dev/quarto/releases/download/v1.6.0/quarto-1.6.0-linux-amd64.tar.gz
+          tar -xzf quarto-1.6.0-linux-amd64.tar.gz
+          echo "${{ github.workspace }}/quarto-1.6.0/bin" >> $GITHUB_PATH
 
       - name: Build Book HTML
         run: make book-html
