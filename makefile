@@ -11,7 +11,7 @@ all: book slides
 book: book-html book-pdf
 
 book-html:
-	cd content && uv run quarto render
+	cd content && uv run quarto render --to html
 
 book-pdf:
 	cd content && uv run quarto render --to pdf
