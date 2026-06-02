@@ -4,4 +4,4 @@
     if (2 ^ 10 == 1024) print("ok") else print("fail");
     if (10 / 2 == 5) print("ok") else print("fail");
     if (!(3 < 2)) print("ok") else print("fail");
-};
+}

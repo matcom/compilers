@@ -15,4 +15,4 @@ type Cat(n: String) inherits Animal(n) {
     let d = new Dog("Rex") in print(d.sound());
     let c = new Cat("Whiskers") in print(c.sound());
     let a: Animal = new Dog("Buddy") in print(a.sound());
-};
+}

@@ -2,12 +2,12 @@ function square(x) {
     x * x;
 }
 
-function identity(x) {
-    x;
+function add_one(x) {
+    x + 1;
 }
 
 {
     if (square(5) == 25) print("ok") else print("fail");
     if (square(3) == 9) print("ok") else print("fail");
-    if (identity(42) == 42) print("ok") else print("fail");
-};
+    if (add_one(41) == 42) print("ok") else print("fail");
+}

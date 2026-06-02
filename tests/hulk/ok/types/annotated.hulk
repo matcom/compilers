@@ -10,4 +10,4 @@ function negate(b: Boolean): Boolean {
     if (add(3, 4) == 7) print("ok") else print("fail");
     if (negate(false)) print("ok") else print("fail");
     if (add(0, 0) == 0) print("ok") else print("fail");
-};
+}
