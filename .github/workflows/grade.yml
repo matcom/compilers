@@ -1,0 +1,126 @@
+name: HULK Grading
+
+on:
+  issues:
+    types: [opened, labeled]
+  issue_comment:
+    types: [created]
+
+permissions:
+  issues: write
+  contents: read
+
+jobs:
+  grade:
+    runs-on: ubuntu-latest
+
+    # Run when:
+    # - Issue opened/labeled with 'grading' label, OR
+    # - Comment '/regrade' on a 'grading'-labeled issue by the author or a repo member
+    if: |
+      (github.event_name == 'issues' &&
+       contains(github.event.issue.labels.*.name, 'grading')) ||
+      (github.event_name == 'issue_comment' &&
+       startsWith(github.event.comment.body, '/regrade') &&
+       contains(github.event.issue.labels.*.name, 'grading') &&
+       (github.event.comment.author_association == 'OWNER' ||
+        github.event.comment.author_association == 'COLLABORATOR' ||
+        github.event.comment.author_association == 'MEMBER' ||
+        github.event.comment.user.login == github.event.issue.user.login))
+
+    steps:
+      - name: Checkout matcom/compilers
+        uses: actions/checkout@v4
+
+      - name: Parse issue body
+        id: parse
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ISSUE_NUM=${{ github.event.issue.number }}
+          BODY=$(gh issue view "$ISSUE_NUM" --json body --jq '.body')
+
+          REPO_URL=$(echo "$BODY" | grep -oE 'https://github\.com/[a-zA-Z0-9_.-]+/[a-zA-Z0-9_.-]+' | head -1 || true)
+          BRANCH=$(echo "$BODY" | awk '/^### Branch/{found=1; next} found && /^[^#]/{gsub(/[[:space:]]/, "", $0); if ($0 != "") {print; exit}}')
+          [ -z "$BRANCH" ] && BRANCH="main"
+
+          if [ -z "$REPO_URL" ]; then
+            gh issue comment "$ISSUE_NUM" \
+              --body "❌ **Grading error:** Could not find a GitHub repository URL in the issue body. Please use the issue template and include your repo URL."
+            exit 1
+          fi
+
+          echo "repo_url=$REPO_URL" >> $GITHUB_OUTPUT
+          echo "branch=$BRANCH"     >> $GITHUB_OUTPUT
+          echo "issue_num=$ISSUE_NUM" >> $GITHUB_OUTPUT
+
+      - name: Post "running" comment
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue comment ${{ steps.parse.outputs.issue_num }} \
+            --body "⏳ **HULK Grading running** on \`${{ steps.parse.outputs.repo_url }}\` @ branch \`${{ steps.parse.outputs.branch }}\`..."
+
+      - name: Clone student repo
+        id: clone
+        timeout-minutes: 2
+        run: |
+          git clone --depth 1 \
+            --branch "${{ steps.parse.outputs.branch }}" \
+            "${{ steps.parse.outputs.repo_url }}" \
+            /tmp/student_repo
+
+      - name: Build student compiler
+        id: build
+        timeout-minutes: 8
+        working-directory: /tmp/student_repo
+        run: |
+          make build 2>&1 | tee /tmp/build.log
+          if [ ! -f "./hulk" ]; then
+            echo "" >> /tmp/build.log
+            echo "ERROR: ./hulk binary not found after make build." >> /tmp/build.log
+            echo "Make sure your Makefile produces ./hulk in the repo root." >> /tmp/build.log
+            exit 1
+          fi
+
+      - name: Check REPORT.md
+        id: report
+        working-directory: /tmp/student_repo
+        run: |
+          if [ -f REPORT.md ]; then
+            WORDS=$(wc -w < REPORT.md)
+            echo "exists=true"  >> $GITHUB_OUTPUT
+            echo "words=$WORDS" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+            echo "words=0"      >> $GITHUB_OUTPUT
+          fi
+
+      - name: Run test suite
+        id: tests
+        if: steps.build.outcome == 'success'
+        run: |
+          set +e
+          bash "$GITHUB_WORKSPACE/tests/hulk/run_tests.sh" \
+            /tmp/student_repo \
+            "$GITHUB_WORKSPACE/tests/hulk" \
+            2>&1 | tee /tmp/test_results.txt
+          echo "runner_exit=$?" >> $GITHUB_OUTPUT
+
+      - name: Format and post results
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          BUILD_OUTCOME="${{ steps.build.outcome }}"
+          python3 "$GITHUB_WORKSPACE/tests/hulk/format_comment.py" \
+            --build        "$BUILD_OUTCOME" \
+            --build-log    /tmp/build.log \
+            --report-exists "${{ steps.report.outputs.exists || 'false' }}" \
+            --report-words  "${{ steps.report.outputs.words  || '0' }}" \
+            --test-results /tmp/test_results.txt \
+            --repo         "${{ steps.parse.outputs.repo_url }}" \
+            > /tmp/comment.md || echo "## 🤖 HULK Grading — internal error formatting results" > /tmp/comment.md
+
+          gh issue comment ${{ steps.parse.outputs.issue_num }} \
+            --body "$(cat /tmp/comment.md)"
