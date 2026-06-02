@@ -1,0 +1,13 @@
+function square(x) {
+    x * x;
+}
+
+function identity(x) {
+    x;
+}
+
+{
+    if (square(5) == 25) print("ok") else print("fail");
+    if (square(3) == 9) print("ok") else print("fail");
+    if (identity(42) == 42) print("ok") else print("fail");
+};

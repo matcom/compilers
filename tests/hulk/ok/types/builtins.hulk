@@ -1,0 +1,6 @@
+{
+    if (sqrt(9) == 3) print("ok") else print("fail");
+    if (sqrt(4) == 2) print("ok") else print("fail");
+    if (sin(0) == 0) print("ok") else print("fail");
+    if (cos(0) == 1) print("ok") else print("fail");
+};

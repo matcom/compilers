@@ -1,0 +1,14 @@
+type Counter(start: Number) {
+    val = start;
+
+    current(): Number => self.val;
+    increment() => self.val := self.val + 1;
+    add(n: Number) => self.val := self.val + n;
+}
+
+let c = new Counter(0) in {
+    c.increment();
+    c.increment();
+    c.add(3);
+    if (c.current() == 5) print("ok") else print("fail");
+};

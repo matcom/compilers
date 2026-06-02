@@ -1,0 +1,6 @@
+let sum = 0 in {
+    for (x in range(0, 5)) {
+        sum := sum + x;
+    };
+    if (sum == 10) print("ok") else print("fail");
+};

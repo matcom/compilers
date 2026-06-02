@@ -1,0 +1,7 @@
+function add(x: Number, y: Number): Number {
+    x + y;
+}
+
+{
+    add("hello", 5);
+};

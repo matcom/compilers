@@ -1,0 +1,18 @@
+type Animal(n: String) {
+    name: String = n;
+    sound(): String { "..."; }
+}
+
+type Dog(n: String) inherits Animal(n) {
+    sound(): String { "Woof"; }
+}
+
+type Cat(n: String) inherits Animal(n) {
+    sound(): String { "Meow"; }
+}
+
+{
+    let d = new Dog("Rex") in print(d.sound());
+    let c = new Cat("Whiskers") in print(c.sound());
+    let a: Animal = new Dog("Buddy") in print(a.sound());
+};

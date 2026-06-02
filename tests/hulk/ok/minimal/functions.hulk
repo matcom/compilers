@@ -1,0 +1,17 @@
+function double(x: Number): Number {
+    x * 2;
+}
+
+function greet(name: String): String {
+    "Hello, " @@ name @@ "!";
+}
+
+function fib(n: Number): Number {
+    if (n <= 1) n else fib(n-1) + fib(n-2);
+}
+
+{
+    if (double(7) == 14) print("ok") else print("fail");
+    if (fib(10) == 55) print("ok") else print("fail");
+    print(greet("HULK"));
+};

@@ -1,0 +1,5 @@
+let x = 10, y = 20 in {
+    if (x + y == 30) print("ok") else print("fail");
+    let z = x * y in
+        if (z == 200) print("ok") else print("fail");
+};
