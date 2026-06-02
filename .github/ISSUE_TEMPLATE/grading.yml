@@ -1,0 +1,61 @@
+name: 🎓 Project Submission
+description: Submit your HULK compiler for automated grading
+title: "[Grading] Team: "
+labels: ["grading"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Fill in all fields carefully. The CI will clone your repo, build your
+        compiler, run the test suite, and post results as a comment here.
+
+        **Before submitting**, make sure your repo satisfies the interface contract:
+        `make build` produces `./hulk`, and `./hulk <file.hulk>` works as described
+        in [docs/interface.md](../blob/main/docs/interface.md).
+
+        Fix any failures and comment `/regrade` to re-run without opening a new issue.
+
+  - type: input
+    id: repo_url
+    attributes:
+      label: Repository URL
+      description: Full HTTPS URL of your **public** GitHub repository
+      placeholder: https://github.com/username/HULK-Compiler
+    validations:
+      required: true
+
+  - type: input
+    id: branch
+    attributes:
+      label: Branch
+      description: Branch to evaluate (leave blank for `main`)
+      placeholder: main
+    validations:
+      required: false
+
+  - type: textarea
+    id: team
+    attributes:
+      label: Team Members
+      description: Full name of each team member, one per line
+      placeholder: |
+        Fulano de Tal
+        Mengana García
+        Pepito Pérez
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: features
+    attributes:
+      label: Features Implemented
+      description: Check only what is actually working (the test suite will verify)
+      options:
+        - label: "Minimal requirements: expressions, functions, variables, conditionals, loops"
+        - label: "Type system and type checking (with explicit and inferred annotations)"
+        - label: "OOP: classes, inheritance, polymorphism, `is`/`as`"
+        - label: "Iterables / `for` loops"
+        - label: "Vectors / arrays"
+        - label: "Protocols"
+        - label: "Functors (first-class functions)"
+        - label: "Macros"
