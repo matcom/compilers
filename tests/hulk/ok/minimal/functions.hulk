@@ -3,7 +3,7 @@ function double(x: Number): Number {
 }
 
 function greet(name: String): String {
-    "Hello, " @@ name @@ "!";
+    "Hello, " @ name @ "!";
 }
 
 function fib(n: Number): Number {
