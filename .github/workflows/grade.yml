@@ -62,9 +62,25 @@ jobs:
             --body "⏳ **HULK Grading running** on \`${{ steps.parse.outputs.repo_url }}\` @ branch \`${{ steps.parse.outputs.branch }}\`..."
 
       - name: Install build dependencies
+        env:
+          DEBIAN_FRONTEND: noninteractive
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y llvm-dev libclang-dev clang libpolly-dev
+          sudo apt-get install -y gnupg curl lsb-release
+          # Official LLVM apt repo — provides LLVM 17+18 with Polly dev libs
+          curl -fsSL https://apt.llvm.org/llvm-snapshot.gpg.key \
+            | sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/llvm.gpg
+          CODENAME=$(lsb_release -cs)
+          for V in 17 18; do
+            echo "deb [signed-by=/etc/apt/trusted.gpg.d/llvm.gpg] \
+              http://apt.llvm.org/${CODENAME}/ llvm-toolchain-${CODENAME}-${V} main" \
+              | sudo tee /etc/apt/sources.list.d/llvm-${V}.list
+          done
+          sudo apt-get update -qq
+          sudo apt-get install -y \
+            llvm-17-dev llvm-18-dev \
+            libclang-17-dev libclang-18-dev \
+            clang-17 clang-18
 
       - name: Clone student repo
         id: clone
