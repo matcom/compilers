@@ -61,6 +61,11 @@ jobs:
           gh issue comment ${{ steps.parse.outputs.issue_num }} \
             --body "⏳ **HULK Grading running** on \`${{ steps.parse.outputs.repo_url }}\` @ branch \`${{ steps.parse.outputs.branch }}\`..."
 
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y llvm-dev libclang-dev clang libpolly-dev
+
       - name: Clone student repo
         id: clone
         timeout-minutes: 2
@@ -72,7 +77,7 @@ jobs:
 
       - name: Build student compiler
         id: build
-        timeout-minutes: 8
+        timeout-minutes: 10
         working-directory: /tmp/student_repo
         run: |
           make build 2>&1 | tee /tmp/build.log
