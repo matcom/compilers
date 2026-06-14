@@ -132,31 +132,31 @@ for hulk_file in "$TESTS_DIR/ok/extras/"*.hulk; do
     run_ok_test "$hulk_file" "$TESTS_DIR/ok/extras/$name.expected" "ok/extras" "$name"
 done
 
-for hulk_file in "$TESTS_DIR/ok/macros/"*.hulk 2>/dev/null; do
+for hulk_file in "$TESTS_DIR/ok/macros/"*.hulk; do
     [ -f "$hulk_file" ] || continue
     name=$(basename "$hulk_file" .hulk)
     run_ok_test "$hulk_file" "$TESTS_DIR/ok/macros/$name.expected" "ok/macros" "$name"
 done
 
-for hulk_file in "$TESTS_DIR/ok/arrays/"*.hulk 2>/dev/null; do
+for hulk_file in "$TESTS_DIR/ok/arrays/"*.hulk; do
     [ -f "$hulk_file" ] || continue
     name=$(basename "$hulk_file" .hulk)
     run_ok_test "$hulk_file" "$TESTS_DIR/ok/arrays/$name.expected" "ok/arrays" "$name"
 done
 
-for hulk_file in "$TESTS_DIR/ok/interfaces/"*.hulk 2>/dev/null; do
+for hulk_file in "$TESTS_DIR/ok/interfaces/"*.hulk; do
     [ -f "$hulk_file" ] || continue
     name=$(basename "$hulk_file" .hulk)
     run_ok_test "$hulk_file" "$TESTS_DIR/ok/interfaces/$name.expected" "ok/interfaces" "$name"
 done
 
-for hulk_file in "$TESTS_DIR/ok/lambdas/"*.hulk 2>/dev/null; do
+for hulk_file in "$TESTS_DIR/ok/lambdas/"*.hulk; do
     [ -f "$hulk_file" ] || continue
     name=$(basename "$hulk_file" .hulk)
     run_ok_test "$hulk_file" "$TESTS_DIR/ok/lambdas/$name.expected" "ok/lambdas" "$name"
 done
 
-for hulk_file in "$TESTS_DIR/ok/generators/"*.hulk 2>/dev/null; do
+for hulk_file in "$TESTS_DIR/ok/generators/"*.hulk; do
     [ -f "$hulk_file" ] || continue
     name=$(basename "$hulk_file" .hulk)
     run_ok_test "$hulk_file" "$TESTS_DIR/ok/generators/$name.expected" "ok/generators" "$name"

@@ -1,13 +1,14 @@
-let i = 5 in {
-    while (i > 0) {
-        i := i - 1;
+{
+    let i = 5 in {
+        while (i > 0) {
+            i := i - 1;
+        };
+        if (i == 0) print("ok") else print("fail");
     };
-    if (i == 0) print("ok") else print("fail");
-};
-
-let j = 0 in {
-    while (j < 10) {
-        j := j + 3;
+    let j = 0 in {
+        while (j < 10) {
+            j := j + 3;
+        };
+        if (j == 12) print("ok") else print("fail");
     };
-    if (j == 12) print("ok") else print("fail");
-};
+}

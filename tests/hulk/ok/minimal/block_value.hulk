@@ -1,6 +1,7 @@
-let result = {
-    let a = 3 in
-    let b = 4 in
-        a + b;
-} in
+let a = 3 in
+let b = 4 in
+let result = a + b in {
     if (result == 7) print("ok") else print("fail");
+    let inner = result * 2 in
+        if (inner == 14) print("ok") else print("fail");
+};

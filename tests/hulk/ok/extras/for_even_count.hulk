@@ -1,6 +1,6 @@
 let evens = 0 in {
     for (i in range(0, 10)) {
-        if (i % 2 == 0) evens := evens + 1;
+        evens := evens + if (i % 2 == 0) 1 else 0;
     };
     if (evens == 5) print("ok") else print("fail");
 };
