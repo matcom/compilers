@@ -1,0 +1,14 @@
+function is_even(n: Number): Boolean {
+    if (n == 0) true else is_odd(n - 1);
+}
+
+function is_odd(n: Number): Boolean {
+    if (n == 0) false else is_even(n - 1);
+}
+
+{
+    if (is_even(4)) print("ok") else print("fail");
+    if (is_odd(3)) print("ok") else print("fail");
+    if (!is_even(7)) print("ok") else print("fail");
+    if (!is_odd(8)) print("ok") else print("fail");
+}

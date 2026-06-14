@@ -1,0 +1,7 @@
+let a: Number[] = new Number[5]{ i -> i * 2 } in {
+    if (a[0] == 0) print("ok") else print("fail");
+    if (a[1] == 2) print("ok") else print("fail");
+    if (a[2] == 4) print("ok") else print("fail");
+    if (a[3] == 6) print("ok") else print("fail");
+    if (a[4] == 8) print("ok") else print("fail");
+};

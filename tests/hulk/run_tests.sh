@@ -132,6 +132,36 @@ for hulk_file in "$TESTS_DIR/ok/extras/"*.hulk; do
     run_ok_test "$hulk_file" "$TESTS_DIR/ok/extras/$name.expected" "ok/extras" "$name"
 done
 
+for hulk_file in "$TESTS_DIR/ok/macros/"*.hulk 2>/dev/null; do
+    [ -f "$hulk_file" ] || continue
+    name=$(basename "$hulk_file" .hulk)
+    run_ok_test "$hulk_file" "$TESTS_DIR/ok/macros/$name.expected" "ok/macros" "$name"
+done
+
+for hulk_file in "$TESTS_DIR/ok/arrays/"*.hulk 2>/dev/null; do
+    [ -f "$hulk_file" ] || continue
+    name=$(basename "$hulk_file" .hulk)
+    run_ok_test "$hulk_file" "$TESTS_DIR/ok/arrays/$name.expected" "ok/arrays" "$name"
+done
+
+for hulk_file in "$TESTS_DIR/ok/interfaces/"*.hulk 2>/dev/null; do
+    [ -f "$hulk_file" ] || continue
+    name=$(basename "$hulk_file" .hulk)
+    run_ok_test "$hulk_file" "$TESTS_DIR/ok/interfaces/$name.expected" "ok/interfaces" "$name"
+done
+
+for hulk_file in "$TESTS_DIR/ok/lambdas/"*.hulk 2>/dev/null; do
+    [ -f "$hulk_file" ] || continue
+    name=$(basename "$hulk_file" .hulk)
+    run_ok_test "$hulk_file" "$TESTS_DIR/ok/lambdas/$name.expected" "ok/lambdas" "$name"
+done
+
+for hulk_file in "$TESTS_DIR/ok/generators/"*.hulk 2>/dev/null; do
+    [ -f "$hulk_file" ] || continue
+    name=$(basename "$hulk_file" .hulk)
+    run_ok_test "$hulk_file" "$TESTS_DIR/ok/generators/$name.expected" "ok/generators" "$name"
+done
+
 for hulk_file in "$TESTS_DIR/errors/lexical/"*.hulk; do
     name=$(basename "$hulk_file" .hulk)
     run_error_test "$hulk_file" "$TESTS_DIR/errors/lexical/$name.exit" "errors/lexical" "$name"
@@ -155,15 +185,18 @@ echo "       GRADING SUMMARY"
 echo "=============================="
 
 REQUIRED=("ok/minimal" "ok/types" "ok/oop" "errors/lexical" "errors/syntactic" "errors/semantic")
+BONUS=("ok/extras" "ok/macros" "ok/arrays" "ok/interfaces" "ok/lambdas" "ok/generators")
 ALL_GREEN=true
 
 printf "%-28s %s\n" "Category" "Result"
 printf "%-28s %s\n" "--------" "------"
-for cat in "${REQUIRED[@]}" "ok/extras"; do
+for cat in "${REQUIRED[@]}" "${BONUS[@]}"; do
     p=${CAT_PASS[$cat]:-0}
     f=${CAT_FAIL[$cat]:-0}
     total=$(( p + f ))
-    if [ "$cat" = "ok/extras" ]; then
+    is_bonus=false
+    for b in "${BONUS[@]}"; do [ "$cat" = "$b" ] && is_bonus=true && break; done
+    if $is_bonus; then
         label="bonus"
     elif [ "$f" -eq 0 ] && [ "$total" -gt 0 ]; then
         label="PASS"
@@ -171,6 +204,7 @@ for cat in "${REQUIRED[@]}" "ok/extras"; do
         label="FAIL"
         ALL_GREEN=false
     fi
+    [ "$total" -eq 0 ] && continue
     printf "%-28s %d/%d [%s]\n" "$cat" "$p" "$total" "$label"
 done
 

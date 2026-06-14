@@ -1,0 +1,9 @@
+define double(x: Number): Number -> x * 2;
+define triple(x: Number): Number -> x * 3;
+define six_times(x: Number): Number -> double(triple(x));
+
+{
+    if (six_times(3) == 18) print("ok") else print("fail");
+    if (six_times(5) == 30) print("ok") else print("fail");
+    if (double(double(7)) == 28) print("ok") else print("fail");
+}

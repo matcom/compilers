@@ -1,0 +1,9 @@
+define abs_val(x: Number): Number {
+    if (x < 0) -x else x;
+}
+
+{
+    if (abs_val(5) == 5) print("ok") else print("fail");
+    if (abs_val(-3) == 3) print("ok") else print("fail");
+    if (abs_val(0) == 0) print("ok") else print("fail");
+}

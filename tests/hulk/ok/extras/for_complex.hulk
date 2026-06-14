@@ -1,0 +1,14 @@
+function sum_range(lo: Number, hi: Number): Number {
+    let s = 0 in {
+        for (i in range(lo, hi)) {
+            s := s + i;
+        };
+        s;
+    };
+}
+
+{
+    if (sum_range(0, 5) == 10) print("ok") else print("fail");
+    if (sum_range(1, 11) == 55) print("ok") else print("fail");
+    if (sum_range(0, 1) == 0) print("ok") else print("fail");
+}

@@ -1,0 +1,16 @@
+function abs_num(x: Number): Number {
+    if (x < 0) -x else x;
+}
+
+type Box(w: Number, h: Number, d: Number) {
+    width: Number = abs_num(w);
+    height: Number = abs_num(h);
+    depth: Number = abs_num(d);
+    volume(): Number { self.width * self.height * self.depth; }
+    surface(): Number { 2 * (self.width * self.height + self.height * self.depth + self.width * self.depth); }
+}
+
+let b = new Box(-3, 4, -5) in {
+    if (b.volume() == 60) print("ok") else print("fail");
+    if (b.surface() == 94) print("ok") else print("fail");
+};

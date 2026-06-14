@@ -1,0 +1,9 @@
+function double(x: Number): Number { x * 2; }
+function inc(x: Number): Number { x + 1; }
+function square(x: Number): Number { x * x; }
+
+{
+    if (double(inc(3)) == 8) print("ok") else print("fail");
+    if (square(double(3)) == 36) print("ok") else print("fail");
+    if (inc(square(inc(2))) == 10) print("ok") else print("fail");
+}

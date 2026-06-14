@@ -1,0 +1,12 @@
+interface Printable {
+    to_string(): String;
+}
+
+type Point(x: Number, y: Number) {
+    x: Number = x;
+    y: Number = y;
+    to_string(): String { "point"; }
+}
+
+let p: Printable = new Point(1, 2) in
+    if (p.to_string() == "point") print("ok") else print("fail");

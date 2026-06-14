@@ -1,0 +1,15 @@
+function is_positive(n: Number): Boolean {
+    n > 0;
+}
+
+function is_negative(n: Number): Boolean {
+    n < 0;
+}
+
+{
+    if (is_positive(5)) print("ok") else print("fail");
+    if (!is_positive(-3)) print("ok") else print("fail");
+    if (!is_positive(0)) print("ok") else print("fail");
+    if (is_negative(-1)) print("ok") else print("fail");
+    if (!is_negative(2)) print("ok") else print("fail");
+}

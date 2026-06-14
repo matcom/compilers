@@ -1,0 +1,10 @@
+function make_adder(n: Number): (Number) -> Number {
+    function (x: Number): Number -> x + n;
+}
+
+let add5: (Number) -> Number = make_adder(5) in
+let add10: (Number) -> Number = make_adder(10) in {
+    if (add5(3) == 8) print("ok") else print("fail");
+    if (add10(3) == 13) print("ok") else print("fail");
+    if (add5(add10(1)) == 16) print("ok") else print("fail");
+}

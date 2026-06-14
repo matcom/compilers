@@ -1,0 +1,7 @@
+function f(): Number { g(); }
+function g(): Number { 42; }
+
+{
+    if (f() == 42) print("ok") else print("fail");
+    if (g() == 42) print("ok") else print("fail");
+}

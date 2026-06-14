@@ -1,0 +1,12 @@
+let arr: Number[] = new Number[5] in {
+    let i = 0 in
+        while (i < 5) {
+            arr[i] := i * i;
+            i := i + 1;
+        };
+    if (arr[0] == 0) print("ok") else print("fail");
+    if (arr[1] == 1) print("ok") else print("fail");
+    if (arr[2] == 4) print("ok") else print("fail");
+    if (arr[3] == 9) print("ok") else print("fail");
+    if (arr[4] == 16) print("ok") else print("fail");
+};

@@ -1,0 +1,9 @@
+define swap_add(a: Number, b: Number): Number {
+    let tmp: Number = a in
+        tmp + b;
+}
+
+let tmp = 100 in {
+    if (swap_add(3, 4) == 7) print("ok") else print("fail");
+    if (tmp == 100) print("ok") else print("fail");
+};

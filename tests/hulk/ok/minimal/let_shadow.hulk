@@ -1,0 +1,7 @@
+let x = 10 in {
+    if (x == 10) print("ok") else print("fail");
+    let x = 20 in {
+        if (x == 20) print("ok") else print("fail");
+    };
+    if (x == 10) print("ok") else print("fail");
+};

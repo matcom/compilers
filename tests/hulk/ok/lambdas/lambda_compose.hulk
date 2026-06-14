@@ -1,0 +1,10 @@
+function compose(f: (Number) -> Number, g: (Number) -> Number): (Number) -> Number {
+    function (x: Number): Number -> f(g(x));
+}
+
+let double: (Number) -> Number = function (x: Number): Number -> x * 2 in
+let inc: (Number) -> Number = function (x: Number): Number -> x + 1 in
+let double_then_inc: (Number) -> Number = compose(inc, double) in {
+    if (double_then_inc(5) == 11) print("ok") else print("fail");
+    if (double_then_inc(0) == 1) print("ok") else print("fail");
+}

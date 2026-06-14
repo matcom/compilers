@@ -1,0 +1,25 @@
+type Vehicle(spd: Number) {
+    speed: Number = spd;
+    move(): String { "moving"; }
+    max_speed(): Number { self.speed; }
+}
+
+type Car(spd: Number, d: Number) inherits Vehicle(spd) {
+    doors: Number = d;
+    move(): String { "driving"; }
+}
+
+type Bike(spd: Number) inherits Vehicle(spd) {
+    move(): String { "cycling"; }
+}
+
+{
+    let v: Vehicle = new Car(120, 4) in {
+        if (v.move() == "driving") print("ok") else print("fail");
+        if (v.max_speed() == 120) print("ok") else print("fail");
+    };
+    let b: Vehicle = new Bike(25) in {
+        if (b.move() == "cycling") print("ok") else print("fail");
+        if (b.max_speed() == 25) print("ok") else print("fail");
+    };
+}

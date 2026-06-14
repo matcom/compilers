@@ -1,0 +1,5 @@
+type A(x: Number) inherits A(x) {
+    val: Number = x;
+}
+
+let a = new A(5) in print(a.val);

@@ -1,0 +1,4 @@
+function foo(x: Number): Number { x; }
+function foo(y: Number): Number { y + 1; }
+
+print(foo(5));

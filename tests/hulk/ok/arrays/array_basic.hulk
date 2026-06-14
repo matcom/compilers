@@ -1,0 +1,10 @@
+let a: Number[] = new Number[5] in {
+    a[0] := 10;
+    a[1] := 20;
+    a[2] := 30;
+    a[3] := 40;
+    a[4] := 50;
+    if (a[0] == 10) print("ok") else print("fail");
+    if (a[2] == 30) print("ok") else print("fail");
+    if (a[4] == 50) print("ok") else print("fail");
+};

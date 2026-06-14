@@ -1,0 +1,8 @@
+{
+    if (2 + 3 * 4 == 14) print("ok") else print("fail");
+    if ((2 + 3) * 4 == 20) print("ok") else print("fail");
+    if (10 - 3 - 2 == 5) print("ok") else print("fail");
+    if (10 / 2 * 3 == 15) print("ok") else print("fail");
+    if (2 ^ 3 == 8) print("ok") else print("fail");
+    if (!(2 > 3)) print("ok") else print("fail");
+}

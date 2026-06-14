@@ -1,0 +1,6 @@
+let x = -5 in {
+    if (x == -5) print("ok") else print("fail");
+    if (-x == 5) print("ok") else print("fail");
+    if (x * -2 == 10) print("ok") else print("fail");
+    if (x + 10 == 5) print("ok") else print("fail");
+};

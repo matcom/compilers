@@ -1,0 +1,19 @@
+function min_val(a, b) {
+    if (a < b) a else b;
+}
+
+function max_val(a, b) {
+    if (a > b) a else b;
+}
+
+function clamp(val, lo, hi) {
+    min_val(max_val(val, lo), hi);
+}
+
+{
+    if (min_val(3, 5) == 3) print("ok") else print("fail");
+    if (max_val(3, 5) == 5) print("ok") else print("fail");
+    if (clamp(10, 0, 5) == 5) print("ok") else print("fail");
+    if (clamp(-3, 0, 5) == 0) print("ok") else print("fail");
+    if (clamp(3, 0, 5) == 3) print("ok") else print("fail");
+}

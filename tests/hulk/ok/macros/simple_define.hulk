@@ -1,0 +1,7 @@
+define double(x: Number): Number -> x * 2;
+
+{
+    if (double(5) == 10) print("ok") else print("fail");
+    if (double(0) == 0) print("ok") else print("fail");
+    if (double(-3) == -6) print("ok") else print("fail");
+}

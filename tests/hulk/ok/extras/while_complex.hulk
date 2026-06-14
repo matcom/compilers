@@ -1,0 +1,17 @@
+function gcd(a: Number, b: Number): Number {
+    let x = a, y = b in {
+        while (y != 0) {
+            let tmp = y in {
+                y := x % y;
+                x := tmp;
+            };
+        };
+        x;
+    };
+}
+
+{
+    if (gcd(12, 8) == 4) print("ok") else print("fail");
+    if (gcd(100, 75) == 25) print("ok") else print("fail");
+    if (gcd(7, 13) == 1) print("ok") else print("fail");
+}

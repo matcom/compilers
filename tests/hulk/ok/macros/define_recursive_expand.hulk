@@ -1,0 +1,10 @@
+define square_macro(x: Number): Number -> x * x;
+
+function square_fn(x: Number): Number { x * x; }
+
+{
+    if (square_macro(5) == 25) print("ok") else print("fail");
+    if (square_fn(5) == 25) print("ok") else print("fail");
+    if (square_macro(0) == 0) print("ok") else print("fail");
+    if (square_macro(-4) == 16) print("ok") else print("fail");
+}

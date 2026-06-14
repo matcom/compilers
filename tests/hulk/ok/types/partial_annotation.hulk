@@ -1,0 +1,17 @@
+function add_typed(x: Number, y: Number): Number {
+    x + y;
+}
+
+function add_untyped(x, y) {
+    x + y;
+}
+
+function mixed(a: Number, b) {
+    a + b;
+}
+
+{
+    if (add_typed(3, 4) == 7) print("ok") else print("fail");
+    if (add_untyped(3, 4) == 7) print("ok") else print("fail");
+    if (mixed(10, 5) == 15) print("ok") else print("fail");
+}

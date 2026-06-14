@@ -1,0 +1,6 @@
+let a: Number[] = {10, 20, 30} in {
+    if (a[0] == 10) print("ok") else print("fail");
+    if (a[1] == 20) print("ok") else print("fail");
+    if (a[2] == 30) print("ok") else print("fail");
+    if (a.size() == 3) print("ok") else print("fail");
+};

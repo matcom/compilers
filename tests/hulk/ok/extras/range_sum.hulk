@@ -1,0 +1,8 @@
+let count = 0, sum = 0 in {
+    for (x in range(1, 6)) {
+        count := count + 1;
+        sum := sum + x;
+    };
+    if (count == 5) print("ok") else print("fail");
+    if (sum == 15) print("ok") else print("fail");
+};

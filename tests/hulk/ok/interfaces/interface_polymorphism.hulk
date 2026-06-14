@@ -1,0 +1,28 @@
+interface Shape {
+    area(): Number;
+    name(): String;
+}
+
+type Square(s: Number) {
+    side: Number = s;
+    area(): Number { self.side * self.side; }
+    name(): String { "square"; }
+}
+
+type Triangle(b: Number, h: Number) {
+    base: Number = b;
+    height: Number = h;
+    area(): Number { self.base * self.height / 2; }
+    name(): String { "triangle"; }
+}
+
+{
+    let sq: Shape = new Square(4) in {
+        if (sq.area() == 16) print("ok") else print("fail");
+        if (sq.name() == "square") print("ok") else print("fail");
+    };
+    let tr: Shape = new Triangle(6, 4) in {
+        if (tr.area() == 12) print("ok") else print("fail");
+        if (tr.name() == "triangle") print("ok") else print("fail");
+    };
+}

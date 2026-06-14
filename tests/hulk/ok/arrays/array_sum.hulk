@@ -1,0 +1,9 @@
+let a: Number[] = new Number[5]{ i -> i + 1 } in {
+    let total = 0, j = 0 in {
+        while (j < a.size()) {
+            total := total + a[j];
+            j := j + 1;
+        };
+        if (total == 15) print("ok") else print("fail");
+    };
+};

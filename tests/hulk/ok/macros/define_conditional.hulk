@@ -1,0 +1,11 @@
+define sign(x: Number): Number {
+    if (x > 0) 1
+    elif (x < 0) -1
+    else 0;
+}
+
+{
+    if (sign(10) == 1) print("ok") else print("fail");
+    if (sign(-5) == -1) print("ok") else print("fail");
+    if (sign(0) == 0) print("ok") else print("fail");
+}

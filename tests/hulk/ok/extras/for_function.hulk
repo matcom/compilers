@@ -1,0 +1,8 @@
+function square(n: Number): Number { n * n; }
+
+let sum_sq = 0 in {
+    for (i in range(1, 4)) {
+        sum_sq := sum_sq + square(i);
+    };
+    if (sum_sq == 14) print("ok") else print("fail");
+};

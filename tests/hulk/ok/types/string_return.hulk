@@ -1,0 +1,9 @@
+function repeat_str(s: String, n: Number): String {
+    if (n <= 0) "" else s @ repeat_str(s, n - 1);
+}
+
+{
+    if (repeat_str("ab", 3) == "ababab") print("ok") else print("fail");
+    if (repeat_str("x", 0) == "") print("ok") else print("fail");
+    if (repeat_str("!", 4) == "!!!!") print("ok") else print("fail");
+}

@@ -1,0 +1,25 @@
+type Squares(n: Number) {
+    i: Number = 0;
+    limit: Number = n;
+
+    next(): Boolean {
+        self.i := self.i + 1;
+        self.i <= self.limit;
+    }
+
+    current(): Number { self.i * self.i; }
+}
+
+function sum_gen(gen: Number*): Number {
+    let s: Number = 0 in {
+        for (x in gen) {
+            s := s + x;
+        };
+        s;
+    };
+}
+
+{
+    if (sum_gen(new Squares(3)) == 14) print("ok") else print("fail");
+    if (sum_gen(new Squares(4)) == 30) print("ok") else print("fail");
+}

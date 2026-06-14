@@ -1,0 +1,23 @@
+interface Drawable {
+    draw(): String;
+}
+
+type Widget(label: String) {
+    label: String = label;
+    draw(): String { "widget:" @ self.label; }
+}
+
+type Button(label: String) inherits Widget(label) {
+    draw(): String { "button:" @ self.label; }
+}
+
+function render(d: Drawable): String {
+    d.draw();
+}
+
+{
+    let w: Drawable = new Widget("main") in
+        if (render(w) == "widget:main") print("ok") else print("fail");
+    let b: Drawable = new Button("ok") in
+        if (render(b) == "button:ok") print("ok") else print("fail");
+}

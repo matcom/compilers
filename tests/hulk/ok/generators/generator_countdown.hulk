@@ -1,0 +1,17 @@
+type Countdown(n: Number) {
+    val: Number = n + 1;
+
+    next(): Boolean {
+        self.val := self.val - 1;
+        self.val > 0;
+    }
+
+    current(): Number { self.val; }
+}
+
+let sum = 0 in {
+    for (x in new Countdown(5)) {
+        sum := sum + x;
+    };
+    if (sum == 15) print("ok") else print("fail");
+};

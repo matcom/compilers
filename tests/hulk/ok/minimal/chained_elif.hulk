@@ -1,0 +1,15 @@
+function grade(score: Number): String {
+    if (score >= 90) "A"
+    elif (score >= 80) "B"
+    elif (score >= 70) "C"
+    elif (score >= 60) "D"
+    else "F";
+}
+
+{
+    if (grade(95) == "A") print("ok") else print("fail");
+    if (grade(85) == "B") print("ok") else print("fail");
+    if (grade(75) == "C") print("ok") else print("fail");
+    if (grade(65) == "D") print("ok") else print("fail");
+    if (grade(55) == "F") print("ok") else print("fail");
+}

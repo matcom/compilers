@@ -1,0 +1,19 @@
+interface Measurable {
+    measure(): Number;
+}
+
+type Box(side: Number) {
+    side: Number = side;
+    measure(): Number { self.side * self.side * self.side; }
+}
+
+function report(m: Measurable): String {
+    if (m.measure() > 100) "big" else "small";
+}
+
+{
+    let b1 = new Box(3) in
+        if (report(b1) == "small") print("ok") else print("fail");
+    let b2 = new Box(5) in
+        if (report(b2) == "big") print("ok") else print("fail");
+}

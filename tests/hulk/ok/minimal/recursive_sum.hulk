@@ -1,0 +1,9 @@
+function sum_to(n: Number): Number {
+    if (n <= 0) 0 else n + sum_to(n - 1);
+}
+
+{
+    if (sum_to(10) == 55) print("ok") else print("fail");
+    if (sum_to(100) == 5050) print("ok") else print("fail");
+    if (sum_to(0) == 0) print("ok") else print("fail");
+}

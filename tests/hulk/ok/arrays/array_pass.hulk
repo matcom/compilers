@@ -1,0 +1,13 @@
+function array_sum(a: Number[]): Number {
+    let total = 0, i = 0 in {
+        while (i < a.size()) {
+            total := total + a[i];
+            i := i + 1;
+        };
+        total;
+    };
+}
+
+let arr: Number[] = new Number[4]{ i -> i + 1 } in {
+    if (array_sum(arr) == 10) print("ok") else print("fail");
+};

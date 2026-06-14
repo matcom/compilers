@@ -1,0 +1,6 @@
+type Point(x: Number, y: Number) {
+    x: Number = x;
+    y: Number = y;
+}
+
+let p = new Point(1, 2) in print(p.length());

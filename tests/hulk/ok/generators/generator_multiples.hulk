@@ -1,0 +1,23 @@
+type Multiples(factor: Number, count: Number) {
+    i: Number = 0;
+    factor_val: Number = factor;
+    max_count: Number = count;
+
+    next(): Boolean {
+        self.i := self.i + 1;
+        self.i <= self.max_count;
+    }
+
+    current(): Number { self.i * self.factor_val; }
+}
+
+let sum1 = 0, sum2 = 0 in {
+    for (x in new Multiples(3, 4)) {
+        sum1 := sum1 + x;
+    };
+    for (x in new Multiples(5, 3)) {
+        sum2 := sum2 + x;
+    };
+    if (sum1 == 30) print("ok") else print("fail");
+    if (sum2 == 30) print("ok") else print("fail");
+};

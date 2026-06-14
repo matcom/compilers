@@ -1,0 +1,19 @@
+type Wallet(amount: Number) {
+    balance: Number = amount;
+    deposit(n: Number) { self.balance := self.balance + n; }
+    withdraw(n: Number) { self.balance := self.balance - n; }
+    get_balance(): Number { self.balance; }
+}
+
+type Transaction(w: Wallet, amt: Number) {
+    wallet: Wallet = w;
+    amount: Number = amt;
+    apply() { self.wallet.deposit(self.amount); }
+}
+
+let w = new Wallet(100) in {
+    let t = new Transaction(w, 50) in t.apply();
+    if (w.get_balance() == 150) print("ok") else print("fail");
+    w.withdraw(30);
+    if (w.get_balance() == 120) print("ok") else print("fail");
+};

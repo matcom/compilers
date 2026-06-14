@@ -1,0 +1,7 @@
+let result = 0 in {
+    for (i in range(0, 5)) {
+        let doubled = i * 2 in
+            result := result + doubled;
+    };
+    if (result == 20) print("ok") else print("fail");
+};

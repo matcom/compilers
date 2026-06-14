@@ -1,0 +1,7 @@
+let x = 1, y = 2 in
+    let z = x + y, w = z * 2 in {
+        if (z == 3) print("ok") else print("fail");
+        if (w == 6) print("ok") else print("fail");
+        let v = w + z in
+            if (v == 9) print("ok") else print("fail");
+    };

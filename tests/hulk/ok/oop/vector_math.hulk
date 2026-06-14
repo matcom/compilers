@@ -1,0 +1,19 @@
+type Vector(x: Number, y: Number) {
+    x: Number = x;
+    y: Number = y;
+    length_sq(): Number { self.x * self.x + self.y * self.y; }
+    dot(other: Vector): Number { self.x * other.x + self.y * other.y; }
+    scale(f: Number) {
+        self.x := self.x * f;
+        self.y := self.y * f;
+    }
+}
+
+let v1 = new Vector(3, 4) in
+let v2 = new Vector(1, 2) in {
+    if (v1.length_sq() == 25) print("ok") else print("fail");
+    if (v2.length_sq() == 5) print("ok") else print("fail");
+    if (v1.dot(v2) == 11) print("ok") else print("fail");
+    v1.scale(2);
+    if (v1.length_sq() == 100) print("ok") else print("fail");
+};

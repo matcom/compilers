@@ -1,0 +1,14 @@
+function map_range(lo: Number, hi: Number, f: (Number) -> Number): Number {
+    let sum = 0 in {
+        for (i in range(lo, hi)) {
+            sum := sum + f(i);
+        };
+        sum;
+    };
+}
+
+{
+    if (map_range(1, 5, function (x: Number): Number -> x) == 10) print("ok") else print("fail");
+    if (map_range(1, 4, function (x: Number): Number -> x * x) == 14) print("ok") else print("fail");
+    if (map_range(0, 5, function (x: Number): Number -> 1) == 5) print("ok") else print("fail");
+}

@@ -1,0 +1,6 @@
+let base: Number = 10 in
+let add_base: (Number) -> Number = function (x: Number): Number -> x + base in {
+    if (add_base(5) == 15) print("ok") else print("fail");
+    if (add_base(0) == 10) print("ok") else print("fail");
+    if (add_base(-10) == 0) print("ok") else print("fail");
+};

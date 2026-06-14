@@ -1,0 +1,10 @@
+define max3(a: Number, b: Number, c: Number): Number {
+    let m = if (a >= b) a else b in
+        if (m >= c) m else c;
+}
+
+{
+    if (max3(1, 2, 3) == 3) print("ok") else print("fail");
+    if (max3(5, 3, 4) == 5) print("ok") else print("fail");
+    if (max3(2, 7, 1) == 7) print("ok") else print("fail");
+}

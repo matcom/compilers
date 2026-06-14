@@ -1,0 +1,20 @@
+interface Comparable {
+    value(): Number;
+}
+
+type Temperature(deg: Number) {
+    deg: Number = deg;
+    value(): Number { self.deg; }
+}
+
+function max_comp(a: Comparable, b: Comparable): Number {
+    if (a.value() >= b.value()) a.value() else b.value();
+}
+
+{
+    let t1 = new Temperature(30) in
+    let t2 = new Temperature(25) in {
+        if (max_comp(t1, t2) == 30) print("ok") else print("fail");
+        if (max_comp(t2, t1) == 30) print("ok") else print("fail");
+    };
+}

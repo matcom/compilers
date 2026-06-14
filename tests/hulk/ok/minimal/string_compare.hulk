@@ -1,0 +1,7 @@
+{
+    if ("hello" @ " " @ "world" == "hello world") print("ok") else print("fail");
+    if ("" @ "x" == "x") print("ok") else print("fail");
+    if ("abc" == "abc") print("ok") else print("fail");
+    if (!("abc" == "def")) print("ok") else print("fail");
+    if ("a" @ "b" @ "c" == "abc") print("ok") else print("fail");
+}

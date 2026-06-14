@@ -1,0 +1,16 @@
+type Accumulator(init: Number) {
+    total: Number = init;
+
+    add(n: Number) { self.total := self.total + n; }
+    sub(n: Number) { self.total := self.total - n; }
+    scale(n: Number) { self.total := self.total * n; }
+    double() { self.scale(2); }
+    value(): Number { self.total; }
+}
+
+let acc = new Accumulator(100) in {
+    acc.add(50);
+    acc.sub(30);
+    acc.double();
+    if (acc.value() == 240) print("ok") else print("fail");
+};

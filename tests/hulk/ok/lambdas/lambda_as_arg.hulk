@@ -1,0 +1,9 @@
+function apply(f: (Number) -> Number, x: Number): Number {
+    f(x);
+}
+
+{
+    if (apply(function (x: Number): Number -> x + 1, 5) == 6) print("ok") else print("fail");
+    if (apply(function (x: Number): Number -> x * x, 4) == 16) print("ok") else print("fail");
+    if (apply(function (x: Number): Number -> 0, 99) == 0) print("ok") else print("fail");
+}

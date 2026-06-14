@@ -1,0 +1,28 @@
+type A(v: Number) {
+    val: Number = v;
+    name(): String { "A"; }
+    get(): Number { self.val; }
+}
+
+type B(v: Number) inherits A(v) {
+    name(): String { "B"; }
+}
+
+type C(v: Number) inherits B(v) {
+    name(): String { "C"; }
+}
+
+{
+    let a = new A(1) in {
+        if (a.name() == "A") print("ok") else print("fail");
+        if (a.get() == 1) print("ok") else print("fail");
+    };
+    let c = new C(42) in {
+        if (c.name() == "C") print("ok") else print("fail");
+        if (c.get() == 42) print("ok") else print("fail");
+    };
+    let b: A = new C(7) in {
+        if (b.name() == "C") print("ok") else print("fail");
+        if (b.get() == 7) print("ok") else print("fail");
+    };
+}

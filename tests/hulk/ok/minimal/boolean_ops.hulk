@@ -1,0 +1,8 @@
+{
+    if (!false) print("ok") else print("fail");
+    if (!(1 == 2)) print("ok") else print("fail");
+    if (1 != 2) print("ok") else print("fail");
+    if (3 >= 3) print("ok") else print("fail");
+    if (3 <= 4) print("ok") else print("fail");
+    if (!(!true)) print("ok") else print("fail");
+}

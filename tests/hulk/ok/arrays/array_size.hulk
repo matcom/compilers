@@ -1,0 +1,8 @@
+{
+    let a: Number[] = new Number[10] in
+        if (a.size() == 10) print("ok") else print("fail");
+    let b: Number[] = new Number[1] in
+        if (b.size() == 1) print("ok") else print("fail");
+    let c: Number[] = new Number[100] in
+        if (c.size() == 100) print("ok") else print("fail");
+}

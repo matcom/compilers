@@ -1,0 +1,20 @@
+type OddNumbers(limit: Number) {
+    current_val: Number = -1;
+    limit_val: Number = limit;
+
+    next(): Boolean {
+        self.current_val := self.current_val + 2;
+        self.current_val <= self.limit_val;
+    }
+
+    current(): Number { self.current_val; }
+}
+
+let count = 0, sum = 0 in {
+    for (x in new OddNumbers(9)) {
+        count := count + 1;
+        sum := sum + x;
+    };
+    if (count == 5) print("ok") else print("fail");
+    if (sum == 25) print("ok") else print("fail");
+};

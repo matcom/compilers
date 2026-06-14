@@ -1,0 +1,22 @@
+type Printer(prefix: String) {
+    pfx: String = prefix;
+    format(msg: String): String { self.pfx @ msg; }
+    print_msg(msg: String) { print(self.format(msg)); }
+}
+
+type FancyPrinter(prefix: String, suffix: String) inherits Printer(prefix) {
+    sfx: String = suffix;
+    format(msg: String): String { self.pfx @ msg @ self.sfx; }
+}
+
+{
+    let p = new Printer("[INFO] ") in {
+        if (p.format("test") == "[INFO] test") print("ok") else print("fail");
+    };
+    let fp = new FancyPrinter(">> ", " <<") in {
+        if (fp.format("hello") == ">> hello <<") print("ok") else print("fail");
+    };
+    let base: Printer = new FancyPrinter("* ", " *") in {
+        if (base.format("x") == "* x *") print("ok") else print("fail");
+    };
+}

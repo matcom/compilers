@@ -1,0 +1,24 @@
+interface Greeter {
+    greet(): String;
+}
+
+type EnglishGreeter(name: String) {
+    name: String = name;
+    greet(): String { "Hello, " @ self.name; }
+}
+
+type SpanishGreeter(name: String) {
+    name: String = name;
+    greet(): String { "Hola, " @ self.name; }
+}
+
+function welcome(g: Greeter): String {
+    g.greet() @ "!";
+}
+
+{
+    let e: Greeter = new EnglishGreeter("World") in
+        if (welcome(e) == "Hello, World!") print("ok") else print("fail");
+    let s: Greeter = new SpanishGreeter("Mundo") in
+        if (welcome(s) == "Hola, Mundo!") print("ok") else print("fail");
+}

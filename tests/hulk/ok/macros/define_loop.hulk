@@ -1,0 +1,12 @@
+define repeat(times: Number, body: Number): Number {
+    let i: Number = times in
+        while (i > 0) {
+            i := i - 1;
+            body;
+        };
+}
+
+let count = 0 in {
+    repeat(5, count := count + 1);
+    if (count == 5) print("ok") else print("fail");
+};

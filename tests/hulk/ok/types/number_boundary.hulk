@@ -1,0 +1,8 @@
+{
+    let big = 1000000 in {
+        if (big + big == 2000000) print("ok") else print("fail");
+        if (big * 2 == 2000000) print("ok") else print("fail");
+    };
+    if (0.5 + 0.5 == 1) print("ok") else print("fail");
+    if (100 / 4 == 25) print("ok") else print("fail");
+}

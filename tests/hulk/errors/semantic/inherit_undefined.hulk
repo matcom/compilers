@@ -1,0 +1,5 @@
+type B(x: Number) inherits Nonexistent(x) {
+    val: Number = x;
+}
+
+let b = new B(5) in print(b.val);

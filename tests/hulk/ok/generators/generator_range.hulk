@@ -1,0 +1,18 @@
+type MyRange(lo: Number, hi: Number) {
+    i: Number = lo - 1;
+    hi_val: Number = hi;
+
+    next(): Boolean {
+        self.i := self.i + 1;
+        self.i < self.hi_val;
+    }
+
+    current(): Number { self.i; }
+}
+
+let total = 0 in {
+    for (x in new MyRange(0, 5)) {
+        total := total + x;
+    };
+    if (total == 10) print("ok") else print("fail");
+};
