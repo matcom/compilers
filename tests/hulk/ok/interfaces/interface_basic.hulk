@@ -1,4 +1,4 @@
-interface Printable {
+protocol Printable {
     to_string(): String;
 }
 

@@ -39,10 +39,15 @@ run_ok_test() {
     local hulk_file="$1" expected_file="$2" cat="$3" name="$4"
     local tmperr; tmperr=$(mktemp)
 
-    # Compile: run from student repo so ./output lands there
+    # Compile: run from student repo so ./output lands there (30s hard limit)
     local compile_exit=0
-    (cd "$STUDENT_REPO" && "$HULK" "$hulk_file" > /dev/null 2> "$tmperr") || compile_exit=$?
+    (cd "$STUDENT_REPO" && timeout 30 "$HULK" "$hulk_file" > /dev/null 2> "$tmperr") || compile_exit=$?
 
+    if [ "$compile_exit" -eq 124 ]; then
+        rm -f "$tmperr"
+        log_fail "$cat" "$name" "compilation timed out (>30s)"
+        return
+    fi
     if [ "$compile_exit" -ne 0 ]; then
         local err_preview; err_preview=$(head -1 "$tmperr" | cut -c1-80)
         rm -f "$tmperr"
@@ -51,10 +56,14 @@ run_ok_test() {
     fi
     rm -f "$tmperr"
 
-    # Run the compiled output
+    # Run the compiled output (10s hard limit)
     local actual runtime_exit=0
-    actual=$(cd "$STUDENT_REPO" && ./output 2>/dev/null) || runtime_exit=$?
+    actual=$(cd "$STUDENT_REPO" && timeout 10 ./output 2>/dev/null) || runtime_exit=$?
 
+    if [ "$runtime_exit" -eq 124 ]; then
+        log_fail "$cat" "$name" "./output timed out (>10s)"
+        return
+    fi
     if [ "$runtime_exit" -ne 0 ]; then
         log_fail "$cat" "$name" "./output crashed (exit $runtime_exit)"
         return
@@ -88,8 +97,9 @@ run_error_test() {
 
     local tmperr; tmperr=$(mktemp)
     local actual_exit=0
-    (cd "$STUDENT_REPO" && "$HULK" "$hulk_file" > /dev/null 2> "$tmperr") || actual_exit=$?
+    (cd "$STUDENT_REPO" && timeout 30 "$HULK" "$hulk_file" > /dev/null 2> "$tmperr") || actual_exit=$?
     local stderr_out; stderr_out=$(cat "$tmperr"); rm -f "$tmperr"
+    [ "$actual_exit" -eq 124 ] && actual_exit=1  # timeout → treat as error exit
 
     if [ "$actual_exit" != "$expected_exit" ]; then
         log_fail "$cat" "$name" "expected exit $expected_exit, got $actual_exit"

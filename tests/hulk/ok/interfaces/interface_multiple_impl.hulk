@@ -1,4 +1,4 @@
-interface Greeter {
+protocol Greeter {
     greet(): String;
 }
 

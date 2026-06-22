@@ -1,4 +1,4 @@
-interface Shape {
+protocol Shape {
     area(): Number;
     name(): String;
 }

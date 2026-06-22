@@ -78,10 +78,19 @@ jobs:
           done
           sudo apt-get update -qq
           sudo apt-get install -y \
+            flex bison \
             llvm-17-dev llvm-18-dev \
             libpolly-17-dev libpolly-18-dev \
             libclang-17-dev libclang-18-dev \
             clang-17 clang-18
+          # Register unversioned llvm-config so student Makefiles find it
+          for V in 18 17; do
+            BIN="/usr/bin/llvm-config-${V}"
+            if command -v "$BIN" &>/dev/null; then
+              sudo update-alternatives --install /usr/bin/llvm-config llvm-config "$BIN" "${V}0"
+            fi
+          done
+          echo "=== llvm-config ===" && llvm-config --version
           echo "=== Polly libs found ==="
           find /usr/lib -name "libPolly*" 2>/dev/null || echo "NONE"
 

@@ -6,7 +6,7 @@ type Printer(prefix: String) {
 
 type FancyPrinter(prefix: String, suffix: String) inherits Printer(prefix) {
     sfx: String = suffix;
-    format(msg: String): String { self.pfx @ msg @ self.sfx; }
+    format(msg: String): String { base(msg) @ self.sfx; }
 }
 
 {
