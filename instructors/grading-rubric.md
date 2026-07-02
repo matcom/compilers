@@ -1,355 +1,338 @@
 # Rúbrica de Evaluación Automática — Proyecto HULK Compiler
 
-> **Instrucciones para el agente evaluador:**
-> Esta rúbrica guía la producción de un comentario de evaluación en el issue de GitHub de cada equipo.
-> El flujo obligatorio es: **código primero, reporte después**.
-> Nunca describas lo que el reporte dice como si fuera hecho; verifica siempre en el código.
-> Emite la evaluación en el issue con la etiqueta `## 🔍 Evaluación Automática — Claude Code`.
+---
+
+## INSTRUCCIONES PARA EL AGENTE EVALUADOR
+
+### Rol y restricciones
+
+Eres un subagente de análisis. Tu trabajo es analizar el repositorio del estudiante y producir DOS artefactos de texto. **No publicas nada en GitHub**; el agente principal que te invocó se encarga de eso.
+
+### Inputs que recibirás
+
+- Ruta local al repositorio clonado del estudiante (ya está disponible).
+- Resultado del último reporte de CI (tests pasados/fallados).
+- Contenido del issue de GitHub (features marcadas [x] / [ ]).
+
+### Outputs que debes producir
+
+Al finalizar tu análisis, escribe dos secciones claramente delimitadas:
+
+---
+**OUTPUT 1: REPORTE DETALLADO**
+
+[Markdown completo con todos los bloques 1–7 de esta rúbrica.
+Incluye referencias a archivo y línea en formato `archivo.rs:L123` para cada hallazgo.
+Longitud: sin límite. Objetivo: ser la evidencia técnica completa.]
+
+---
+**OUTPUT 2: COMENTARIO RESUMEN**
+
+[Markdown del comentario que se publicará en el issue de GitHub.
+Longitud: 1000–2000 palabras. Sin referencias a líneas de código.
+Estructura: ver sección "Formato del Comentario" al final de esta rúbrica.]
 
 ---
 
-## 0. Preparación
+### Flujo de trabajo obligatorio
 
-Antes de evaluar, realiza los siguientes pasos:
-
-1. **Clona o actualiza el repositorio** del estudiante (rama indicada en el issue).
-2. **Lee el último comentario del bot de CI** para obtener el resumen de tests.
-3. **Lee `REPORT.md`** en su totalidad.
-4. **Lista todos los archivos fuente** con `find . -name "*.rs" -o -name "*.c" -o -name "*.cpp" | sort` (o el lenguaje correspondiente).
-5. **Lee los archivos clave** según las secciones de esta rúbrica.
-
-La evaluación se estructura en **siete bloques**. Emite cada bloque en orden.
+1. Lee el código fuente antes de leer el reporte.
+2. Para cada afirmación del reporte, busca la evidencia en el código.
+3. Primero describe lo que el código hace; luego compara con lo que dice el reporte.
+4. Cada referencia a código debe incluir nombre de archivo y número de línea.
 
 ---
 
-## Bloque 1 — Descripción Arquitectónica (OBLIGATORIO)
+## Bloque 1 — Descripción Arquitectónica
 
-Este bloque debe producir 2–4 párrafos describiendo la arquitectura **tal como existe en el código**, no como la describe el reporte. Responde sistemáticamente cada una de las siguientes preguntas buscando evidencia directa en el código:
+Produce 3–5 párrafos describiendo la arquitectura **según el código**. Responde sistemáticamente:
 
-### 1.1 Lenguaje de implementación
-- ¿En qué lenguaje está escrito el compilador? (Rust, C, C++)
-- ¿Usa un sistema de build específico? (Cargo, CMake, Make)
-- ¿Depende de bibliotecas externas relevantes? (inkwell, llvm-sys, etc.)
+### 1.1 Lenguaje e infraestructura de build
+- ¿Lenguaje de implementación? (Rust, C, C++)
+- ¿Sistema de build? (Cargo, CMake, Make)
+- ¿Dependencias externas clave? (inkwell, llvm-sys, nom, lalrpop, etc.)
 
-### 1.2 Análisis léxico (Lexer / Tokenizer)
-Busca en el código la implementación del lexer:
+### 1.2 Lexer / Tokenizador
+Busca el código del lexer y determina el enfoque:
 
-- **Manual (hand-written):** existe un archivo lexer/tokenizer con bucles de reconocimiento de caracteres, autómata de estados, o tablas de transición.
-- **Generador integrado en parser generator:** ej. LALRPOP incluye su propio sistema de tokens vía bloques `match {}` con regex. Verifica si existe un bloque `match` en el archivo `.lalrpop`.
-- **Flex/JFlex/re2c:** existe un archivo `.l` o `.flex`.
-- **Librería de combinadores:** ej. `logos`, `nom`, `pest`.
+- **Generador integrado en parser generator:** LALRPOP con bloque `match {}` y regex. Indica el archivo `.lalrpop` y las líneas del bloque `match`.
+- **Librería de combinadores:** `logos`, `nom`, `pest` — indica el crate y el archivo.
+- **Flex/JFlex:** archivo `.l` o `.lex`.
+- **Hand-written:** archivo con bucle principal de tokenización, switch/match sobre caracteres.
 
-Documenta: qué archivo implementa el lexer, cómo se definen los tokens (regex, enum, tabla), cómo se manejan los comentarios, si hay reporte de posición (línea/columna).
+Documenta: tokens reconocidos (keywords, operadores, literales), manejo de comentarios (`#`), si reporta posición (línea/columna) y en qué estructura.
 
-### 1.3 Análisis sintáctico (Parser)
-Busca cómo se construye el parser:
+### 1.3 Parser
+Determina el enfoque:
 
-- **LALRPOP:** existe archivo `.lalrpop` con gramática BNF.
-- **Parser combinator:** ej. `nom`, `pest`, `chumsky` — muchas funciones `parse_X()` encadenadas.
-- **Recursive descent hand-written:** funciones `parse_expr()`, `parse_stmt()`, etc. escritas manualmente.
+- **LALRPOP:** archivo `.lalrpop`, tipo LALR(1).
+- **Parser combinators:** `nom`, `chumsky`, `pest` — funciones encadenadas.
+- **Recursive descent manual:** funciones `parse_expr()`, `parse_stmt()` escritas a mano.
 - **ANTLR / Bison / Yacc:** archivos `.g4`, `.y`.
 
-Documenta: tipo de parser (LL, LR, PEG, etc.), si tiene recuperación de errores, cómo se reportan errores sintácticos (línea/columna).
+Documenta: cuántos niveles de precedencia reales existen en la gramática (cuenta los niveles en el código, no los que dice el reporte), cómo resuelve el dangling-else, si hay recuperación de errores.
 
-### 1.4 AST (Árbol de Sintaxis Abstracta)
-Busca las definiciones de nodos del AST:
-
-- **Estructura:** ¿son `enum` con variantes (Rust), `struct` con herencia (C++), clases polimórficas (C)?
-- **Mutabilidad:** ¿el AST se modifica en pasadas semánticas (mutable), o se construye y solo se lee (immutable)?
-- **Anotación de tipos:** ¿los nodos del AST guardan información de tipo? ¿Se añade en una pasada posterior o se fija durante el parsing?
-- **Patrón Visitor:** ¿existe un trait/interfaz `Visitor` o `Visit`? ¿Las pasadas semánticas lo usan?
-- **Span / posición:** ¿cada nodo guarda su posición en el fuente para errores?
+### 1.4 AST
+- ¿Estructura de nodos? (enum con variantes en Rust, jerarquía de clases en C++)
+- ¿Mutabilidad? (los nodos se modifican en pasadas semánticas, o se construyen y solo se leen)
+- ¿Los nodos guardan información de tipo? ¿Cuándo se añade?
+- ¿Existe patrón Visitor? ¿Qué pasadas lo usan?
+- ¿Cada nodo tiene span/posición para errores?
 
 ### 1.5 Análisis semántico
-Cuenta y describe las pasadas semánticas:
-
-- ¿Cuántas pasadas distintas existen? (archivos o módulos separados)
-- ¿Qué hace cada una? (colectar declaraciones, chequear scopes, inferir tipos, verificar tipos)
-- ¿Existe tabla de símbolos? ¿Cómo está estructurada? (HashMap, árbol de scopes, stack)
-- ¿Maneja referencias cruzadas? (clases y funciones usables antes de declararse)
+- Número de pasadas distintas y qué hace cada una (con nombre de archivo).
+- Estructura de la tabla de símbolos (campos, scopes).
+- ¿Maneja referencias cruzadas (uso antes de declaración)?
 - ¿Detecta ciclos de herencia?
-- ¿Genera errores múltiples en una sola pasada o para al primer error?
+- ¿Reporta múltiples errores semánticos en una sola ejecución?
 
 ### 1.6 Backend de generación de código
-Identifica el backend de codegen:
+Determina el backend:
 
-- **LLVM vía Inkwell (Rust):** imports de `inkwell::`, archivo `codegen/` con `Context`, `Module`, `Builder`.
-- **LLVM vía llvm-sys (Rust, bindings C):** llamadas `LLVMBuildXxx`.
-- **LLVM vía API C++ directa:** includes `llvm/IR/...`.
-- **LLVM vía CLI (llc, clang):** el compilador genera texto `.ll` y llama a `clang`/`llc` como proceso externo.
-- **Máquina virtual propia:** existe código de un intérprete de bytecode, instrucciones custom, stack VM.
-- **Otro backend:** WebAssembly, C como IR, etc.
+- **LLVM vía Inkwell:** imports `inkwell::`, archivos `codegen/` con `Context`, `Module`, `Builder`.
+- **LLVM vía llvm-sys:** llamadas `LLVMBuildXxx`.
+- **LLVM vía API C++ directa:** `#include <llvm/IR/...>`.
+- **Texto LLVM IR + CLI:** el compilador escribe un `.ll` y llama a `llc`/`clang` como subprocess.
+- **VM propia:** bytecode custom, intérprete de stack/registros.
+- **Otro:** WebAssembly, C como IR, etc.
 
-Documenta: ¿se generan structs/tipos LLVM propios? ¿Existe VTable? ¿Cómo se representan los objetos en memoria (layout del struct en LLVM)?
+Documenta: si existe VTable, cómo se representan los objetos en memoria (layout del struct LLVM), cómo se produce el binario final (linking).
 
 ### 1.7 Runtime
-- ¿Existe un runtime en C u otro lenguaje que se enlaza con el binario generado?
-- ¿Qué funciones provee? (malloc/alloc, print, strings, math)
-- ¿Cómo se hace el enlazado? (llamada a `cc`/`clang` desde el compilador, Makefile)
+- ¿Existe un runtime en C u otro lenguaje?
+- ¿Qué funciones expone? (alloc, print, concat, math, cast error)
+- ¿Cómo se enlaza? (compilado y linkeado desde el compilador, o incluido en el Makefile)
 
-### 1.8 Gestión de memoria de los objetos generados
-- ¿Cómo se asigna memoria para objetos HULK en el programa generado? (`malloc`, `calloc`, GC, arena allocator)
-- ¿Hay recolección de basura? Si sí, ¿qué tipo? (mark-and-sweep, reference counting, Boehm GC)
-- ¿O es memoria no liberada (leak intencional para simplificar)?
+### 1.8 Gestión de memoria de objetos en runtime
+- ¿Cómo se asigna memoria para objetos HULK en el programa generado?
+- ¿Hay GC? Si sí, ¿qué tipo?
+- ¿O es memoria que no se libera (leak intencional)?
 
-### 1.9 Features adicionales implementados
-Busca en el código evidencia de:
+### 1.9 Features implementados (evidencia en código)
+Para cada feature, indica si existe soporte en AST, semántica Y codegen:
 
-- **Iterables / `for` loops:** nodo `ForExpr` en AST, clase `Range` o interfaz iterable en codegen.
-- **Vectores / Arrays:** nodo `NewArray`, acceso por índice `[]`, método `.size()`.
-- **Protocolos / Interfaces:** chequeo estructural de conformidad, nodo `Interface` en AST o symbol table.
-- **Functores / lambdas:** nodo de función anónima, closure capture en el AST.
-- **Macros:** expansión en tiempo de compilación, nodo `MacroDef` o `Define`.
-- **`case` expression:** nodo `CaseExpr`, despacho por tipo dinámico.
-- **Operador `with`:** null-safety.
-
-Para cada uno: indica si existe soporte en el AST, en semántica, y en codegen.
-
----
-
-## Bloque 2 — Evaluación del Lexer
-
-**En el código, busca y verifica:**
-
-1. ¿Cómo se definen los tokens? Lista los tokens reconocidos (keywords, operadores, literales).
-2. ¿Se reconocen todos los operadores de HULK? Checkea: `:=`, `@`, `@@`, `=>`, `->`, `is`, `as`, `**` si aplica.
-3. ¿Los identificadores siguen la regla `[a-zA-Z][a-zA-Z0-9_]*`?
-4. ¿Los números soportan decimales (`[0-9]+(\.[0-9]+)?`)?
-5. ¿Los strings soportan escape sequences (`\"`, `\\`, `\n`)?
-6. ¿Se ignoran comentarios de línea (`#`)?
-7. ¿Existe reporte de posición (línea, columna)?
-
-**Contrasta con el reporte:** ¿el reporte describe correctamente el lexer implementado?
-
-**Señales de alerta:**
-- El reporte describe un autómata o estados del lexer que no aparecen en el código.
-- Los tokens no incluyen todos los operadores del lenguaje.
-- No hay manejo de posición para errores.
+| Feature | AST | Semántica | Codegen |
+|---------|-----|-----------|---------|
+| Iterables / `for` | ¿nodo ForExpr? | ¿type check? | ¿genera IR? |
+| Arrays | ¿nodo NewArray? | ¿chequea índice/size? | ¿genera IR? |
+| Protocolos | ¿chequeo estructural? | ¿conformidad? | — |
+| Functores/lambdas | ¿nodo lambda? | ¿tipo función? | ¿genera IR? |
+| Macros | ¿nodo Define? | ¿expansión? | — |
+| `case` expression | ¿nodo CaseExpr? | ¿type dispatch? | ¿genera IR? |
 
 ---
 
-## Bloque 3 — Evaluación del Parser
+## Bloque 2 — Lexer
 
-**En el código, busca y verifica:**
+Verifica en el código:
 
-1. **Niveles de precedencia:** cuenta los niveles reales en la gramática (no los que dice el reporte).
-2. **Asociatividad:** verifica que `^` sea right-associative, `:=` sea right-associative, los aritméticos left-associative.
-3. **Dangling-else:** ¿está resuelto? Busca en la gramática cómo se maneja `if-elif-else`.
-4. **Expresiones que producen valor:** `let`, `if`, `while`, `for` deben ser expresiones, no statements.
-5. **Bloques `{...}`:** ¿se parsean como listas de expresiones separadas por `;`? ¿El valor del bloque es la última expresión?
-6. **`new ClassName(args)`:** ¿existe en la gramática?
-7. **Acceso a miembros:** `obj.attr`, `obj.method(args)`.
-8. **Indexación:** `arr[i]`.
-9. **Recovery de errores:** ¿el parser intenta recuperarse y reportar múltiples errores, o para al primero?
+1. ¿Se reconocen todos los operadores de HULK? Checkea: `:=`, `@`, `@@`, `=>`, `->`, `is`, `as`.
+2. ¿Identificadores: `[a-zA-Z][a-zA-Z0-9_]*`?
+3. ¿Números: soportan decimales `[0-9]+(\.[0-9]+)?`?
+4. ¿Strings: soportan escape sequences?
+5. ¿Comentarios de línea `#` ignorados?
+6. ¿Posición (línea, columna) reportada en tokens?
 
-**Contrasta con el reporte:** ¿los niveles de precedencia mencionados coinciden con los del código?
+Para cada punto: cita el archivo y línea donde se define o donde falta.
 
 ---
 
-## Bloque 4 — Evaluación Semántica
+## Bloque 3 — Parser
 
-**En el código, busca y verifica cada uno:**
+Verifica en el código:
+
+1. **Niveles de precedencia:** cuenta los niveles reales (busca comentarios `Level N` o la estructura de la gramática). Anota el número exacto.
+2. **Asociatividad:** ¿`^` right-assoc? ¿`:=` right-assoc? ¿`+/-` left-assoc?
+3. **Dangling-else:** ¿cómo se resuelve en la gramática?
+4. **Expresiones-valor:** `let`, `if`, `while`, `for` ¿son expresiones que devuelven valor?
+5. **Bloques `{...}`:** ¿el valor es la última expresión?
+6. **Recuperación de errores:** ¿intenta continuar tras un error?
+
+Cita archivo y línea para cada hallazgo.
+
+---
+
+## Bloque 4 — Análisis Semántico
 
 ### 4.1 Tabla de símbolos
-- ¿Existe una estructura centralizada? Describe sus campos.
-- ¿Maneja scopes anidados? ¿Cómo? (stack de HashMaps, árbol de scope, etc.)
+Cita el archivo donde se define. Describe los campos de la estructura.
 
-### 4.2 Resolución de referencias cruzadas
-- ¿Las funciones y clases pueden referenciarse antes de declararse?
-- ¿Existe una pasada de "colección de declaraciones" separada del chequeo?
+### 4.2 Referencias cruzadas
+¿Existe una pasada de colección de declaraciones? ¿En qué archivo? ¿Qué registra?
 
-### 4.3 Chequeo de scope
-- ¿Se verifica que variables usadas estén declaradas?
-- ¿Se reporta error cuando `self` se usa fuera de un método?
-- ¿Se reportan variables declaradas pero no usadas? (warning)
+### 4.3 Scope y variables
+- ¿Verifica variables declaradas antes de usar?
+- ¿Verifica `self` solo dentro de métodos?
+- ¿Genera warnings de variables no usadas? (cita el archivo y función)
 
-### 4.4 Chequeo de aridad
-- ¿Se verifica que las llamadas a funciones/métodos/constructores tengan el número correcto de argumentos?
+### 4.4 Aridad
+¿Verifica número de argumentos en llamadas a funciones, métodos, constructores?
 
 ### 4.5 Inferencia de tipos
-- ¿Existe inferencia? ¿Para qué símbolos? (parámetros de funciones, atributos de clase, variables `let`)
-- ¿Cómo se implementa? (restricciones por uso, evaluación directa del inicializador, unificación)
-- ¿Se calcula LCA (Lowest Common Ancestor) para ramas de `if`/`while`?
+- ¿Existe pasada de inferencia? ¿Para qué símbolos?
+- ¿Cómo funciona? (restricciones por uso, evaluación directa, unificación)
+- ¿Calcula LCA para ramas de `if`/`case`? (cita función)
 
 ### 4.6 Verificación de tipos
-- ¿Se verifican operandos de operadores aritméticos (deben ser Number)?
-- ¿Se verifican condiciones de `if`/`while` (deben ser Boolean)?
-- ¿Se verifica compatibilidad en asignaciones `:=`?
-- ¿Se verifica el tipo de retorno de funciones?
-- ¿Se manejan tipos de subclase como supertipo (subtipado estructural)?
+- ¿Verifica operandos aritméticos (Number)?
+- ¿Verifica condiciones boolean?
+- ¿Verifica compatibilidad en asignaciones?
+- ¿Verifica retorno de funciones?
+- ¿Maneja subtipado (subclase como supertipo)?
 
-### 4.7 Herencia y OOP
-- ¿Se verifica que la clase padre exista?
-- ¿Se detectan ciclos de herencia?
-- ¿Se verifica que el método override tenga la misma firma que el método padre?
-- ¿Se valida el uso correcto de `base(args)` en constructores?
+### 4.7 OOP semántico
+- ¿Verifica que padre exista?
+- ¿Detecta ciclos en herencia? (cita algoritmo y archivo)
+- ¿Verifica firma en overrides?
 
-### 4.8 Cantidad de errores reportados
-- ¿El compilador reporta un solo error semántico o múltiples en la misma ejecución?
-- Esto es **requisito obligatorio** según la especificación.
+### 4.8 Múltiples errores semánticos
+¿El compilador puede reportar varios errores semánticos en una sola ejecución? ¿Cómo?
 
 ---
 
-## Bloque 5 — Evaluación del Generador de Código
+## Bloque 5 — Generación de Código
 
-**En el código, busca y verifica:**
-
-### 5.1 Representación de tipos primitivos en LLVM
-- Number: ¿`double` (f64) o `i64`?
+### 5.1 Tipos primitivos en LLVM
+- Number: ¿`double` (f64) o entero?
 - Boolean: ¿`i1` o `i8`?
-- String: ¿puntero a `i8*` (C-style), struct con longitud, etc.?
+- String: ¿puntero C-style, struct con longitud?
 
 ### 5.2 Expresiones
-- ¿Aritmética genera instrucciones float o int (`fadd`/`add`)?
-- ¿Comparaciones generan `fcmp`/`icmp` correctamente?
-- ¿Concatenación de strings llama a función del runtime?
-- ¿Operadores lógicos `&` y `|` implementan cortocircuito (bloques básicos LLVM con `br` condicional) o evaluación eager (`build_and`/`build_or`)?
+- Aritmética: ¿`fadd`/`fmul` o `add`/`mul`? Cita archivo y línea.
+- Comparaciones: ¿`fcmp` o `icmp`?
+- Concatenación de strings: ¿llama a función del runtime?
+- **Operadores lógicos `&` y `|`**: ¿short-circuit (bloques básicos + `br`) o eager (`build_and`/`build_or`)? Cita exactamente las líneas.
 
 ### 5.3 Control de flujo
-- ¿`if-elif-else` genera bloques básicos separados con `br` y nodos `phi`?
-- ¿`while` genera bloques `cond`, `body`, `end` con saltos condicionales?
-- ¿`for` delega a un iterable o hardcodea `Range`?
+- `if`: ¿genera bloques `then`/`else`/`merge` con `phi`?
+- `while`: ¿bloques `cond`/`body`/`end`?
+- `for`: ¿delega a iterable o hardcodea `Range`?
 
-### 5.4 Funciones
-- ¿Las funciones HULK se emiten como funciones LLVM?
-- ¿Las llamadas generan instrucciones `call`?
-- ¿Se manejan llamadas recursivas?
+### 5.4 OOP y VTable
+- ¿Existe VTable? Cita archivo y función donde se construye.
+- ¿Layout del struct: slot 0 = vtable ptr, slot 1 = type_id, slot 2+ = atributos? Cita líneas.
+- ¿El type_id se usa para `is`/`as`? ¿Cómo?
+- ¿El override reemplaza la entrada de la VTable del padre?
+- ¿El constructor inicializa vtable y type_id?
 
-### 5.5 OOP y VTable
-- ¿Cada clase HULK se traduce a un `StructType` LLVM?
-- ¿El layout del struct incluye: slot 0 = vtable ptr, slot 1 = type_id, slot 2+ = atributos?
-- ¿Existe una VTable global constante por clase con punteros a función?
-- ¿El despacho dinámico carga el puntero de la VTable en runtime?
-- ¿Los constructores asignan memoria vía el runtime?
-- ¿La herencia copa el layout del padre y agrega atributos propios al final?
-- ¿`is` compara `type_id`? ¿`as` verifica y castea o falla gracefully?
-
-### 5.6 Linking
-- ¿Cómo se produce el binario final? (llamada a `cc`/`clang`/`ld`, flags `-lm`, etc.)
+### 5.5 Linking
+¿Cómo se produce el binario? (cita la función o líneas donde se llama al linker)
 
 ---
 
 ## Bloque 6 — Features Opcionales
 
-Para cada feature, verifica en el código:
+Para cada feature marcada [x] en el issue:
 
-| Feature | Qué buscar en el código | Puntaje |
-|---------|------------------------|---------|
-| **Iterables / `for`** | Nodo `ForExpr`, clase `Range` con `next()`/`current()`, codegen de `for` | Extra |
-| **Arrays / Vectors** | Nodo `NewArray`, indexación `[]`, método `.size()`, generación de arrays LLVM | Extra |
-| **Protocolos** | Chequeo estructural de métodos, conformidad sin herencia explícita | Extra |
-| **Functores** | Nodo de función anónima o lambda, tipo `(T)->R`, llamada como valor | Extra |
-| **Macros** | Expansión en tiempo de compilación, nodo `Define`, sustitución de parámetros | Extra |
+1. Verifica soporte en AST (cita archivo del nodo).
+2. Verifica soporte semántico (cita pasada que lo valida).
+3. Verifica soporte en codegen (cita función de generación).
+4. Cruza con resultados de tests de esa categoría.
 
-Para cada feature marcada como implementada en el issue:
-1. Verifica que existe soporte en el **AST** (nodo correspondiente).
-2. Verifica que existe soporte en el **análisis semántico** (type checking).
-3. Verifica que existe soporte en el **codegen** (emisión de IR).
-4. Cruza con los **tests** de esa categoría.
-
-Si el issue marca [x] pero los tests fallan o el soporte en codegen está incompleto, documéntalo explícitamente.
+Si el issue marca [x] pero los tests fallan o el codegen está ausente, documéntalo.
 
 ---
 
 ## Bloque 7 — Exactitud del Reporte
 
-Después de haber analizado el código, evalúa el reporte comparando cada afirmación técnica:
-
 ### 7.1 Afirmaciones verificadas
-Lista las afirmaciones del reporte que el código **confirma**. Ej:
-- "VTable con slot 0 = vtable ptr, slot 1 = type_id" → verificado en `classes.rs`.
+Lista las afirmaciones del reporte que el código confirma. Para cada una, cita el archivo y línea donde se verifica.
 
 ### 7.2 Afirmaciones no sustentadas o incorrectas
-Lista las afirmaciones del reporte que el código **contradice o no puede verificar**. Para cada una:
-- Cita textualmente la afirmación del reporte.
-- Muestra la evidencia del código que la contradice.
-- Clasifícala: **sobreestimación** (dice que hay algo que no existe), **descripción incorrecta** (existe pero funciona diferente), o **omisión inversa** (el código tiene algo que el reporte ignora).
+Para cada afirmación del reporte que el código contradice:
+- Cita textualmente la frase del reporte.
+- Muestra la evidencia del código (archivo:línea) que la contradice.
+- Clasifica: **sobreestimación** / **descripción incorrecta** / **no verificable**.
 
 ### 7.3 Omisiones del reporte
-Lista funcionalidades o detalles que el código implementa y que el reporte **no menciona**.
+Lo que el código hace y el reporte no menciona.
 
-### 7.4 Inconsistencias entre issue y código
-- ¿El issue marca [x] en features que los tests muestran como no funcionales?
-- ¿Los crashes de codegen (exit 101) sugieren infraestructura parcialmente implementada?
+### 7.4 Inconsistencias issue vs. código
+Features marcadas [x] que los tests muestran como no funcionales.
 
 ---
 
 ## Bloque 8 — Diagnóstico de Fallas de Tests
 
-Para cada test que falla, intenta categorizar la causa:
+Para cada test que falla, categoriza la causa:
 
-| Categoría | Descripción | Indicador |
-|-----------|-------------|-----------|
-| **Lexical/Syntactic** | El parser rechaza sintaxis válida | exit 2, "SYNTACTIC: Token inesperado" |
-| **Semantic** | Error de tipos o scope en código válido | exit 3 |
-| **Codegen crash** | El IR falla al generarse | exit 101 o similar (no 0/1/2/3) |
-| **Runtime error** | El binario generado tiene comportamiento incorrecto | output ≠ expected |
-| **Linking error** | El binario no se puede producir | error de linker |
+| Categoría | Descripción | Señal |
+|-----------|-------------|-------|
+| Lexical/Syntactic | El parser rechaza sintaxis válida de HULK | exit 2 |
+| Semantic | Error de tipos en código correcto | exit 3 |
+| Codegen crash | IR falla al generarse | exit 101 / panic |
+| Runtime error | Binario generado produce output incorrecto | output ≠ expected |
 
-Para los crashes de codegen (los más frecuentes en proyectos con OOP), intenta identificar el patrón:
-- ¿Falla solo con herencia múltiple/multinivel?
-- ¿Falla cuando hay override de métodos?
-- ¿Falla con ciertos tipos (String vs Number)?
-- ¿Falla en llamadas a métodos virtuales (despacho dinámico)?
+Para crashes de codegen (exit 101), intenta identificar el patrón:
+- ¿Solo con herencia multinivel?
+- ¿Solo con override de métodos?
+- ¿Con ciertos tipos primitivos (String)?
+- ¿Con despacho dinámico (vtable)?
 
 ---
 
-## Formato del Comentario Final
+## Formato del Comentario Resumen (OUTPUT 2)
 
-El comentario en GitHub debe seguir esta estructura exacta:
+**Longitud: 1000–2000 palabras. Sin referencias a líneas de código. En español.**
 
 ```markdown
 ## 🔍 Evaluación Automática — Claude Code
 
-> **Repositorio:** <URL>
-> **Rama:** <branch> | **Último reporte CI:** <fecha>
+> Repositorio: <URL> | Rama: <branch> | Tests: <fecha último CI>
 
-### 1. Arquitectura del Compilador
-[2-4 párrafos según Bloque 1]
+### Arquitectura del Compilador
 
-### 2. Resumen de Tests
-[tabla de resultados]
+[2–3 párrafos: lenguaje/herramientas, pipeline completo lexer→parser→AST→semántica→codegen,
+backend LLVM o VM, runtime, gestión de memoria. Code-first: describe lo que el código hace,
+no lo que dice el reporte.]
 
-### 3. Lo que el Código Implementa
-[hallazgos verificados, organizados por fase]
+### Resultados de Tests
 
-### 4. Discrepancias: Reporte vs. Código
-#### Lo que el reporte afirma pero el código no sustenta
-[lista numerada con citas y evidencia]
-#### Lo que el código tiene y el reporte omite
-[lista]
+| Categoría | Pasados | Total | Estado |
+|-----------|---------|-------|--------|
+| ok/minimal | N | N | ✅/⚠️ |
+...
 
-### 5. Features Opcionales
-[tabla de features marcadas vs. verificadas]
+### Lo que el Compilador Implementa
 
-### 6. Diagnóstico de Fallas
-[categorización de tests que fallan]
+[Párrafo o lista de lo que efectivamente funciona según código + tests combinados.
+Menciona específicamente qué features opcionales están completamente implementados.]
 
-### 7. Conclusión
-[2-3 párrafos: fortalezas reales, debilidades críticas, gap reporte vs. código]
+### Discrepancias entre Reporte y Código
+
+**El reporte afirma pero el código no sustenta:**
+- [afirmación] → [lo que el código muestra en realidad]
+
+**El código implementa pero el reporte omite:**
+- [lista]
+
+### Features Opcionales
+
+| Feature | AST | Semántica | Codegen | Tests |
+|---------|-----|-----------|---------|-------|
+| Iterables | ✅ | ✅ | ✅ | N/M |
+...
+
+### Diagnóstico de Fallas Principales
+
+[2–3 párrafos explicando las causas técnicas de los tests que fallan,
+sin referencias a líneas de código pero sí a módulos o componentes.]
+
+### Conclusión
+
+[1–2 párrafos: fortalezas reales verificadas en el código, debilidades críticas
+(especialmente en las categorías de tests obligatorios que fallan), y un juicio
+sobre la brecha entre lo que el reporte describe y lo que el código ejecuta.]
 ```
 
 ---
 
-## Criterios de Calidad del Reporte
+## Notas finales para el agente
 
-Al evaluar el `REPORT.md`, considera:
-
-| Criterio | Suficiente | Excelente |
-|----------|------------|-----------|
-| Longitud | ≥ 2000 palabras | ≥ 3000 palabras con profundidad técnica |
-| Arquitectura | Describe cada fase del compilador | Explica decisiones de diseño y alternativas descartadas |
-| Exactitud | Las afirmaciones principales coinciden con el código | Todas las afirmaciones técnicas verificables coinciden |
-| Limitaciones | Menciona qué no funciona o está incompleto | Explica el diagnóstico de las limitaciones |
-| Evidencia | Referencias a archivos o funciones del código | Referencias específicas con nombres de función y módulo |
-
----
-
-## Notas para el Agente
-
-- **Prioriza el código sobre el reporte.** Si el reporte dice "implementamos X" pero X no está en el código, es una discrepancia, no un hecho.
-- **Sé específico.** En lugar de "el codegen tiene problemas", di "el método `gen_method_body` en `classes.rs:492` puede devolver `None` cuando el cuerpo del método contiene llamadas a métodos virtuales sin tipo resuelto."
-- **Sé justo.** Reconoce lo que sí funciona. Un 18/20 en tests mínimos es un logro real.
-- **Distingue bugs de ausencias.** Un feature que existe en el AST y la semántica pero crashea en codegen es diferente a un feature que no existe en absoluto.
-- **Calibra la longitud.** La evaluación debe tener entre 1500 y 3000 palabras. Si supera 4000, prioriza y recorta.
-- **Idioma:** Escribe la evaluación en español, siguiendo el idioma del reporte del estudiante.
+- Lee el código antes que el reporte.
+- Cada hallazgo técnico en el Reporte Detallado (OUTPUT 1) debe tener `archivo.rs:L123`.
+- El Comentario Resumen (OUTPUT 2) no lleva referencias a líneas; es para leer en GitHub.
+- El reporte detallado no tiene límite de longitud; el comentario sí (máx. 2000 palabras).
+- Si hay duda entre lo que el código hace y lo que el reporte dice, el código gana.
+- Distingue entre: feature ausente en el código vs. feature en AST/semántica pero con codegen roto.
+- Sé justo: reconoce lo que sí funciona.
